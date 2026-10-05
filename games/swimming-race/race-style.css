@@ -1,0 +1,262 @@
+/* GAMES/SWIMMING-RACE/RACE-STYLE.CSS - Overlay UI Styles cho Game Đua Bơi BBB */
+
+/* Base Swimming Overlay Container */
+#kyna-swimming-overlay {
+  position: fixed;
+  top: 40px;
+  right: 20px;
+  width: 620px;
+  background: rgba(10, 25, 47, 0.95);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 2px solid rgba(14, 165, 233, 0.5);
+  border-radius: 20px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7), 0 0 30px rgba(14, 165, 233, 0.3);
+  color: #f8fafc;
+  font-family: 'Segoe UI', -apple-system, Roboto, sans-serif;
+  z-index: 999999;
+  overflow: hidden;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  user-select: none;
+}
+
+#kyna-swimming-overlay.minimized .kyna-swim-body {
+  display: none !important;
+}
+#kyna-swimming-overlay.minimized {
+  width: 280px;
+}
+
+/* Header */
+.kyna-swim-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 20px;
+  background: linear-gradient(90deg, #0284c7 0%, #0369a1 50%, #0f766e 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  cursor: move;
+}
+
+.kyna-swim-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 17px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+}
+
+/* Body */
+.kyna-swim-body {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Pool Container */
+.kyna-swim-pool {
+  width: 100%;
+  background: linear-gradient(180deg, #0284c7 0%, #0369a1 40%, #075985 100%);
+  border-radius: 14px;
+  border: 3px solid #38bdf8;
+  box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.4);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 10px 0;
+}
+
+/* Animated Water Waves Effect */
+.kyna-swim-pool::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(circle, rgba(255,255,255,0.12) 10%, transparent 20%);
+  background-size: 30px 30px;
+  opacity: 0.6;
+  animation: waterRipple 4s infinite linear;
+  pointer-events: none;
+}
+
+@keyframes waterRipple {
+  0% { background-position: 0 0; }
+  100% { background-position: 30px 30px; }
+}
+
+/* Swimming Lane */
+.kyna-swim-lane {
+  position: relative;
+  height: 54px;
+  border-bottom: 2px stroke-dasharray #fef08a;
+  border-bottom: 2px dashed rgba(254, 240, 138, 0.6);
+  display: flex;
+  align-items: center;
+  padding-left: 55px;
+  padding-right: 45px;
+}
+
+.kyna-swim-lane:last-child {
+  border-bottom: none;
+}
+
+/* Lane Number Badge */
+.kyna-lane-number {
+  position: absolute;
+  left: 8px;
+  width: 36px;
+  height: 36px;
+  background: rgba(15, 23, 42, 0.85);
+  border: 2px solid #38bdf8;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 14px;
+  color: #38bdf8;
+  z-index: 5;
+}
+
+/* Finish Line Touchpad */
+.kyna-finish-line {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 42px;
+  background: repeating-linear-gradient(
+    45deg,
+    #ffffff,
+    #ffffff 8px,
+    #0f172a 8px,
+    #0f172a 16px
+  );
+  border-left: 4px solid #ef4444;
+  box-shadow: -4px 0 10px rgba(0,0,0,0.5);
+  z-index: 4;
+}
+
+/* Swimmer Container */
+.kyna-swimmer {
+  position: absolute;
+  left: 55px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: left 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  z-index: 10;
+}
+
+/* Swimmer Avatar Icon & Stroke Animation */
+.kyna-swimmer-avatar {
+  font-size: 32px;
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.4));
+  animation: swimStroke 0.6s infinite ease-in-out alternate;
+}
+
+@keyframes swimStroke {
+  0% { transform: translateY(-2px) rotate(-5deg); }
+  100% { transform: translateY(3px) rotate(5deg); }
+}
+
+/* Swimmer Name Badge */
+.kyna-swimmer-name {
+  background: rgba(15, 23, 42, 0.9);
+  color: #ffffff;
+  padding: 4px 10px;
+  border-radius: 14px;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  border: 1px solid rgba(56, 189, 248, 0.6);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.kyna-ready-tag {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 8px;
+  letter-spacing: 0.3px;
+}
+
+.kyna-ready-tag.tag-ready {
+  background: rgba(234, 179, 8, 0.25);
+  color: #fef08a;
+  border: 1px solid rgba(234, 179, 8, 0.6);
+}
+
+.kyna-ready-tag.tag-started {
+  background: rgba(34, 197, 94, 0.25);
+  color: #86efac;
+  border: 1px solid rgba(34, 197, 94, 0.6);
+}
+
+/* Rank Badge when finished */
+.kyna-rank-badge {
+  padding: 3px 8px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 800;
+  margin-left: 6px;
+  animation: popIn 0.3s ease-out;
+}
+
+.kyna-rank-1 { background: #f59e0b; color: #0f172a; box-shadow: 0 0 12px #f59e0b; }
+.kyna-rank-2 { background: #94a3b8; color: #0f172a; }
+.kyna-rank-3 { background: #b45309; color: #ffffff; }
+
+@keyframes popIn {
+  0% { transform: scale(0); }
+  80% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+/* Controls Bar inside Overlay */
+.kyna-swim-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.kyna-swim-status {
+  font-size: 14px;
+  font-weight: 700;
+  color: #38bdf8;
+}
+
+/* Winner Celebration Box */
+.kyna-podium-box {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(16, 185, 129, 0.2) 100%);
+  border: 2px solid #f59e0b;
+  border-radius: 14px;
+  padding: 14px;
+  text-align: center;
+  color: #fef08a;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  animation: popIn 0.5s ease;
+}
+
+.kyna-podium-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: #f59e0b;
+}
+
+.kyna-podium-ranks {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  font-size: 14px;
+  margin-top: 6px;
+}

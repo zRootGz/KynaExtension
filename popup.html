@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kyna BBB - Guess The Word Control Panel</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="logo-icon">🎨</div>
+        <div class="brand-text">
+          <h1>Guess The Word</h1>
+          <span class="sub-title">BigBlueButton Kyna English</span>
+        </div>
+      </div>
+      <div id="game-status-badge" class="status-badge status-idle">
+        <span class="dot"></span>
+        <span id="status-text">Chưa bắt đầu</span>
+      </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs">
+      <button class="tab-btn active" data-tab="tab-control">🎨 Đoán Chữ</button>
+      <button class="tab-btn" data-tab="tab-swimming">🏊 Đua Bơi</button>
+      <button class="tab-btn" data-tab="tab-scores">🏆 Bảng điểm (<span id="tab-score-count">0</span>)</button>
+      <button class="tab-btn" data-tab="tab-settings">⚙️ Cài đặt</button>
+    </nav>
+
+    <!-- Main Content Panels -->
+    <main class="tab-contents">
+      
+      <!-- TAB 1: BẢNG ĐIỀU KHIỂN & QUẢN LÝ TỪ VỰNG -->
+      <section id="tab-control" class="tab-panel active">
+        
+        <!-- Controls Bar -->
+        <div class="main-action-card">
+          <div class="button-group">
+            <button id="btn-start-game" class="btn btn-success btn-lg">
+              <span class="icon">🚀</span> Bắt đầu Game
+            </button>
+            <button id="btn-next-word" class="btn btn-secondary btn-lg" disabled>
+              <span class="icon">⏭️</span> Từ tiếp theo
+            </button>
+            <button id="btn-stop-game" class="btn btn-danger btn-lg" disabled>
+              <span class="icon">🛑</span> Dừng Game
+            </button>
+          </div>
+          <div id="active-word-display" class="active-word-banner hidden">
+            <span class="label">Từ hiện tại:</span>
+            <span id="current-word-text" class="word-highlight">---</span>
+            <span id="current-timer-text" class="timer-badge">60s</span>
+          </div>
+        </div>
+
+        <!-- Topic Selector -->
+        <div class="card">
+          <div class="card-header">
+            <h3>📚 Chọn chủ đề từ vựng</h3>
+            <span class="badge info" id="topic-word-count">10 từ</span>
+          </div>
+          <div class="topic-row">
+            <select id="select-category" class="form-control">
+              <option value="Animals">🐶 Animals (Động vật)</option>
+              <option value="Fruits">🍎 Fruits (Hoa quả)</option>
+              <option value="Occupations">👨‍⚕️ Occupations (Nghề nghiệp)</option>
+              <option value="School">✏️ School (Trường học)</option>
+              <option value="Transport">🚀 Transport (Giao thông)</option>
+              <option value="Clothing">👕 Clothing (Trang phục)</option>
+              <option value="Colors">🌈 Colors (Màu sắc)</option>
+              <option value="Actions">🏊 Actions (Hành động)</option>
+              <option value="ALL">🌟 Tất cả các chủ đề</option>
+            </select>
+            <button id="btn-load-topic" class="btn btn-primary">Tải bộ từ này</button>
+          </div>
+        </div>
+
+        <!-- Search & Add Word Tool -->
+        <div class="card">
+          <div class="card-header">
+            <h3>🔍 Tìm kiếm & Thêm từ vựng</h3>
+            <button id="btn-toggle-custom" class="btn btn-sm btn-outline">+ Tạo từ mới</button>
+          </div>
+          
+          <div class="search-box">
+            <input type="text" id="input-search-word" class="form-control" placeholder="Gõ từ tiếng Anh (VD: Apple, Tiger)...">
+          </div>
+
+          <!-- Quick Search Results List -->
+          <div id="search-results-list" class="search-results-container hidden"></div>
+
+          <!-- Custom Word Creator Form (Accordion) -->
+          <div id="custom-word-form" class="custom-form hidden">
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Từ Tiếng Anh *</label>
+                <input type="text" id="custom-word-input" class="form-control" placeholder="VD: BUTTERFLY">
+              </div>
+              <div class="form-group">
+                <label>Gợi ý Tiếng Việt *</label>
+                <input type="text" id="custom-hint-input" class="form-control" placeholder="VD: Côn trùng có cánh đẹp">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Từ khóa ảnh Unsplash (Tùy chọn)</label>
+              <input type="text" id="custom-query-input" class="form-control" placeholder="VD: butterfly sketch doodle">
+            </div>
+            <button id="btn-save-custom" class="btn btn-success btn-block">➕ Thêm vào danh sách Game</button>
+          </div>
+        </div>
+
+        <!-- Current Quiz Word List -->
+        <div class="card">
+          <div class="card-header">
+            <h3>📋 Danh sách từ trong lượt chơi này (<span id="quiz-list-count">0</span>)</h3>
+            <div class="card-actions" style="display: flex; gap: 4px;">
+              <button id="btn-shuffle-quiz-list" class="btn btn-sm btn-outline" title="Trộn ngẫu nhiên thứ tự từ vựng">🔀 Trộn từ</button>
+              <button id="btn-clear-quiz-list" class="btn btn-sm btn-ghost">Xóa hết</button>
+            </div>
+          </div>
+          <div id="quiz-word-list" class="quiz-words-container">
+            <div class="empty-state">Chưa có từ nào. Hãy chọn chủ đề hoặc tìm kiếm thêm từ!</div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- TAB 2: GAME ĐUA BƠI KỲ PHÙNG ĐỊCH THỦ -->
+      <section id="tab-swimming" class="tab-panel">
+        
+        <!-- Controls Bar for Swimming Race -->
+        <div class="main-action-card" style="background: linear-gradient(135deg, rgba(14, 165, 233, 0.2) 0%, rgba(2, 132, 199, 0.2) 100%); border-color: rgba(14, 165, 233, 0.4);">
+          <div class="button-group">
+            <button id="btn-toggle-swim-overlay" class="btn btn-primary btn-lg">
+              <span class="icon">🎮</span> Bật Overlay Phòng Chờ
+            </button>
+            <button id="btn-start-swim-race" class="btn btn-success btn-lg">
+              <span class="icon">🚀</span> Bắt đầu Đua Bơi
+            </button>
+            <button id="btn-stop-swim-race" class="btn btn-danger btn-lg" disabled>
+              <span class="icon">🛑</span> Dừng Game
+            </button>
+          </div>
+        </div>
+
+        <!-- Swimming Race Mode Setting -->
+        <div class="card">
+          <div class="card-header">
+            <h3>🏊 Chế độ đua bơi</h3>
+          </div>
+          <div class="form-group">
+            <select id="select-swim-mode" class="form-control">
+              <option value="BBB_CHAT" selected>💬 Bơi Tiếp Sức BBB Chat (Gõ ready -> start -> go)</option>
+              <option value="AUTO_SPEED">🥇 Đua Bơi Tự Động (Tốc độ ngẫu nhiên kịch tính)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Swimmer Names List Input -->
+        <div class="card">
+          <div class="card-header">
+            <h3>👥 Vận động viên tham gia (<span id="swim-student-count">5</span>)</h3>
+            <div style="display:flex; gap:6px;">
+              <button id="btn-fetch-bbb-students" class="btn btn-sm btn-outline" style="border-color:#38bdf8; color:#38bdf8;">📥 Lấy từ lớp BBB</button>
+              <button id="btn-load-sample-students" class="btn btn-sm btn-outline">Nhập mẫu</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <textarea id="input-swim-students" class="form-control" rows="3" placeholder="Nhập tên học sinh (phân cách bằng dấu phẩy)...&#10;VD: Bảo Nam, Hoàng Minh, Tuệ Nhi, Gia Bảo, Khánh An"></textarea>
+          </div>
+          <button id="btn-save-swim-students" class="btn btn-primary btn-block">💾 Cập nhật danh sách đua bơi</button>
+        </div>
+
+      </section>
+
+      <!-- TAB 3: BẢNG ĐIỂM & XUẤT FILE EXCEL/CSV -->
+      <section id="tab-scores" class="tab-panel">
+        <div class="card">
+          <div class="card-header">
+            <h3>🏆 Bảng xếp hạng học sinh</h3>
+            <div class="card-actions">
+              <button id="btn-export-csv" class="btn btn-success">
+                <span class="icon">📊</span> Xuất file Excel/CSV
+              </button>
+              <button id="btn-reset-scores" class="btn btn-danger btn-sm">Xóa điểm</button>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="score-table">
+              <thead>
+                <tr>
+                  <th>Hạng</th>
+                  <th>Họ và Tên Học Sinh</th>
+                  <th>Số câu đúng</th>
+                  <th>Tổng điểm</th>
+                </tr>
+              </thead>
+              <tbody id="scores-table-body">
+                <tr>
+                  <td colspan="4" class="text-center text-muted">Chưa có học sinh nào ghi điểm.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 3: CÀI ĐẶT GAME -->
+      <section id="tab-settings" class="tab-panel">
+        <div class="card">
+          <div class="card-header">
+            <h3>⚙️ Tùy chỉnh luật chơi</h3>
+          </div>
+          
+          <div class="setting-item">
+            <label for="setting-timer">Thời gian đếm ngược mỗi từ (giây):</label>
+            <select id="setting-timer" class="form-control">
+              <option value="30">30 giây (Nhanh)</option>
+              <option value="45">45 giây</option>
+              <option value="60" selected>60 giây (Khuyên dùng)</option>
+              <option value="90">90 giây (Thư thả)</option>
+            </select>
+          </div>
+
+          <div class="setting-item">
+            <label for="setting-score-first">Điểm cho người đúng nhanh nhất:</label>
+            <input type="number" id="setting-score-first" class="form-control" value="10" min="1" max="100">
+          </div>
+
+          <div class="setting-item">
+            <label class="checkbox-label">
+              <input type="checkbox" id="setting-sound" checked>
+              <span>🔊 Bật hiệu ứng âm thanh (Tiếng đếm ngược, tiếng trả lời đúng)</span>
+            </label>
+          </div>
+
+          <button id="btn-save-settings" class="btn btn-primary btn-block">💾 Lưu cài đặt</button>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <span>Kyna English BBB Extension v1.0 • Manifest V3</span>
+    </footer>
+  </div>
+
+  <script src="games/guess-the-word/words.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

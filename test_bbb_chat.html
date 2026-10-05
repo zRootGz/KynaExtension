@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Giả lập Lớp học BigBlueButton (BBB) - Test Game</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background: #0c1929; color: #fff; display: flex; height: 100vh; overflow: hidden; }
+
+    /* BBB Whiteboard / Presentation Area */
+    .bbb-main-area {
+      flex: 1;
+      background: #172a3a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      position: relative;
+    }
+
+    .bbb-whiteboard {
+      width: 90%;
+      height: 80%;
+      background: #ffffff;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #333;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    /* BBB Chat Sidebar */
+    .chat-area {
+      width: 340px;
+      background: #112233;
+      border-left: 1px solid #223344;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chat-header {
+      padding: 16px;
+      background: #1c2d42;
+      border-bottom: 1px solid #2a3e59;
+      font-weight: bold;
+      font-size: 15px;
+      color: #00e5ff;
+    }
+
+    /* Target DOM BBB: data-test="chatMessagesList" */
+    .chat-messages-container {
+      flex: 1;
+      padding: 12px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* Target DOM BBB: data-test="chatMessage" */
+    .chat-message-item {
+      background: rgba(255,255,255,0.05);
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+    }
+
+    /* Target DOM BBB: data-test="chatMessageSenderName" */
+    .sender-name {
+      font-weight: bold;
+      color: #ffca28;
+      font-size: 12px;
+      margin-bottom: 3px;
+    }
+
+    /* Target DOM BBB: data-test="chatMessageText" */
+    .message-text {
+      color: #e0e0e0;
+      word-break: break-word;
+    }
+
+    /* Simulator Controls */
+    .chat-input-bar {
+      padding: 12px;
+      background: #1c2d42;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      border-top: 1px solid #2a3e59;
+    }
+
+    .sim-row { display: flex; gap: 6px; }
+    .sim-input {
+      padding: 8px 10px;
+      border-radius: 6px;
+      border: 1px solid #3a4f6e;
+      background: #0c1929;
+      color: #fff;
+      font-size: 12px;
+    }
+    .sim-btn {
+      padding: 8px 12px;
+      background: #00b0ff;
+      border: none;
+      border-radius: 6px;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .sim-btn:hover { background: #0091ea; }
+  </style>
+</head>
+<body>
+
+  <!-- BBB Presentation Slide Area -->
+  <div class="bbb-main-area">
+    <div class="bbb-whiteboard">
+      <h2 style="color: #1565c0; margin-bottom: 10px;">🏫 Trang Giả Lập Lớp Học BBB Kyna English</h2>
+      <p style="color: #666; font-size: 14px;">Bảng trắng giảng dạy BigBlueButton</p>
+      <div style="margin-top: 20px; font-size: 12px; color: #888; text-align: center;">
+        📌 <strong>Hướng dẫn Test Extension:</strong><br>
+        1. Click vào biểu tượng Extension ở góc trình duyệt để mở Bảng điều khiển Giáo viên.<br>
+        2. Nhấn nút <strong>"🚀 Bắt đầu Game"</strong>.<br>
+        3. Khung game nổi (Overlay) sẽ xuất hiện ngay trên trang này.<br>
+        4. Sử dụng khung chat bên phải để nhập tên học sinh và câu trả lời đoán từ!
+      </div>
+    </div>
+  </div>
+
+  <!-- BBB Chat Sidebar -->
+  <div class="chat-area">
+    <div class="chat-header">💬 Chat Trực Tuyến Lớp Học (BBB)</div>
+    
+    <!-- Container chứa danh sách tin nhắn chat chuẩn BBB -->
+    <div id="chat-list" class="chat-messages-container" data-test="chatMessagesList">
+      <div class="chat-message-item" data-test="chatMessage">
+        <div class="sender-name" data-test="chatMessageSenderName">Hệ thống BBB</div>
+        <div class="message-text" data-test="chatMessageText">Chào mừng các em đến với lớp học Kyna English!</div>
+      </div>
+    </div>
+
+    <!-- Khung giả lập học sinh nhắn tin vào chat -->
+    <div class="chat-input-bar">
+      <div style="font-size: 11px; color: #aaa;">Giả lập Học sinh gửi tin nhắn:</div>
+      <div class="sim-row">
+        <input type="text" id="sim-student-name" class="sim-input" value="Bảo Nam" placeholder="Tên học sinh..." style="width: 110px;">
+        <input type="text" id="sim-chat-text" class="sim-input" placeholder="Nhập đáp án (VD: Apple)..." style="flex: 1;">
+        <button id="btn-send-chat" class="sim-btn">Gửi Chat</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Script hỗ trợ giả lập việc thêm tin nhắn mới vào DOM chat của BBB
+    document.getElementById("btn-send-chat").addEventListener("click", sendSimulatedChat);
+    document.getElementById("sim-chat-text").addEventListener("keypress", (e) => {
+      if (e.key === "Enter") sendSimulatedChat();
+    });
+
+    function sendSimulatedChat() {
+      const nameInput = document.getElementById("sim-student-name");
+      const textInput = document.getElementById("sim-chat-text");
+
+      const senderName = nameInput.value.trim() || "Học Sinh";
+      const messageText = textInput.value.trim();
+
+      if (!messageText) return;
+
+      const chatList = document.getElementById("chat-list");
+      const msgItem = document.createElement("div");
+      msgItem.className = "chat-message-item";
+      msgItem.setAttribute("data-test", "chatMessage");
+
+      msgItem.innerHTML = `
+        <div class="sender-name" data-test="chatMessageSenderName">${escapeHtml(senderName)}</div>
+        <div class="message-text" data-test="chatMessageText">${escapeHtml(messageText)}</div>
+      `;
+
+      chatList.appendChild(msgItem);
+      chatList.scrollTop = chatList.scrollHeight;
+
+      textInput.value = "";
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/[&<>'"]/g, 
+        tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+      );
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+{
+  "manifest_version": 3,
+  "name": "Kyna BBB Guess The Word - Nhìn Hình Đoán Chữ",
+  "version": "1.0.0",
+  "description": "Extension Game Nhìn Hình Đoán Chữ dành cho Giáo viên Kyna English trên nền tảng BigBlueButton (BBB).",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Bảng điều khiển Game BBB",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.kynalearning.com/*",
+        "https://*.bigbluebutton.org/*",
+        "http://localhost/*",
+        "http://127.0.0.1/*",
+        "file://*/*"
+      ],
+      "all_frames": true,
+      "js": [
+        "core/bbb-chat-observer.js",
+        "core/audio-synthesizer.js",
+        "games/guess-the-word/words.js",
+        "games/guess-the-word/game-logic.js",
+        "games/swimming-race/race-logic.js"
+      ],
+      "css": [
+        "games/guess-the-word/game-style.css",
+        "games/swimming-race/race-style.css"
+      ],
+      "run_at": "document_end"
+    }
+  ]
+}

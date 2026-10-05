@@ -1,0 +1,249 @@
+/* GAMES/GUESS-THE-WORD/GAME-STYLE.CSS - Overlay UI Styles cho Game Nhìn Hình Đoán Chữ */
+
+/* Base Overlay Container */
+#kyna-game-overlay {
+  position: fixed;
+  top: 50px;
+  right: 20px;
+  width: 540px;
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(99, 102, 241, 0.45);
+  border-radius: 20px;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.12);
+  color: #f8fafc;
+  font-family: 'Segoe UI', -apple-system, Roboto, sans-serif;
+  z-index: 999999;
+  overflow: hidden;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  user-select: none;
+}
+
+#kyna-game-overlay.minimized .kyna-overlay-body {
+  display: none !important;
+}
+#kyna-game-overlay.minimized {
+  width: 280px;
+}
+
+/* Draggable Header */
+.kyna-overlay-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 20px;
+  background: linear-gradient(90deg, rgba(99, 102, 241, 0.4) 0%, rgba(14, 165, 233, 0.4) 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  cursor: move;
+}
+
+.kyna-header-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 17px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.kyna-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.kyna-icon-btn {
+  background: transparent;
+  border: none;
+  color: #cbd5e1;
+  font-size: 16px;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+.kyna-icon-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+  color: #ffffff;
+}
+
+/* Body Content */
+.kyna-overlay-body {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+}
+
+/* Image Viewer Frame */
+.kyna-image-frame {
+  width: 100%;
+  height: 330px;
+  background: #0f172a;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kyna-image-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: opacity 0.3s;
+}
+
+.kyna-image-loading {
+  position: absolute;
+  font-size: 14px;
+  color: #a5b4fc;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Masked Letter Slots */
+.kyna-word-slots {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin: 8px 0;
+}
+
+.kyna-letter-box {
+  width: 52px;
+  height: 62px;
+  background: rgba(30, 41, 59, 0.88);
+  border: 2.5px solid #6366f1;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  font-weight: 800;
+  color: #67e8f9;
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+}
+
+.kyna-letter-box.revealed {
+  background: rgba(16, 185, 129, 0.3);
+  border-color: #10b981;
+  color: #34d399;
+}
+
+/* Hint & Category Badges */
+.kyna-hint-box {
+  font-size: 16px;
+  color: #f1f5f9;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 10px 16px;
+  border-radius: 24px;
+  border: 1px dashed rgba(255, 255, 255, 0.22);
+  width: 100%;
+}
+
+/* Timer & Progress Bar */
+.kyna-timer-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.kyna-timer-text {
+  font-size: 18px;
+  font-weight: 800;
+  color: #f59e0b;
+  min-width: 60px;
+}
+
+.kyna-progress-bar-bg {
+  flex: 1;
+  height: 14px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 7px;
+  overflow: hidden;
+}
+
+.kyna-progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981 0%, #f59e0b 50%, #ef4444 100%);
+  width: 100%;
+  transition: width 1s linear;
+}
+
+/* Overlay Action Buttons */
+.kyna-controls-row {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+.kyna-action-btn {
+  flex: 1;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+.kyna-btn-next { background: #6366f1; color: #ffffff; }
+.kyna-btn-next:hover { background: #4f46e5; }
+
+.kyna-btn-hint { background: #f59e0b; color: #0f172a; }
+.kyna-btn-hint:hover { background: #d97706; }
+
+/* Toast Notifications Container */
+#kyna-toast-container {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 9999999;
+  pointer-events: none;
+}
+
+.kyna-toast {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: #ffffff;
+  padding: 12px 24px;
+  border-radius: 30px;
+  font-weight: 700;
+  font-size: 15px;
+  box-shadow: 0 10px 25px rgba(16, 185, 129, 0.5), 0 0 0 2px rgba(255, 255, 255, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation: kynaSlideDown 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  pointer-events: auto;
+}
+
+@keyframes kynaSlideDown {
+  from { opacity: 0; transform: translateY(-30px) scale(0.9); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes kynaFadeOut {
+  from { opacity: 1; transform: translateY(0) scale(1); }
+  to { opacity: 0; transform: translateY(-20px) scale(0.9); }
+}
