@@ -253,7 +253,8 @@
 
     // GIAI ĐOẠN 1: PHÒNG CHỜ (IDLE hoặc FINISHED)
     if (raceState.gameState === "IDLE" || raceState.gameState === "FINISHED") {
-      if (isJoinKeyword(messageText) || raceState.raceMode === "WORD_RELAY") {
+      // Chỉ thêm người chơi khi gõ đúng từ khóa gia nhập (join, ready, r, 1...)
+      if (isJoinKeyword(messageText)) {
         let idx = findStudentIndex();
         if (idx === -1) {
           raceState.students.push(cleanSender);
@@ -269,13 +270,18 @@
     if (raceState.gameState === "RACING" && raceState.raceMode === "WORD_RELAY") {
       let idx = findStudentIndex();
 
-      // Nếu học sinh mới nhắn trong lúc đua -> Tự động thêm vào đường đua
-      if (idx === -1) {
+      // Nếu người chơi chưa có tên nhưng nhắn từ khóa join -> Cho gia nhập cuộc đua
+      if (idx === -1 && isJoinKeyword(messageText)) {
         raceState.students.push(cleanSender);
         raceState.positions[cleanSender] = 0;
         idx = raceState.students.length - 1;
         createOrUpdateOverlay();
+        saveStateToStorage();
+        return;
       }
+
+      // Nếu người chơi không thuộc danh sách cuộc đua -> Bỏ qua
+      if (idx === -1) return;
 
       const matchedName = raceState.students[idx];
       const currentPos = raceState.positions[matchedName] || 0;

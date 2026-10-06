@@ -79,6 +79,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     swimWordCatGroup: document.getElementById("swim-word-cat-group"),
     inputSwimStudents: document.getElementById("input-swim-students"),
     swimStudentCount: document.getElementById("swim-student-count"),
+    btnClearSwimStudents: document.getElementById("btn-clear-swim-students"),
     btnFetchBbbStudents: document.getElementById("btn-fetch-bbb-students"),
     btnLoadSampleStudents: document.getElementById("btn-load-sample-students"),
     btnSaveSwimStudents: document.getElementById("btn-save-swim-students")
@@ -653,6 +654,22 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
           });
         });
+      });
+    }
+
+    // Xóa sạch danh sách vận động viên bơi
+    if (elements.btnClearSwimStudents) {
+      elements.btnClearSwimStudents.addEventListener("click", () => {
+        if (confirm("Bạn có chắc muốn xóa sạch toàn bộ danh sách học sinh bơi?")) {
+          swimState.students = [];
+          swimState.positions = {};
+          swimState.rankings = [];
+          swimState.finishedStudents = {};
+          elements.inputSwimStudents.value = "";
+          elements.swimStudentCount.textContent = "0";
+          saveSwimStateToStorage();
+          renderUI();
+        }
       });
     }
 
