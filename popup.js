@@ -57,6 +57,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     customQueryInput: document.getElementById("custom-query-input"),
     btnSaveCustom: document.getElementById("btn-save-custom"),
 
+    // Excel Bulk Import & Export
+    btnToggleImportExcel: document.getElementById("btn-toggle-import-excel"),
+    importExcelForm: document.getElementById("import-excel-form"),
+    btnDownloadExcelTemplate: document.getElementById("btn-download-excel-template"),
+    inputImportExcelFile: document.getElementById("input-import-excel-file"),
+    importExcelStatus: document.getElementById("import-excel-status"),
+    btnExportQuizExcel: document.getElementById("btn-export-quiz-excel"),
+
     // Leaderboard & Export CSV
     scoresTableBody: document.getElementById("scores-table-body"),
     btnExportCsv: document.getElementById("btn-export-csv"),
@@ -337,12 +345,162 @@ document.addEventListener("DOMContentLoaded", async () => {
       renderSearchResults(results);
     });
 
-    // Toggle Form tạo từ custom
+    // Toggle Form tạo 1 từ custom
     elements.btnToggleCustom.addEventListener("click", () => {
       elements.customWordForm.classList.toggle("hidden");
+      if (elements.importExcelForm) elements.importExcelForm.classList.add("hidden");
     });
 
-    // Nút Lưu từ tùy chỉnh do Giáo viên tự thêm
+    // Toggle Form nhập Excel hàng loạt
+    if (elements.btnToggleImportExcel) {
+      elements.btnToggleImportExcel.addEventListener("click", () => {
+        elements.importExcelForm.classList.toggle("hidden");
+        if (elements.customWordForm) elements.customWordForm.classList.add("hidden");
+      });
+    }
+
+    // Tải File mẫu Excel XLS định dạng cột đẹp rộng rãi
+    if (elements.btnDownloadExcelTemplate) {
+      elements.btnDownloadExcelTemplate.addEventListener("click", () => {
+        const xmlContent = `<?xml version="1.0" encoding="UTF-8"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:o="urn:schemas-microsoft-com:office:office"
+ xmlns:x="urn:schemas-microsoft-com:office:excel"
+ xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">
+ <Styles>
+  <Style ss:ID="HeaderStyle">
+   <Font ss:FontName="Segoe UI" ss:Size="11" ss:Color="#FFFFFF" ss:Bold="1"/>
+   <Interior ss:Color="#0284C7" ss:Pattern="Solid"/>
+   <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="2" ss:Color="#0369A1"/>
+   </Borders>
+  </Style>
+  <Style ss:ID="DataStyle">
+   <Font ss:FontName="Segoe UI" ss:Size="10" ss:Color="#1E293B"/>
+   <Alignment ss:Vertical="Center"/>
+  </Style>
+ </Styles>
+ <Worksheet ss:Name="Kyna_Word_List">
+  <Table ss:DefaultRowHeight="22">
+   <Column ss:Width="180"/>
+   <Column ss:Width="360"/>
+   <Column ss:Width="400"/>
+   <Row ss:Height="28">
+    <Cell ss:StyleID="HeaderStyle"><Data ss:Type="String">Word (English)</Data></Cell>
+    <Cell ss:StyleID="HeaderStyle"><Data ss:Type="String">English Hint</Data></Cell>
+    <Cell ss:StyleID="HeaderStyle"><Data ss:Type="String">Image URL (Optional)</Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="DataStyle"><Data ss:Type="String">BUTTERFLY</Data></Cell>
+    <Cell ss:StyleID="DataStyle"><Data ss:Type="String">A beautiful insect with colorful wings</Data></Cell>
+    <Cell ss:StyleID="DataStyle"><Data ss:Type="String"></Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="DataStyle"><Data ss:Type="String">ELEPHANT</Data></Cell>
+    <Cell ss:StyleID="DataStyle"><Data ss:Type="String">A very large gray mammal with a long trunk</Data></Cell>
+    <Cell ss:StyleID="DataStyle"><Data ss:Type="String"></Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="DataStyle"><Data ss:Type="String">GUITAR</Data></Cell>
+    <Cell ss:StyleID="DataStyle"><Data ss:Type="String">A musical instrument with six strings</Data></Cell>
+    <Cell ss:StyleID="DataStyle"><Data ss:Type="String"></Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="DataStyle"><Data ss:Type="String">SUNFLOWER</Data></Cell>
+    <Cell ss:StyleID="DataStyle"><Data ss:Type="String">A tall yellow flower that turns towards the sun</Data></Cell>
+    <Cell ss:StyleID="DataStyle"><Data ss:Type="String"></Data></Cell>
+   </Row>
+   <Row>
+    <Cell ss:StyleID="DataStyle"><Data ss:Type="String">PIANO</Data></Cell>
+    <Cell ss:StyleID="DataStyle"><Data ss:Type="String">A large musical instrument with black and white keys</Data></Cell>
+    <Cell ss:StyleID="DataStyle"><Data ss:Type="String"></Data></Cell>
+   </Row>
+  </Table>
+ </Worksheet>
+</Workbook>`;
+
+        const blob = new Blob([xmlContent], { type: "application/vnd.ms-excel;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.setAttribute("href", url);
+        link.setAttribute("download", "Kyna_TuVung_Mau_Excel.xls");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      });
+    }
+
+    // Tải File Excel CSV lên và tự động đọc từ vựng
+    if (elements.inputImportExcelFile) {
+      elements.inputImportExcelFile.addEventListener("change", (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (evt) => {
+          const text = evt.target.result;
+          const parsedWords = parseCSVWordList(text);
+
+          if (parsedWords.length === 0) {
+            alert("Không tìm thấy từ vựng hợp lệ trong file Excel! Hãy đảm bảo cột 1 là Từ Tiếng Anh và cột 2 là Gợi ý Tiếng Anh.");
+            return;
+          }
+
+          let addedCount = 0;
+          parsedWords.forEach(item => {
+            if (!state.quizWords.some(w => window.normalizeAnswerString(w.word) === window.normalizeAnswerString(item.word))) {
+              state.quizWords.push(item);
+              addedCount++;
+            }
+          });
+
+          saveStateToStorage();
+          renderUI();
+
+          if (elements.importExcelStatus) {
+            elements.importExcelStatus.textContent = `🎉 Đã nhập thành công ${addedCount} từ mới vào danh sách game! (Tổng: ${state.quizWords.length} từ)`;
+            elements.importExcelStatus.classList.remove("hidden");
+          }
+
+          alert(`🎉 Đã nhập thành công ${addedCount} từ vựng từ file Excel vào bộ từ game hiện tại!`);
+          e.target.value = "";
+        };
+
+        reader.readAsText(file, "UTF-8");
+      });
+    }
+
+    // Xuất bộ từ vựng hiện tại ra File Excel CSV
+    if (elements.btnExportQuizExcel) {
+      elements.btnExportQuizExcel.addEventListener("click", () => {
+        if (!state.quizWords || state.quizWords.length === 0) {
+          alert("Danh sách từ vựng hiện tại đang trống!");
+          return;
+        }
+
+        let csvContent = "\uFEFF\"Word (English)\",\"English Hint\",\"Image URL\"\n";
+        state.quizWords.forEach(item => {
+          const word = `"${(item.word || "").replace(/"/g, '""')}"`;
+          const hint = `"${(item.hint || "").replace(/"/g, '""')}"`;
+          const img = `"${(item.imageUrl || "").replace(/"/g, '""')}"`;
+          csvContent += `${word},${hint},${img}\n`;
+        });
+
+        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        const timestamp = new Date().toISOString().slice(0, 10);
+        link.setAttribute("href", url);
+        link.setAttribute("download", `Bo_Tu_Vung_Kyna_${timestamp}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      });
+    }
+
+    // Nút Lưu từ tùy chỉnh do Giáo viên tự thêm 1 từ
     elements.btnSaveCustom.addEventListener("click", () => {
       const word = elements.customWordInput.value.trim().toUpperCase();
       const hint = elements.customHintInput.value.trim();
@@ -398,6 +556,81 @@ document.addEventListener("DOMContentLoaded", async () => {
         renderUI();
       }
     });
+  }
+
+  /**
+   * Trình phân tích File Excel (.xls XML / .csv / .tsv) UTF-8
+   */
+  function parseCSVWordList(fileText) {
+    if (!fileText) return [];
+
+    const results = [];
+
+    // 1. Phân tích File Excel XML SpreadsheetML (.xls)
+    if (fileText.includes("<Workbook") || fileText.includes("<Table")) {
+      const rowMatches = fileText.match(/<Row[\s\S]*?<\/Row>/gi) || [];
+      for (let i = 0; i < rowMatches.length; i++) {
+        const rowStr = rowMatches[i];
+        const cellMatches = rowStr.match(/<Data[^>]*>([\s\S]*?)<\/Data>/gi) || [];
+        if (cellMatches.length < 2) continue;
+
+        const rawWord = cellMatches[0].replace(/<[^>]+>/g, "").trim();
+        const rawHint = cellMatches[1].replace(/<[^>]+>/g, "").trim();
+        const rawImg = cellMatches[2] ? cellMatches[2].replace(/<[^>]+>/g, "").trim() : "";
+
+        // Bỏ qua dòng tiêu đề
+        if (rawWord.toLowerCase().includes("word") || rawWord.toLowerCase().includes("tiếng anh") || rawWord.toLowerCase().includes("từ")) {
+          continue;
+        }
+
+        if (rawWord && rawHint) {
+          results.push({
+            word: rawWord.toUpperCase(),
+            hint: rawHint,
+            category: "Excel_Import",
+            imageUrl: (rawImg && rawImg.startsWith("http")) ? rawImg : window.generateFallbackDoodleSvg(rawWord, rawHint)
+          });
+        }
+      }
+      return results;
+    }
+
+    // 2. Phân tích File CSV / TSV thông thường
+    let cleanText = fileText.replace(/^\uFEFF/, "").trim();
+    const lines = cleanText.split(/\r?\n/);
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i].trim();
+      if (!line) continue;
+
+      let parts = [];
+      if (line.includes("\t")) {
+        parts = line.split("\t");
+      } else {
+        parts = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || line.split(",");
+      }
+
+      if (!parts || parts.length < 2) continue;
+
+      const rawWord = parts[0].replace(/^"|"$/g, "").trim();
+      const rawHint = parts[1].replace(/^"|"$/g, "").trim();
+      const rawImg = parts[2] ? parts[2].replace(/^"|"$/g, "").trim() : "";
+
+      if (rawWord.toLowerCase().includes("word") || rawWord.toLowerCase().includes("tiếng anh") || rawWord.toLowerCase().includes("từ")) {
+        continue;
+      }
+
+      if (rawWord && rawHint) {
+        results.push({
+          word: rawWord.toUpperCase(),
+          hint: rawHint,
+          category: "Excel_Import",
+          imageUrl: (rawImg && rawImg.startsWith("http")) ? rawImg : window.generateFallbackDoodleSvg(rawWord, rawHint)
+        });
+      }
+    }
+
+    return results;
   }
 
   /**

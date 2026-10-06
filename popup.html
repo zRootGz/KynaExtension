@@ -83,7 +83,10 @@
         <div class="card">
           <div class="card-header">
             <h3>🔍 Tìm kiếm & Thêm từ vựng</h3>
-            <button id="btn-toggle-custom" class="btn btn-sm btn-outline">+ Tạo từ mới</button>
+            <div style="display: flex; gap: 6px;">
+              <button id="btn-toggle-custom" class="btn btn-sm btn-outline">+ Tạo 1 từ</button>
+              <button id="btn-toggle-import-excel" class="btn btn-sm btn-success">📤 Nhập Excel/CSV</button>
+            </div>
           </div>
           
           <div class="search-box">
@@ -93,7 +96,7 @@
           <!-- Quick Search Results List -->
           <div id="search-results-list" class="search-results-container hidden"></div>
 
-          <!-- Custom Word Creator Form (Accordion) -->
+          <!-- Custom Single Word Creator Form (Accordion) -->
           <div id="custom-word-form" class="custom-form hidden">
             <div class="form-grid">
               <div class="form-group">
@@ -101,8 +104,8 @@
                 <input type="text" id="custom-word-input" class="form-control" placeholder="VD: BUTTERFLY">
               </div>
               <div class="form-group">
-                <label>Gợi ý Tiếng Việt *</label>
-                <input type="text" id="custom-hint-input" class="form-control" placeholder="VD: Côn trùng có cánh đẹp">
+                <label>Gợi ý Tiếng Anh (English Hint) *</label>
+                <input type="text" id="custom-hint-input" class="form-control" placeholder="VD: A beautiful insect with wings">
               </div>
             </div>
             <div class="form-group">
@@ -111,6 +114,26 @@
             </div>
             <button id="btn-save-custom" class="btn btn-success btn-block">➕ Thêm vào danh sách Game</button>
           </div>
+
+          <!-- Excel / CSV Bulk Import Form (Accordion) -->
+          <div id="import-excel-form" class="custom-form hidden" style="background: rgba(16, 185, 129, 0.08); border-color: rgba(16, 185, 129, 0.4);">
+            <div style="margin-bottom: 10px;">
+              <h4 style="margin:0 0 4px 0; color:#10b981; font-size:14px; font-weight:800;">📊 Nhập từ vựng hàng loạt từ File Excel (.xls / .csv)</h4>
+              <p style="margin:0; font-size:12px; color:#94a3b8;">Tải file mẫu Excel (.xls), điền Từ Tiếng Anh + Gợi ý Tiếng Anh (English Hint) + Link Ảnh (tùy chọn). File mẫu đã được định dạng rộng cột cực kỳ dễ đọc!</p>
+            </div>
+            
+            <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:6px;">
+              <button id="btn-download-excel-template" class="btn btn-sm btn-outline" style="border-color:#10b981; color:#10b981;">
+                📥 Tải File mẫu Excel (.xls)
+              </button>
+              <label class="btn btn-sm btn-success" style="cursor:pointer; margin:0;">
+                📁 Chọn File Excel/CSV tải lên
+                <input type="file" id="input-import-excel-file" accept=".xls,.xlsx,.csv,.tsv,.txt" style="display:none;">
+              </label>
+            </div>
+
+            <div id="import-excel-status" class="hidden" style="font-size:12px; font-weight:700; color:#34d399; margin-top:6px;"></div>
+          </div>
         </div>
 
         <!-- Current Quiz Word List -->
@@ -118,6 +141,7 @@
           <div class="card-header">
             <h3>📋 Danh sách từ trong lượt chơi này (<span id="quiz-list-count">0</span>)</h3>
             <div class="card-actions" style="display: flex; gap: 4px;">
+              <button id="btn-export-quiz-excel" class="btn btn-sm btn-outline" title="Xuất bộ từ vựng hiện tại ra Excel CSV">📊 Xuất Excel</button>
               <button id="btn-shuffle-quiz-list" class="btn btn-sm btn-outline" title="Trộn ngẫu nhiên thứ tự từ vựng">🔀 Trộn từ</button>
               <button id="btn-clear-quiz-list" class="btn btn-sm btn-ghost">Xóa hết</button>
             </div>
