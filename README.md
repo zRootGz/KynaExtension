@@ -141,6 +141,6 @@ Game **Đua Bơi** tạo không khí thi đấu sôi nổi kịch tính giữa c
 ---
 
 ## 📞 Hỗ trợ & Đóng góp
-- **Đơn vị phát triển:** ThuanDepTraiBoDoiThe
+- **Đơn vị phát triển:** ThuanDepTraiBoDoiThe (phanngocthuan293@gmail.com)
 - **Phiên bản:** v1.0 (Manifest V3)
 - **Tương thích:** BigBlueButton v2.4+, Chrome v100+, Edge v100+
