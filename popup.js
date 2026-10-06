@@ -73,6 +73,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     btnStartSwimRace: document.getElementById("btn-start-swim-race"),
     btnStopSwimRace: document.getElementById("btn-stop-swim-race"),
     selectSwimMode: document.getElementById("select-swim-mode"),
+    selectSwimDuration: document.getElementById("select-swim-duration"),
+    selectSwimWordCategory: document.getElementById("select-swim-word-category"),
+    swimAutoTimerGroup: document.getElementById("swim-auto-timer-group"),
+    swimWordCatGroup: document.getElementById("swim-word-cat-group"),
     inputSwimStudents: document.getElementById("input-swim-students"),
     swimStudentCount: document.getElementById("swim-student-count"),
     btnFetchBbbStudents: document.getElementById("btn-fetch-bbb-students"),
@@ -84,9 +88,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   let swimState = {
     activeGame: "NONE",
     gameState: "IDLE",
-    raceMode: "BBB_CHAT",
-    students: ["Bảo Nam", "Hoàng Minh", "Tuệ Nhi", "Gia Bảo", "Khánh An"],
-    startedStudents: [],
+    raceMode: "WORD_RELAY",
+    raceDurationSeconds: 30,
+    wordCategory: "ALL",
+    students: [],
     positions: {},
     rankings: []
   };
@@ -229,7 +234,21 @@ document.addEventListener("DOMContentLoaded", async () => {
       elements.swimStudentCount.textContent = (swimState.students || []).length;
     }
     if (elements.selectSwimMode) {
-      elements.selectSwimMode.value = swimState.raceMode || "BBB_CHAT";
+      elements.selectSwimMode.value = swimState.raceMode || "WORD_RELAY";
+    }
+    if (elements.selectSwimDuration) {
+      elements.selectSwimDuration.value = swimState.raceDurationSeconds || 30;
+    }
+    if (elements.selectSwimWordCategory) {
+      elements.selectSwimWordCategory.value = swimState.wordCategory || "ALL";
+    }
+
+    if (swimState.raceMode === "AUTO_SPEED") {
+      if (elements.swimAutoTimerGroup) elements.swimAutoTimerGroup.classList.remove("hidden");
+      if (elements.swimWordCatGroup) elements.swimWordCatGroup.classList.add("hidden");
+    } else {
+      if (elements.swimAutoTimerGroup) elements.swimAutoTimerGroup.classList.add("hidden");
+      if (elements.swimWordCatGroup) elements.swimWordCatGroup.classList.remove("hidden");
     }
 
     if (elements.btnToggleSwimOverlay) {
@@ -653,7 +672,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Bắt đầu Đua Bơi
     elements.btnStartSwimRace.addEventListener("click", () => {
       if (!swimState.students || swimState.students.length < 1) {
-        alert("Cần ít nhất 1 học sinh để bắt đầu cuộc đua bơi!");
+        alert("Cần ít nhất 1 học sinh để bắt đầu cuộc đua bơi! Học sinh gõ 'join' trong chat BBB để tự động ghi tên.");
         return;
       }
 
@@ -665,11 +684,17 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       swimState.activeGame = "SWIMMING_RACE";
       swimState.gameState = "RACING";
-      swimState.raceMode = elements.selectSwimMode.value || "BBB_CHAT";
+      swimState.raceMode = elements.selectSwimMode ? elements.selectSwimMode.value : "WORD_RELAY";
+      swimState.raceDurationSeconds = elements.selectSwimDuration ? (parseInt(elements.selectSwimDuration.value, 10) || 30) : 30;
+      swimState.wordCategory = elements.selectSwimWordCategory ? elements.selectSwimWordCategory.value : "ALL";
       swimState.positions = {};
       swimState.rankings = [];
-      swimState.startedStudents = swimState.students ? [...swimState.students] : [];
-      swimState.students.forEach(name => swimState.positions[name] = 0);
+      swimState.finishedStudents = {};
+      swimState.raceStartTime = Date.now();
+      
+      swimState.students.forEach(name => {
+        swimState.positions[name] = 0;
+      });
 
       saveSwimStateToStorage();
       renderUI();
@@ -685,10 +710,27 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     });
 
-    elements.selectSwimMode.addEventListener("change", (e) => {
-      swimState.raceMode = e.target.value;
-      saveSwimStateToStorage();
-    });
+    if (elements.selectSwimMode) {
+      elements.selectSwimMode.addEventListener("change", (e) => {
+        swimState.raceMode = e.target.value;
+        saveSwimStateToStorage();
+        renderUI();
+      });
+    }
+
+    if (elements.selectSwimDuration) {
+      elements.selectSwimDuration.addEventListener("change", (e) => {
+        swimState.raceDurationSeconds = parseInt(e.target.value, 10) || 30;
+        saveSwimStateToStorage();
+      });
+    }
+
+    if (elements.selectSwimWordCategory) {
+      elements.selectSwimWordCategory.addEventListener("change", (e) => {
+        swimState.wordCategory = e.target.value || "ALL";
+        saveSwimStateToStorage();
+      });
+    }
   }
 
   function updateSwimStudentsList(text) {

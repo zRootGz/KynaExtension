@@ -1,10 +1,9 @@
 /**
  * GAMES/SWIMMING-RACE/RACE-LOGIC.JS - Logic Game Đua Bơi Kỳ Phùng Địch Thủ
- * Tạo Overlay hồ bơi sống động trên BBB, điều khiển tốc độ bơi ngẫu nhiên hoặc theo câu trả lời chat của học sinh.
- * Luồng Đua Bơi Tiếp Sức:
- * 1. Phòng chờ (IDLE): Học sinh gõ 'ready' (hoặc r, 1, join, sẵn sàng) -> Tên được thêm vào danh sách.
- * 2. Xuất phát: Tất cả người chơi gõ 'start' (hoặc giáo viên bấm 'Bắt đầu') -> Cuộc đua tự động khởi chạy.
- * 3. Tiếp sức (RACING): Người chơi gõ 'go' (hoặc g, swim, bơi) -> Nhân vật bơi quạt tay tiến lên 16% mỗi lượt.
+ * Thể thức 1: Đua Bơi Tiếp Sức Từ Vựng (Học sinh gõ đúng từ hiển thị để bơi tiến 1 bước & đổi từ ngẫu nhiên lập tức).
+ * Thể thức 2: Đua Bơi Tự Động kiểu Game Vịt trên Web (Bơi tự động theo thời lượng cài đặt 15s - 120s kịch tính).
+ * Ghi danh: Học sinh gõ "join" (hoặc "ready", "r", "1") trong chat BBB để tự động vào làn bơi.
+ * Bắt đầu: Giáo viên ấn nút "🚀 Bắt đầu Đua Bơi" trên bảng điều khiển.
  */
 
 (function () {
@@ -15,18 +14,23 @@
 
   // Trạng thái cục bộ của Game Đua Bơi
   let raceState = {
-    activeGame: "NONE",        // "GUESS_WORD" | "SWIMMING_RACE" | "NONE"
-    gameState: "IDLE",          // "IDLE" | "RACING" | "FINISHED"
-    raceMode: "BBB_CHAT",       // "AUTO_SPEED" | "BBB_CHAT"
-    students: [],              // Danh sách tên vận động viên
-    startedStudents: [],       // Danh sách người chơi đã gõ 'start'
-    positions: {},              // { "Bảo Nam": 0, ... } percent 0 -> 100
-    rankings: []                // ["Bảo Nam", "Hoàng Minh", ...]
+    activeGame: "NONE",            // "NONE" | "SWIMMING_RACE"
+    gameState: "IDLE",              // "IDLE" | "RACING" | "FINISHED"
+    raceMode: "WORD_RELAY",         // "WORD_RELAY" | "AUTO_SPEED"
+    raceDurationSeconds: 30,       // Thời lượng đua tự động (15s - 120s)
+    wordCategory: "ALL",           // Chủ đề từ vựng bơi tiếp sức
+    currentWordObj: null,          // Từ vựng mục tiêu hiện tại { word, hint, emoji }
+    students: [],                  // Danh sách vận động viên bơi
+    positions: {},                  // { "Bảo Nam": 0, ... } percent 0 -> 100
+    rankings: [],                   // Thứ tự cán đích ["Bảo Nam", "Hoàng Minh", ...]
+    finishedStudents: {},          // { "Bảo Nam": { rank: 1 } }
+    raceStartTime: null
   };
 
   let overlayEl = null;
   let raceTimerId = null;
-  const avatars = ["🏊‍♂️", "🏊‍♀️", "🐬", "🦈", "🏊", "🏊‍♀️", "🚴‍♂️"];
+  let usedWordsList = [];
+  const avatars = ["🏊‍♂️", "🏊‍♀️", "🐬", "🦈", "🏊", "🏼‍♀️", "🚴‍♂️"];
 
   init();
 
@@ -86,6 +90,40 @@
   }
 
   /**
+   * Chọn từ vựng bơi tiếp sức ngẫu nhiên tiếp theo
+   */
+  function pickNextRelayWord() {
+    let pool = [];
+    if (typeof window.getWordsByCategory === "function") {
+      pool = window.getWordsByCategory(raceState.wordCategory || "ALL");
+    } else if (window.MASTER_WORD_DATABASE) {
+      pool = window.MASTER_WORD_DATABASE;
+    }
+
+    if (!pool || pool.length === 0) {
+      pool = [
+        { word: "SWIM", hint: "Move through water", emoji: "🏊" },
+        { word: "FISH", hint: "Creature in water", emoji: "🐟" },
+        { word: "WATER", hint: "Liquid for drinking & swimming", emoji: "💧" },
+        { word: "STAR", hint: "Shines in night sky", emoji: "⭐" },
+        { word: "DUCK", hint: "Water bird that quacks", emoji: "🦆" },
+        { word: "FAST", hint: "Moving with great speed", emoji: "⚡" }
+      ];
+    }
+
+    let available = pool.filter(w => !usedWordsList.includes(w.word));
+    if (available.length === 0) {
+      usedWordsList = [];
+      available = pool;
+    }
+
+    const randomIndex = Math.floor(Math.random() * available.length);
+    const chosen = available[randomIndex];
+    usedWordsList.push(chosen.word);
+    return chosen;
+  }
+
+  /**
    * Cập nhật trạng thái cuộc đua
    */
   function updateLocalState(newState) {
@@ -103,18 +141,28 @@
       ...raceState, 
       ...newState,
       students: newState.students || raceState.students || [],
-      startedStudents: newState.startedStudents || raceState.startedStudents || [],
       positions: newState.positions || raceState.positions || {},
-      rankings: newState.rankings || raceState.rankings || []
+      rankings: newState.rankings || raceState.rankings || [],
+      finishedStudents: newState.finishedStudents || raceState.finishedStudents || {}
     };
 
-    // Hiển thị Overlay Đua Bơi khi activeGame === "SWIMMING_RACE"
     if (raceState.activeGame === "SWIMMING_RACE") {
+      if (raceState.gameState === "RACING" && oldGameState !== "RACING") {
+        usedWordsList = [];
+        if (raceState.raceMode === "WORD_RELAY" && (!raceState.currentWordObj || !raceState.currentWordObj.word)) {
+          raceState.currentWordObj = pickNextRelayWord();
+        }
+      }
+
       createOrUpdateOverlay();
 
       if (raceState.gameState === "RACING") {
-        if (oldGameState !== "RACING" && raceState.raceMode === "AUTO_SPEED") {
-          startRaceAnimation();
+        if (raceState.raceMode === "AUTO_SPEED") {
+          if (oldGameState !== "RACING") {
+            startRaceAnimation();
+          }
+        } else {
+          stopRaceAnimation();
         }
       } else {
         stopRaceAnimation();
@@ -126,11 +174,18 @@
   }
 
   /**
-   * Vòng lặp hoạt ảnh đua bơi ngẫu nhiên (dành cho chế độ AUTO_SPEED)
+   * Vòng lặp hoạt ảnh đua bơi ngẫu nhiên kiểu Game Vịt (AUTO_SPEED)
    */
   function startRaceAnimation() {
     stopRaceAnimation();
     if (raceState.raceMode !== "AUTO_SPEED") return;
+
+    const durationSec = raceState.raceDurationSeconds || 30;
+    const intervalMs = 280;
+    const totalSteps = (durationSec * 1000) / intervalMs;
+    const baseIncrement = 100 / totalSteps;
+
+    raceState.raceStartTime = Date.now();
 
     raceTimerId = setInterval(() => {
       if (raceState.gameState !== "RACING") return;
@@ -143,14 +198,15 @@
 
         if (currentPos < 100) {
           allFinished = false;
-          // Tốc độ bơi ngẫu nhiên kịch tính
-          const speedDelta = Math.random() * 3.5 + 0.5;
+          // Tốc độ bơi kịch tính kiểu game vịt (ngẫu nhiên bứt phá & bám đuổi)
+          const randomFactor = Math.random() * 2.2 + 0.2;
+          const speedDelta = baseIncrement * randomFactor;
           currentPos = Math.min(100, currentPos + speedDelta);
           raceState.positions[name] = currentPos;
 
-          // Kiểm tra cán đích
           if (currentPos >= 100 && !raceState.rankings.includes(name)) {
             raceState.rankings.push(name);
+            raceState.finishedStudents[name] = { rank: raceState.rankings.length };
           }
         }
       });
@@ -160,7 +216,7 @@
       if (allFinished || raceState.rankings.length >= totalStudents) {
         finishRaceNow();
       }
-    }, 300);
+    }, intervalMs);
   }
 
   function stopRaceAnimation() {
@@ -174,20 +230,16 @@
     if (typeof window.normalizeAnswerString === "function") {
       return window.normalizeAnswerString(str || "");
     }
-    return (str || "").toLowerCase().trim();
+    return (str || "").toUpperCase().trim().replace(/[^A-Z0-9]/g, "");
   }
 
-  function isKeywordMatch(text, keywords) {
+  function isJoinKeyword(text) {
     const norm = normStr(text);
-    const words = norm.split(/[\s,;.!?]+/);
-    return keywords.some(k => words.includes(k) || norm === k);
+    return ["JOIN", "READY", "R", "SANSSANG", "BOI", "1", "OK", "JOINED"].includes(norm);
   }
 
   /**
    * Xử lý tin nhắn từ khung chat BBB
-   * Quyền ưu tiên luồng:
-   * 1. Giai đoạn LOBBY / IDLE: Chat 'ready' -> Đăng ký tên. Chat 'start' -> Đánh dấu sẵn sàng xuất phát.
-   * 2. Giai đoạn RACING: Chat 'go' -> Nhân vật bơi tiến lên 16%.
    */
   function onBBBMessageReceived(senderName, rawMessage) {
     if (raceState.activeGame !== "SWIMMING_RACE") return;
@@ -199,102 +251,80 @@
 
     const findStudentIndex = () => (raceState.students || []).findIndex(s => normStr(s) === normSender);
 
-    // GIAI ĐOẠN 1 & 2: PHÒNG CHỜ (IDLE hoặc FINISHED)
+    // GIAI ĐOẠN 1: PHÒNG CHỜ (IDLE hoặc FINISHED)
     if (raceState.gameState === "IDLE" || raceState.gameState === "FINISHED") {
-      const isReady = isKeywordMatch(messageText, ["ready", "r", "sanssang", "join", "boi", "1", "ok"]);
-      const isStart = isKeywordMatch(messageText, ["start", "s", "batdau"]);
-
-      let stateChanged = false;
-
-      // 1. Nhập READY hoặc START -> Thêm tên học sinh vào danh sách cuộc đua
-      let idx = findStudentIndex();
-      if (isReady || isStart || raceState.raceMode === "BBB_CHAT") {
+      if (isJoinKeyword(messageText) || raceState.raceMode === "WORD_RELAY") {
+        let idx = findStudentIndex();
         if (idx === -1) {
           raceState.students.push(cleanSender);
           raceState.positions[cleanSender] = 0;
-          idx = raceState.students.length - 1;
-          stateChanged = true;
+          createOrUpdateOverlay();
+          saveStateToStorage();
         }
-      }
-
-      // 2. Nhập START -> Đánh dấu người chơi sẵn sàng xuất phát
-      if (isStart) {
-        if (!raceState.startedStudents) raceState.startedStudents = [];
-        const alreadyStarted = raceState.startedStudents.some(s => normStr(s) === normSender);
-        if (!alreadyStarted) {
-          raceState.startedStudents.push(cleanSender);
-          stateChanged = true;
-        }
-
-        // Kiểm tra xem tất cả người chơi trong danh sách đã gõ 'start' chưa
-        if (raceState.students.length > 0 && raceState.startedStudents.length >= raceState.students.length) {
-          startRaceNow();
-          return;
-        }
-      }
-
-      if (stateChanged) {
-        createOrUpdateOverlay();
-        saveStateToStorage();
       }
       return;
     }
 
-    // GIAI ĐOẠN 3: ĐUA BƠI TIẾP SỨC (RACING)
-    if (raceState.gameState === "RACING") {
-      const isGo = isKeywordMatch(messageText, ["go", "g", "swim", "boi", "tiepsuc", "fast", "speed", "run"]);
-
+    // GIAI ĐOẠN 2: ĐUA BƠI TIẾP SỨC TỪ VỰNG (RACING - WORD_RELAY)
+    if (raceState.gameState === "RACING" && raceState.raceMode === "WORD_RELAY") {
       let idx = findStudentIndex();
 
-      if (idx === -1 && raceState.raceMode === "BBB_CHAT") {
+      // Nếu học sinh mới nhắn trong lúc đua -> Tự động thêm vào đường đua
+      if (idx === -1) {
         raceState.students.push(cleanSender);
         raceState.positions[cleanSender] = 0;
         idx = raceState.students.length - 1;
         createOrUpdateOverlay();
       }
 
-      if (idx !== -1 && (isGo || raceState.raceMode === "BBB_CHAT")) {
-        const matchedName = raceState.students[idx];
-        let currentPos = raceState.positions[matchedName] || 0;
+      const matchedName = raceState.students[idx];
+      const currentPos = raceState.positions[matchedName] || 0;
 
-        if (currentPos < 100) {
-          // Bơi tiếp sức: Mỗi lần gõ 'go' -> Tiến 16%
-          const step = 16;
-          currentPos = Math.min(100, currentPos + step);
-          raceState.positions[matchedName] = currentPos;
+      // Nếu người chơi ĐÃ VỀ ĐÍCH -> Không nhận đáp án nữa, chờ các bạn khác
+      if (currentPos >= 100) return;
 
-          if (currentPos >= 100 && !raceState.rankings.includes(matchedName)) {
-            raceState.rankings.push(matchedName);
+      const normUserMsg = normStr(messageText);
+      const targetWordObj = raceState.currentWordObj;
+
+      if (targetWordObj && targetWordObj.word) {
+        const normTarget = normStr(targetWordObj.word);
+
+        // HỌC SINH GÕ ĐÚNG TỪ VỰNG MỤC TIÊU!
+        if (normUserMsg === normTarget) {
+          // Tiến lên 1 bước (+16%)
+          const newPos = Math.min(100, currentPos + 16);
+          raceState.positions[matchedName] = newPos;
+
+          // Âm thanh báo gõ đúng từ
+          if (typeof window.playCorrectSound === "function") {
+            window.playCorrectSound();
           }
 
-          renderSwimmerPositionsUI();
+          // CÁN ĐÍCH!
+          if (newPos >= 100 && !raceState.rankings.includes(matchedName)) {
+            raceState.rankings.push(matchedName);
+            raceState.finishedStudents[matchedName] = { rank: raceState.rankings.length };
+            
+            if (typeof window.playVictorySound === "function") {
+              window.playVictorySound(false);
+            }
+          }
 
-          if (raceState.rankings.length >= raceState.students.length) {
+          // ĐỔI TỪ VỰNG MỚI LẬP TỨC CHO LẦN BƠI TIẾP THEO!
+          raceState.currentWordObj = pickNextRelayWord();
+
+          renderSwimmerPositionsUI();
+          createOrUpdateOverlay();
+
+          // Kiểm tra xem tất cả học sinh đã về đích chưa
+          const allDone = raceState.students.every(s => (raceState.positions[s] || 0) >= 100);
+          if (allDone || raceState.rankings.length >= raceState.students.length) {
             finishRaceNow();
           } else {
             saveStateToStorage();
           }
         }
       }
-    }
-  }
-
-  function startRaceNow() {
-    stopRaceAnimation();
-    raceState.gameState = "RACING";
-    raceState.rankings = [];
-    raceState.startedStudents = raceState.startedStudents || [];
-
-    // Reset vị trí bơi về 0%
-    (raceState.students || []).forEach(name => {
-      raceState.positions[name] = 0;
-    });
-
-    createOrUpdateOverlay();
-    saveStateToStorage();
-
-    if (raceState.raceMode === "AUTO_SPEED") {
-      startRaceAnimation();
     }
   }
 
@@ -319,7 +349,7 @@
       overlayEl.innerHTML = `
         <div class="kyna-swim-header" id="kyna-swim-drag">
           <div class="kyna-swim-title">
-            <span>🏊 KÝ PHÙNG ĐỊCH THỦ - ĐUA BƠI TIẾP SỨC</span>
+            <span id="kyna-swim-mode-title">🏊 ĐUA BƠI KÝ PHÙNG ĐỊCH THỦ</span>
           </div>
           <div style="display:flex; gap:4px;">
             <button class="kyna-icon-btn" id="kyna-swim-min-btn" title="Thu nhỏ">➖</button>
@@ -327,6 +357,8 @@
         </div>
 
         <div class="kyna-swim-body">
+          <div id="kyna-relay-word-prompt-container"></div>
+
           <div class="kyna-swim-pool" id="kyna-swim-lanes-container"></div>
           
           <div id="kyna-podium-container"></div>
@@ -350,30 +382,66 @@
       });
     }
 
+    // Cập nhật thẻ hiển thị Từ vựng mục tiêu (Word Relay Mode)
+    renderRelayWordPromptUI();
     renderLanesUI();
     renderSwimmerPositionsUI();
     renderPodiumUI();
+
+    const titleEl = document.getElementById("kyna-swim-mode-title");
+    if (titleEl) {
+      titleEl.textContent = raceState.raceMode === "WORD_RELAY" 
+        ? "🔤 ĐUA BƠI TIẾP SỨC TỪ VỰNG" 
+        : `🦆 ĐUA BƠI TỰ ĐỘNG GAME VỊT (${raceState.raceDurationSeconds || 30}s)`;
+    }
 
     const statusTextEl = document.getElementById("kyna-swim-status-text");
     if (statusTextEl) statusTextEl.textContent = getRaceStatusText();
   }
 
+  /**
+   * Hiển thị Từ vựng mục tiêu bơi tiếp sức
+   */
+  function renderRelayWordPromptUI() {
+    const container = document.getElementById("kyna-relay-word-prompt-container");
+    if (!container) return;
+
+    if (raceState.raceMode !== "WORD_RELAY" || raceState.gameState !== "RACING") {
+      container.innerHTML = "";
+      return;
+    }
+
+    const w = raceState.currentWordObj || { word: "READY", hint: "Gõ từ vựng xuất hiện để bơi!", emoji: "🎯" };
+
+    container.innerHTML = `
+      <div class="kyna-swim-word-card">
+        <div class="kyna-word-prompt-label">🎯 GÕ TỪ ĐÚNG VÀO CHAT BBB ĐỂ BƠI TIẾN LÊN:</div>
+        <div class="kyna-word-target-display">
+          <span class="kyna-target-emoji">${w.emoji || "✨"}</span>
+          <span class="kyna-target-text">${escapeHtml(w.word)}</span>
+        </div>
+        <div class="kyna-target-hint">💡 Gợi ý: ${escapeHtml(w.hint || "")}</div>
+      </div>
+    `;
+  }
+
   function getRaceStatusText() {
     if (raceState.gameState === "RACING") {
-      return "🏊 ⚡ BƠI TIẾP SỨC: Học sinh nhắn 'go' (hoặc 'g') trong chat để bơi tiến lên!";
+      if (raceState.raceMode === "WORD_RELAY") {
+        return `🔤 Hãy nhắn "${raceState.currentWordObj ? raceState.currentWordObj.word : "TỪ KHÓA"}" vào chat để tiến lên!`;
+      }
+      return `⚡ Đang đua bơi tự động kiểu Game Vịt! (${raceState.raceDurationSeconds || 30}s)`;
     }
     if (raceState.gameState === "FINISHED") {
       return "🏁 Cuộc đua kết thúc! Chúc mừng các nhà vô địch!";
     }
 
     const total = (raceState.students || []).length;
-    const startedCount = (raceState.startedStudents || []).length;
-
     if (total === 0) {
-      return "🚩 PHÒNG CHỜ: Học sinh nhắn 'ready' trong chat BBB để ghi tên vào đường bơi!";
+      return "🚩 PHÒNG CHỜ: Học sinh nhắn 'join' trong chat BBB để ghi tên! (GV bấm Bắt đầu)";
     }
 
-    return `🚩 PHÒNG CHỜ (${total} người): Đã sẵn sàng ${startedCount}/${total}. Tất cả gõ 'start' để xuất phát!`;
+    return `🚩 PHÒNG CHỜ (${total} người bơi): Học sinh nhắn 'join' để ghi tên. GV nhấn 'Bắt đầu' để đua!`;
   }
 
   /**
@@ -386,7 +454,7 @@
     if (!raceState.students || raceState.students.length === 0) {
       container.innerHTML = `
         <div style="text-align:center; padding:24px; color:#94a3b8; font-size:13px; font-weight:600;">
-          📥 Chưa có học sinh. Nhắn <strong style="color:#38bdf8;">'ready'</strong> trong chat BBB hoặc bấm <strong style="color:#38bdf8;">'📥 Lấy từ lớp BBB'</strong> trên Extension.
+          📥 Chưa có học sinh. Nhắn <strong style="color:#38bdf8;">'join'</strong> trong chat BBB hoặc bấm <strong style="color:#38bdf8;">'📥 Lấy từ lớp BBB'</strong> trên Extension.
         </div>`;
       return;
     }
@@ -395,13 +463,10 @@
       <div class="kyna-finish-line" title="Vạch cán đích"></div>
       ${raceState.students.map((name, idx) => {
         const avatar = avatars[idx % avatars.length];
-        const isStarted = (raceState.startedStudents || []).some(s => normStr(s) === normStr(name));
         
-        let readyBadge = "";
+        let statusTag = "";
         if (raceState.gameState === "IDLE") {
-          readyBadge = isStarted 
-            ? `<span class="kyna-ready-tag tag-started">✅ START</span>`
-            : `<span class="kyna-ready-tag tag-ready">⏳ READY</span>`;
+          statusTag = `<span class="kyna-ready-tag tag-ready">⏳ PHÒNG CHỜ</span>`;
         }
 
         return `
@@ -409,7 +474,7 @@
             <div class="kyna-lane-number">${idx + 1}</div>
             <div class="kyna-swimmer" id="swimmer-lane-${idx}">
               <span class="kyna-swimmer-avatar">${avatar}</span>
-              <span class="kyna-swimmer-name">${escapeHtml(name)} ${readyBadge}</span>
+              <span class="kyna-swimmer-name">${escapeHtml(name)} ${statusTag}</span>
               <span class="kyna-rank-slot" id="rank-slot-${idx}"></span>
             </div>
           </div>`;
@@ -435,13 +500,13 @@
       const currentPx = startPx + (pct / 100) * maxDistancePx;
       swimmerEl.style.left = `${currentPx}px`;
 
-      // Cập nhật huy chương thứ hạng khi cán đích
       const rankIdx = raceState.rankings.indexOf(name);
       if (rankSlotEl) {
         if (rankIdx === 0) rankSlotEl.innerHTML = `<span class="kyna-rank-badge kyna-rank-1">🥇 Hạng 1</span>`;
         else if (rankIdx === 1) rankSlotEl.innerHTML = `<span class="kyna-rank-badge kyna-rank-2">🥈 Hạng 2</span>`;
         else if (rankIdx === 2) rankSlotEl.innerHTML = `<span class="kyna-rank-badge kyna-rank-3">🥉 Hạng 3</span>`;
         else if (rankIdx > 2) rankSlotEl.innerHTML = `<span class="kyna-rank-badge" style="background:rgba(255,255,255,0.1);">#${rankIdx + 1}</span>`;
+        else if (pct >= 100) rankSlotEl.innerHTML = `<span class="kyna-finished-tag">🏁 Đã về đích (Chờ các bạn khác...)</span>`;
         else rankSlotEl.innerHTML = "";
       }
     });
@@ -497,4 +562,5 @@
     );
   }
 })();
+
 

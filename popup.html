@@ -150,12 +150,42 @@
         <!-- Swimming Race Mode Setting -->
         <div class="card">
           <div class="card-header">
-            <h3>🏊 Chế độ đua bơi</h3>
+            <h3>🏊 Chế độ Đua Bơi & Tùy chỉnh</h3>
           </div>
           <div class="form-group">
+            <label style="font-weight: 700; font-size: 13px; margin-bottom: 4px; display: block;">Chọn thể thức cuộc đua:</label>
             <select id="select-swim-mode" class="form-control">
-              <option value="BBB_CHAT" selected>💬 Bơi Tiếp Sức BBB Chat (Gõ ready -> start -> go)</option>
-              <option value="AUTO_SPEED">🥇 Đua Bơi Tự Động (Tốc độ ngẫu nhiên kịch tính)</option>
+              <option value="WORD_RELAY" selected>🔤 Đua Bơi Tiếp Sức Từ Vựng (Gõ đúng từ để bơi & đổi từ)</option>
+              <option value="AUTO_SPEED">🦆 Đua Bơi Tự Động kiểu Game Vịt (Đua ngẫu nhiên theo thời gian)</option>
+            </select>
+          </div>
+
+          <!-- Setting sub-panel for AUTO_SPEED mode -->
+          <div id="swim-auto-timer-group" class="form-group hidden" style="margin-top: 10px;">
+            <label style="font-weight: 700; font-size: 13px; margin-bottom: 4px; display: block;">Thời lượng cuộc đua tự động:</label>
+            <select id="select-swim-duration" class="form-control">
+              <option value="15">15 giây (Siêu tốc kịch tính)</option>
+              <option value="30" selected>30 giây (Khuyên dùng)</option>
+              <option value="45">45 giây</option>
+              <option value="60">60 giây (Thư thả)</option>
+              <option value="90">90 giây</option>
+              <option value="120">120 giây (Đường dài)</option>
+            </select>
+          </div>
+
+          <!-- Setting sub-panel for WORD_RELAY mode -->
+          <div id="swim-word-cat-group" class="form-group" style="margin-top: 10px;">
+            <label style="font-weight: 700; font-size: 13px; margin-bottom: 4px; display: block;">Bộ từ vựng bơi tiếp sức:</label>
+            <select id="select-swim-word-category" class="form-control">
+              <option value="ALL" selected>🌟 Ngẫu nhiên tất cả chủ đề (240+ từ)</option>
+              <option value="Animals">🐶 Animals (Động vật)</option>
+              <option value="Fruits">🍎 Fruits (Hoa quả)</option>
+              <option value="Occupations">👨‍⚕️ Occupations (Nghề nghiệp)</option>
+              <option value="School">✏️ School (Trường học)</option>
+              <option value="Transport">🚀 Transport (Giao thông)</option>
+              <option value="Clothing">👕 Clothing (Trang phục)</option>
+              <option value="Colors">🌈 Colors (Màu sắc)</option>
+              <option value="Actions">🏊 Actions (Hành động)</option>
             </select>
           </div>
         </div>
@@ -163,16 +193,19 @@
         <!-- Swimmer Names List Input -->
         <div class="card">
           <div class="card-header">
-            <h3>👥 Vận động viên tham gia (<span id="swim-student-count">5</span>)</h3>
+            <h3>👥 Vận động viên tham gia (<span id="swim-student-count">0</span>)</h3>
             <div style="display:flex; gap:6px;">
               <button id="btn-fetch-bbb-students" class="btn btn-sm btn-outline" style="border-color:#38bdf8; color:#38bdf8;">📥 Lấy từ lớp BBB</button>
               <button id="btn-load-sample-students" class="btn btn-sm btn-outline">Nhập mẫu</button>
             </div>
           </div>
           <div class="form-group">
-            <textarea id="input-swim-students" class="form-control" rows="3" placeholder="Nhập tên học sinh (phân cách bằng dấu phẩy)...&#10;VD: Bảo Nam, Hoàng Minh, Tuệ Nhi, Gia Bảo, Khánh An"></textarea>
+            <textarea id="input-swim-students" class="form-control" rows="3" placeholder="Gõ 'join' trong chat BBB để ghi tên tự động...&#10;Hoặc nhập tên thủ công (phân cách bằng dấu phẩy): Bảo Nam, Hoàng Minh, Tuệ Nhi"></textarea>
           </div>
-          <button id="btn-save-swim-students" class="btn btn-primary btn-block">💾 Cập nhật danh sách đua bơi</button>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
+            <span style="font-size:11px; color:#94a3b8;">💡 Học sinh nhắn <strong>"join"</strong> trong chat để tự ghi tên. Nút Bắt đầu do GV ấn!</span>
+            <button id="btn-save-swim-students" class="btn btn-primary btn-sm">💾 Cập nhật danh sách</button>
+          </div>
         </div>
 
       </section>
