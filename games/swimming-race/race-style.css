@@ -225,6 +225,40 @@
 .kyna-rank-2 { background: #94a3b8; color: #0f172a; }
 .kyna-rank-3 { background: #b45309; color: #ffffff; }
 
+/* Race Countdown Timer Bar */
+.kyna-swim-timer-bar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(15, 23, 42, 0.7);
+  padding: 8px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(56, 189, 248, 0.35);
+}
+
+.kyna-swim-timer-text {
+  font-size: 16px;
+  font-weight: 900;
+  color: #f59e0b;
+  min-width: 60px;
+}
+
+.kyna-swim-progress-bg {
+  flex: 1;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.kyna-swim-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981 0%, #f59e0b 50%, #ef4444 100%);
+  width: 100%;
+  transition: width 1s linear;
+}
+
 /* Relay Word Prompt Card */
 .kyna-swim-word-card {
   background: linear-gradient(135deg, rgba(30, 41, 59, 0.96) 0%, rgba(15, 23, 42, 0.96) 100%);

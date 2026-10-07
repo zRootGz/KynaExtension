@@ -246,17 +246,16 @@ document.addEventListener("DOMContentLoaded", async () => {
       elements.selectSwimMode.value = swimState.raceMode || "WORD_RELAY";
     }
     if (elements.selectSwimDuration) {
-      elements.selectSwimDuration.value = swimState.raceDurationSeconds || 30;
+      elements.selectSwimDuration.value = swimState.raceDurationSeconds || 90;
     }
     if (elements.selectSwimWordCategory) {
       elements.selectSwimWordCategory.value = swimState.wordCategory || "ALL";
     }
 
+    if (elements.swimAutoTimerGroup) elements.swimAutoTimerGroup.classList.remove("hidden");
     if (swimState.raceMode === "AUTO_SPEED") {
-      if (elements.swimAutoTimerGroup) elements.swimAutoTimerGroup.classList.remove("hidden");
       if (elements.swimWordCatGroup) elements.swimWordCatGroup.classList.add("hidden");
     } else {
-      if (elements.swimAutoTimerGroup) elements.swimAutoTimerGroup.classList.add("hidden");
       if (elements.swimWordCatGroup) elements.swimWordCatGroup.classList.remove("hidden");
     }
 

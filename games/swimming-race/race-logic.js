@@ -17,7 +17,8 @@
     activeGame: "NONE",            // "NONE" | "SWIMMING_RACE"
     gameState: "IDLE",              // "IDLE" | "RACING" | "FINISHED"
     raceMode: "WORD_RELAY",         // "WORD_RELAY" | "AUTO_SPEED"
-    raceDurationSeconds: 30,       // Thời lượng đua tự động (15s - 120s)
+    raceDurationSeconds: 90,       // Thời lượng đua tối đa (15s - 120s)
+    timeLeftSeconds: 90,           // Đếm ngược thời gian còn lại của cuộc đua
     wordCategory: "ALL",           // Chủ đề từ vựng bơi tiếp sức
     currentWordObj: null,          // Từ vựng mục tiêu hiện tại { word, hint, emoji }
     students: [],                  // Danh sách vận động viên bơi
@@ -29,6 +30,7 @@
 
   let overlayEl = null;
   let raceTimerId = null;
+  let countdownTimerId = null;
   let usedWordsList = [];
   const avatars = ["🏊‍♂️", "🏊‍♀️", "🐬", "🦈", "🏊", "🏼‍♀️", "🚴‍♂️"];
 
@@ -131,6 +133,7 @@
 
     if (newState.targetTabId && window.kynaMyTabId && newState.targetTabId !== window.kynaMyTabId) {
       stopRaceAnimation();
+      stopRaceCountdownTimer();
       removeOverlay();
       return;
     }
@@ -150,6 +153,11 @@
 
     if (raceState.activeGame === "SWIMMING_RACE") {
       if (raceState.gameState === "RACING") {
+        if (oldGameState !== "RACING") {
+          raceState.timeLeftSeconds = raceState.raceDurationSeconds || 90;
+          startRaceCountdownTimer();
+        }
+
         if (raceState.raceMode === "WORD_RELAY") {
           if (!raceState.currentWordObj || !raceState.currentWordObj.word) {
             raceState.currentWordObj = pickNextRelayWord();
@@ -170,11 +178,57 @@
         }
       } else {
         stopRaceAnimation();
+        stopRaceCountdownTimer();
       }
     } else {
       stopRaceAnimation();
+      stopRaceCountdownTimer();
       removeOverlay();
     }
+  }
+
+  /**
+   * Bộ đếm ngược tổng thời gian cuộc đua (cho cả Word Relay & Auto Speed)
+   */
+  function startRaceCountdownTimer() {
+    stopRaceCountdownTimer();
+    if (raceState.gameState !== "RACING") return;
+
+    if (!raceState.timeLeftSeconds) {
+      raceState.timeLeftSeconds = raceState.raceDurationSeconds || 90;
+    }
+
+    countdownTimerId = setInterval(() => {
+      if (raceState.gameState !== "RACING") return;
+
+      raceState.timeLeftSeconds--;
+      updateOverlayTimerUI();
+
+      if (raceState.timeLeftSeconds <= 0) {
+        stopRaceCountdownTimer();
+        finishRaceNow();
+      }
+    }, 1000);
+  }
+
+  function stopRaceCountdownTimer() {
+    if (countdownTimerId) {
+      clearInterval(countdownTimerId);
+      countdownTimerId = null;
+    }
+  }
+
+  function updateOverlayTimerUI() {
+    const timerValEl = document.getElementById("kyna-swim-timer-val");
+    const fillEl = document.getElementById("kyna-swim-progress-fill");
+    if (!timerValEl || !fillEl) return;
+
+    const current = Math.max(0, raceState.timeLeftSeconds || 0);
+    const total = raceState.raceDurationSeconds || 90;
+    timerValEl.textContent = `⏳ ${current}s`;
+
+    const pct = Math.max(0, (current / total) * 100);
+    fillEl.style.width = `${pct}%`;
   }
 
   /**
@@ -340,7 +394,18 @@
 
   function finishRaceNow() {
     stopRaceAnimation();
+    stopRaceCountdownTimer();
     raceState.gameState = "FINISHED";
+
+    // Xếp hạng các vận động viên chưa về đích theo phần trăm quãng đường đã bơi xa nhất!
+    const unranked = raceState.students.filter(name => !raceState.rankings.includes(name));
+    unranked.sort((a, b) => (raceState.positions[b] || 0) - (raceState.positions[a] || 0));
+
+    unranked.forEach(name => {
+      raceState.rankings.push(name);
+      raceState.finishedStudents[name] = { rank: raceState.rankings.length };
+    });
+
     if (typeof window.playVictorySound === "function") {
       window.playVictorySound(true);
     }
@@ -368,6 +433,13 @@
 
         <div class="kyna-swim-body">
           <div id="kyna-relay-word-prompt-container"></div>
+
+          <div class="kyna-swim-timer-bar">
+            <span class="kyna-swim-timer-text" id="kyna-swim-timer-val">⏳ ${raceState.timeLeftSeconds || 90}s</span>
+            <div class="kyna-swim-progress-bg">
+              <div class="kyna-swim-progress-fill" id="kyna-swim-progress-fill"></div>
+            </div>
+          </div>
 
           <div class="kyna-swim-pool" id="kyna-swim-lanes-container"></div>
           
@@ -397,12 +469,13 @@
     renderLanesUI();
     renderSwimmerPositionsUI();
     renderPodiumUI();
+    updateOverlayTimerUI();
 
     const titleEl = document.getElementById("kyna-swim-mode-title");
     if (titleEl) {
       titleEl.textContent = raceState.raceMode === "WORD_RELAY" 
         ? "🔤 ĐUA BƠI TIẾP SỨC TỪ VỰNG" 
-        : `🦆 ĐUA BƠI TỰ ĐỘNG GAME VỊT (${raceState.raceDurationSeconds || 30}s)`;
+        : `🦆 ĐUA BƠI TỰ ĐỘNG GAME VỊT (${raceState.raceDurationSeconds || 90}s)`;
     }
 
     const statusTextEl = document.getElementById("kyna-swim-status-text");
