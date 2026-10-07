@@ -56,7 +56,20 @@
 
 Game **Đoán Chữ** giúp học sinh luyện phản xạ từ vựng Tiếng Anh qua hình ảnh nét vẽ tay Doodle sống động và gợi ý thông minh.
 
-![Guess The Word Interface](games/guess-the-word/game-style.css)
+### ✨ Các tính năng & Cải tiến nổi bật:
+- 🔤 **Gom nhóm theo từ & Xuống dòng thông minh (`.kyna-word-group`)**: 
+  - Hỗ trợ cả từ dài (như `BUTTERFLY`, `WATERMELON`) và cụm từ nhiều từ (như `ICE CREAM`, `BLACK CAT`). 
+  - Ô chữ của cùng 1 từ được gom trong nhóm riêng; khi hết chiều rộng dòng, nguyên từ tiếp theo mới chuyển xuống dòng mới, tuyệt đối không bị ngắt đôi giữa chừng chữ cái.
+- 📐 **Tự động co giãn kích thước ô chữ (`box-medium`, `box-small`)**:
+  - Từ ngắn ($\le 7$ ký tự): Ô chữ lớn chuẩn **48x58px**.
+  - Từ trung bình ($8 - 10$ ký tự): Ô chữ vừa **40x50px**.
+  - Từ/Cụm từ dài ($> 10$ ký tự): Ô chữ nhỏ **34x44px**.
+- 🖼️ **Giao diện tối ưu cho Chia sẻ Màn hình BBB (Screen Share Zoom)**:
+  - Khung Overlay mở rộng tới **680px** (tối đa `92vw`).
+  - Khung ảnh minh họa Doodle cao **380px** với biểu tượng nét vẽ Doodle cỡ lớn **76px** cực kỳ rõ nét từ xa.
+- ⏱️ **Tự động chuyển câu sau 60s / khi đoán đúng**:
+  - Khi hết 60s đếm ngược (hoặc khi có học sinh đoán đúng), hệ thống mở toàn bộ đáp án, hiển thị thông báo chúc mừng/hết giờ màu sắc và tự động sang câu mới sau **3.5 giây**.
+  - Nút **⏭️ Từ tiếp theo** giúp Giáo viên chuyển câu lập tức mà không bị xung đột bộ đếm.
 
 ### Cách vận hành Game Đoán Chữ:
 1. Mở tiện ích $\rightarrow$ Chọn Tab **🎨 Đoán chữ**.
@@ -99,18 +112,22 @@ Có sẵn 8 chủ đề từ vựng Tiếng Anh chuẩn Oxford:
 
 ## 4. Game 2: 🏊 Đua Bơi Kỳ Phùng Địch Thủ (Swimming Relay Race)
 
-Game **Đua Bơi** tạo không khí thi đấu sôi nổi kịch tính giữa các học sinh trên một hồ bơi chuyển động với hiệu ứng gợn nước và huy chương trao giải.
+Game **Đua Bơi** tạo không khí thi đấu sôi nổi kịch tính giữa các học sinh trên một hồ bơi chuyển động với hiệu ứng sóng nước, bứt tốc rượt đuổi và trao giải huy chương.
 
 ### Thể thức 1: 🔤 Đua Bơi Tiếp Sức Từ Vựng (Word Relay)
-- **Cơ chế:** Một Thẻ Từ Vựng Tiếng Anh ngẫu nhiên (VD: `🍌 BANANA - 💡 A long yellow fruit`) sẽ xuất hiện nổi bật ở đầu đường bơi.
+- **Thẻ Từ Vựng Mục Tiêu Nổi Bật (`kyna-swim-word-card`)**: Một Thẻ Từ Vựng Tiếng Anh (VD: `🎯 BANANA - 💡 A long yellow fruit`) với chữ phát sáng **32px** và icon nổi bật sẽ hiển thị ngay đầu đường bơi.
 - **Cách chơi:**
   - Học sinh nhắn **ĐÚNG** từ vựng đang hiển thị trong chat BBB $\rightarrow$ Nhân vật bơi của học sinh đó quạt tay tiến lên 1 bước (+16%).
   - **Từ vựng ngay lập tức được đổi sang một từ mới ngẫu nhiên** để cả lớp tiếp tục thi đua!
-  - Học sinh cán đích (100%) sẽ nhận huy chương (🥇 Hạng 1, 🥈 Hạng 2, 🥉 Hạng 3) và hiển thị `🏁 Đã về đích (Chờ các bạn khác...)`. Cuộc đua tiếp tục cho đến khi các bạn còn lại hoàn thành.
+  - Học sinh cán đích (100%) sẽ nhận huy chương (🥇 Hạng 1, 🥈 Hạng 2, 🥉 Hạng 3) và hiển thị `🏁 Đã về đích`.
 
 ### Thể thức 2: 🦆 Đua Bơi Tự Động kiểu Game Vịt (Duck Race)
-- **Cơ chế:** Các nhân vật bơi thi đấu tự động theo thuật toán bứt phá & bám đuổi ngẫu nhiên kịch tính.
-- **Tùy chỉnh thời gian:** Giáo viên chọn thời lượng đua: **15s, 30s (khuyên dùng), 45s, 60s, 90s, 120s**.
+- **Bứt tốc (`⚡ BỨT TỐC!`) & Đuối sức (`💦 ĐUỐI SỨC`) kịch tính**: Các nhân vật bơi ngẫu nhiên bứt phá tốc độ gấp **$2.5\times - 4.0\times$** hoặc bị đuối sức chậm lại, kết hợp cơ chế bám đuổi (rubberbanding) lật kèo dồn dập.
+- **Hiệu ứng Sóng nước Cuộn dài (`is-racing`)**: Nền đường bơi có hoạt ảnh sóng nước cuộn về phía sau mượt mà, tạo cảm giác đường đua có chiều sâu thực sự.
+
+### ⏱️ Bộ đếm thời gian tổng cuộc đua & Trao giải khi Hết giờ:
+- **Tùy chỉnh thời lượng:** Giáo viên có thể chọn thời gian cuộc đua: **15s, 30s, 45s, 60s, 90s (Khuyên dùng), 120s**.
+- **Trao giải khi Hết giờ:** Khi đồng hồ đếm ngược về `0s`, cuộc đua tự động dừng lại. Học sinh chưa về đích 100% sẽ được tự động xếp hạng trao giải (🥇 🥈 🥉) dựa trên **phần trăm quãng đường đã bơi xa nhất**!
 
 ### Ghi danh học sinh & Quyền bắt đầu:
 - **Học sinh ghi danh:** Học sinh chỉ cần nhắn `"join"` (hoặc `"ready"`, `"r"`, `"1"`) trong khung chat BBB $\rightarrow$ Tên tự động được ghi danh vào một làn bơi riêng.

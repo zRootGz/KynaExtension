@@ -231,19 +231,30 @@
     fillEl.style.width = `${pct}%`;
   }
 
+  let swimmerEffects = {}; // { "Bảo Nam": { state: "NORMAL"|"BOOST"|"SLOW", ticksLeft: 0 } }
+
   /**
    * Vòng lặp hoạt ảnh đua bơi ngẫu nhiên kiểu Game Vịt (AUTO_SPEED)
+   * Tích hợp bứt tốc (Sprint Burst), thụt lùi (Drift) và cuộn sóng nước sinh động
    */
   function startRaceAnimation() {
     stopRaceAnimation();
     if (raceState.raceMode !== "AUTO_SPEED") return;
 
-    const durationSec = raceState.raceDurationSeconds || 30;
-    const intervalMs = 280;
+    const durationSec = raceState.raceDurationSeconds || 90;
+    const intervalMs = 200;
     const totalSteps = (durationSec * 1000) / intervalMs;
     const baseIncrement = 100 / totalSteps;
 
     raceState.raceStartTime = Date.now();
+    swimmerEffects = {};
+
+    raceState.students.forEach(name => {
+      swimmerEffects[name] = { state: "NORMAL", ticksLeft: 0 };
+    });
+
+    const poolEl = document.getElementById("kyna-swim-lanes-container");
+    if (poolEl) poolEl.classList.add("is-racing");
 
     raceTimerId = setInterval(() => {
       if (raceState.gameState !== "RACING") return;
@@ -251,14 +262,55 @@
       let allFinished = true;
       const totalStudents = raceState.students.length;
 
+      // Tìm vị trí của người dẫn đầu để hỗ trợ cơ chế bám đuổi (Rubberbanding)
+      let maxPos = 0;
+      raceState.students.forEach(name => {
+        const p = raceState.positions[name] || 0;
+        if (p > maxPos) maxPos = p;
+      });
+
       raceState.students.forEach((name) => {
         let currentPos = raceState.positions[name] || 0;
 
         if (currentPos < 100) {
           allFinished = false;
-          // Tốc độ bơi kịch tính kiểu game vịt (ngẫu nhiên bứt phá & bám đuổi)
-          const randomFactor = Math.random() * 2.2 + 0.2;
-          const speedDelta = baseIncrement * randomFactor;
+
+          let effect = swimmerEffects[name] || { state: "NORMAL", ticksLeft: 0 };
+
+          if (effect.ticksLeft > 0) {
+            effect.ticksLeft--;
+          } else {
+            // Học sinh ở xa người dẫn đầu có cơ hội Bứt Tốc cao hơn (tạo kịch tính bám đuổi)
+            const distFromLeader = maxPos - currentPos;
+            const boostChance = 0.08 + (distFromLeader > 15 ? 0.08 : 0);
+            const slowChance = 0.05;
+
+            const roll = Math.random();
+            if (roll < boostChance) {
+              effect.state = "BOOST";
+              effect.ticksLeft = Math.floor(Math.random() * 5) + 4; // Bứt tốc 0.8s - 1.6s
+            } else if (roll < boostChance + slowChance) {
+              effect.state = "SLOW";
+              effect.ticksLeft = Math.floor(Math.random() * 4) + 3; // Đuối sức 0.6s - 1.2s
+            } else {
+              effect.state = "NORMAL";
+              effect.ticksLeft = 0;
+            }
+          }
+
+          swimmerEffects[name] = effect;
+
+          // Nhân hệ số tốc độ tương ứng với trạng thái
+          let speedMultiplier = 1.0;
+          if (effect.state === "BOOST") {
+            speedMultiplier = Math.random() * 1.5 + 2.5; // Bứt tốc gấp 2.5x - 4.0x!
+          } else if (effect.state === "SLOW") {
+            speedMultiplier = Math.random() * 0.2 + 0.1; // Đuối sức giảm còn 0.1x - 0.3x
+          } else {
+            speedMultiplier = Math.random() * 1.1 + 0.5; // Tốc độ bình thường 0.5x - 1.6x
+          }
+
+          const speedDelta = baseIncrement * speedMultiplier;
           currentPos = Math.min(100, currentPos + speedDelta);
           raceState.positions[name] = currentPos;
 
@@ -282,6 +334,8 @@
       clearInterval(raceTimerId);
       raceTimerId = null;
     }
+    const poolEl = document.getElementById("kyna-swim-lanes-container");
+    if (poolEl) poolEl.classList.remove("is-racing");
   }
 
   function normStr(str) {
@@ -601,13 +655,27 @@
       const currentPx = startPx + (pct / 100) * maxDistancePx;
       swimmerEl.style.left = `${currentPx}px`;
 
+      // Cập nhật hiệu ứng Bứt Tốc / Đuối Sức cho vận động viên
+      const effect = swimmerEffects[name];
+      if (effect && effect.state === "BOOST") {
+        swimmerEl.classList.add("is-boosting");
+        swimmerEl.classList.remove("is-slowing");
+      } else if (effect && effect.state === "SLOW") {
+        swimmerEl.classList.add("is-slowing");
+        swimmerEl.classList.remove("is-boosting");
+      } else {
+        swimmerEl.classList.remove("is-boosting", "is-slowing");
+      }
+
       const rankIdx = raceState.rankings.indexOf(name);
       if (rankSlotEl) {
         if (rankIdx === 0) rankSlotEl.innerHTML = `<span class="kyna-rank-badge kyna-rank-1">🥇 Hạng 1</span>`;
         else if (rankIdx === 1) rankSlotEl.innerHTML = `<span class="kyna-rank-badge kyna-rank-2">🥈 Hạng 2</span>`;
         else if (rankIdx === 2) rankSlotEl.innerHTML = `<span class="kyna-rank-badge kyna-rank-3">🥉 Hạng 3</span>`;
         else if (rankIdx > 2) rankSlotEl.innerHTML = `<span class="kyna-rank-badge" style="background:rgba(255,255,255,0.1);">#${rankIdx + 1}</span>`;
-        else if (pct >= 100) rankSlotEl.innerHTML = `<span class="kyna-finished-tag">🏁 Đã về đích (Chờ các bạn khác...)</span>`;
+        else if (effect && effect.state === "BOOST") rankSlotEl.innerHTML = `<span class="kyna-boost-tag">⚡ BỨT TỐC!</span>`;
+        else if (effect && effect.state === "SLOW") rankSlotEl.innerHTML = `<span class="kyna-slow-tag">💦 ĐUỐI SỨC</span>`;
+        else if (pct >= 100) rankSlotEl.innerHTML = `<span class="kyna-finished-tag">🏁 Đã về đích</span>`;
         else rankSlotEl.innerHTML = "";
       }
     });
