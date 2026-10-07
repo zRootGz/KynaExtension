@@ -82,7 +82,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     btnStopSwimRace: document.getElementById("btn-stop-swim-race"),
     selectSwimMode: document.getElementById("select-swim-mode"),
     selectSwimDuration: document.getElementById("select-swim-duration"),
+    selectSwimDistance: document.getElementById("select-swim-distance"),
     selectSwimWordCategory: document.getElementById("select-swim-word-category"),
+    swimAutoDistanceGroup: document.getElementById("swim-auto-distance-group"),
     swimAutoTimerGroup: document.getElementById("swim-auto-timer-group"),
     swimWordCatGroup: document.getElementById("swim-word-cat-group"),
     inputSwimStudents: document.getElementById("input-swim-students"),
@@ -98,7 +100,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     activeGame: "NONE",
     gameState: "IDLE",
     raceMode: "WORD_RELAY",
-    raceDurationSeconds: 30,
+    raceDurationSeconds: 90,
+    raceDistanceMeters: 500,
     wordCategory: "ALL",
     students: [],
     positions: {},
@@ -248,14 +251,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (elements.selectSwimDuration) {
       elements.selectSwimDuration.value = swimState.raceDurationSeconds || 90;
     }
+    if (elements.selectSwimDistance) {
+      elements.selectSwimDistance.value = swimState.raceDistanceMeters || 500;
+    }
     if (elements.selectSwimWordCategory) {
       elements.selectSwimWordCategory.value = swimState.wordCategory || "ALL";
     }
 
-    if (elements.swimAutoTimerGroup) elements.swimAutoTimerGroup.classList.remove("hidden");
     if (swimState.raceMode === "AUTO_SPEED") {
+      if (elements.swimAutoDistanceGroup) elements.swimAutoDistanceGroup.classList.remove("hidden");
+      if (elements.swimAutoTimerGroup) elements.swimAutoTimerGroup.classList.add("hidden");
       if (elements.swimWordCatGroup) elements.swimWordCatGroup.classList.add("hidden");
     } else {
+      if (elements.swimAutoDistanceGroup) elements.swimAutoDistanceGroup.classList.add("hidden");
+      if (elements.swimAutoTimerGroup) elements.swimAutoTimerGroup.classList.remove("hidden");
       if (elements.swimWordCatGroup) elements.swimWordCatGroup.classList.remove("hidden");
     }
 
@@ -934,7 +943,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       swimState.activeGame = "SWIMMING_RACE";
       swimState.gameState = "RACING";
       swimState.raceMode = elements.selectSwimMode ? elements.selectSwimMode.value : "WORD_RELAY";
-      swimState.raceDurationSeconds = elements.selectSwimDuration ? (parseInt(elements.selectSwimDuration.value, 10) || 30) : 30;
+      swimState.raceDurationSeconds = elements.selectSwimDuration ? (parseInt(elements.selectSwimDuration.value, 10) || 90) : 90;
+      swimState.raceDistanceMeters = elements.selectSwimDistance ? (parseInt(elements.selectSwimDistance.value, 10) || 500) : 500;
       swimState.wordCategory = elements.selectSwimWordCategory ? elements.selectSwimWordCategory.value : "ALL";
       swimState.positions = {};
       swimState.rankings = [];
@@ -969,7 +979,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (elements.selectSwimDuration) {
       elements.selectSwimDuration.addEventListener("change", (e) => {
-        swimState.raceDurationSeconds = parseInt(e.target.value, 10) || 30;
+        swimState.raceDurationSeconds = parseInt(e.target.value, 10) || 90;
+        saveSwimStateToStorage();
+      });
+    }
+
+    if (elements.selectSwimDistance) {
+      elements.selectSwimDistance.addEventListener("change", (e) => {
+        swimState.raceDistanceMeters = parseInt(e.target.value, 10) || 500;
         saveSwimStateToStorage();
       });
     }

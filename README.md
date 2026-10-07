@@ -122,13 +122,12 @@ Game **Đua Bơi** tạo không khí thi đấu sôi nổi kịch tính giữa c
   - Học sinh cán đích (100%) sẽ nhận huy chương (🥇 Hạng 1, 🥈 Hạng 2, 🥉 Hạng 3) và hiển thị `🏁 Đã về đích`.
 
 ### Thể thức 2: 🦆 Đua Bơi Tự Động kiểu Game Vịt (Duck Race)
-- **Hệ số Thể lực & Bứt tốc Phân hóa (`⚡ BỨT TỐC!`, `💦 ĐUỐI SỨC`)**: Mỗi vận động viên được gán hệ số thể lực/kỹ năng riêng ngẫu nhiên ($0.65\times - 1.55\times$) kết hợp bứt tốc ngẫu nhiên khủng (**$3.5\times - 6.0\times$**), giúp các tay bơi bỏ xa nhau kịch tính thực sự chuẩn phong cách Game Vịt.
-- **Tối ưu Giao diện Vạch Đích**: Khung thông tin vận động viên (`.kyna-swimmer`) được bảo vệ bằng quy tắc `white-space: nowrap` và giới hạn điểm dừng 360px sát vạch cảm ứng, tuyệt đối không bị dồn ép hay vỡ chữ khi sát vạch đích.
-- **Hiệu ứng Sóng nước Cuộn dài (`is-racing`)**: Nền đường bơi có hoạt ảnh sóng nước cuộn về phía sau mượt mà, tạo cảm giác đường đua có chiều sâu thực sự.
-
-### ⏱️ Bộ đếm thời gian tổng cuộc đua & Trao giải khi Hết giờ:
-- **Đa dạng Tùy chọn Thời lượng:** Giáo viên có thể tùy chọn linh hoạt từ **15s, 30s, 45s, 60s, 90s (Khuyên dùng), 120s, 180s (3m), 240s (4m), 300s (5m)** đến **600s (10m)**.
-- **Trao giải khi Hết giờ:** Khi đồng hồ đếm ngược về `0s`, cuộc đua tự động dừng lại. Học sinh chưa về đích 100% sẽ được tự động xếp hạng trao giải (🥇 🥈 🥉) dựa trên **phần trăm quãng đường đã bơi xa nhất**!
+- **Thi đấu theo Độ dài Đường đua Mét (100m - 2000m)**: Thay vì giới hạn thời gian đếm ngược (dễ gây xung đột cut-off), cuộc đua diễn ra theo độ dài đường đua tùy chọn (**100m, 200m, 500m, 1000m, 2000m**). Cuộc đua tự động tiếp diễn cho đến khi các vận động viên lần lượt cán đích!
+- **Hệ thống Camera Tracking & Tụt lùi trôi khỏi màn hình (Off-screen)**:
+  - Khung nhìn camera tự động bám đuổi theo nhóm dẫn đầu.
+  - Vận động viên có hệ số thể lực/kỹ năng ngẫu nhiên cực lớn ($0.3\times \rightarrow 2.5\times$). Những tay bơi lười/đuối sức sẽ dừng chân trôi dần khỏi màn hình về phía bên trái ($Left < 0$), tạo cảm giác đường đua cực kỳ dài và hồi hộp chuẩn Game Vịt.
+- **Hiệu ứng Hình ảnh Tinh tế (Bỏ thẻ chữ rác)**: Loại bỏ các thẻ chữ "BỨT TỐC!" và "ĐUỐI SỨC" gây rối mắt; trạng thái bứt tốc/đuối sức được thể hiện trực quan 100% qua hoạt ảnh quạt tay bơi nhanh, quầng sáng điện quang và bóng nước bao quanh nhân vật.
+- **Tối ưu Giao diện Vạch Đích**: Thẻ tên vận động viên được bảo vệ bằng quy tắc `white-space: nowrap` và điểm dừng 360px sát vạch cảm ứng, tuyệt đối không bị dồn ép hay vỡ chữ khi cán đích.
 
 ### Ghi danh học sinh & Quyền bắt đầu:
 - **Học sinh ghi danh:** Học sinh chỉ cần nhắn `"join"` (hoặc `"ready"`, `"r"`, `"1"`) trong khung chat BBB $\rightarrow$ Tên tự động được ghi danh vào một làn bơi riêng.

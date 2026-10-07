@@ -17,8 +17,9 @@
     activeGame: "NONE",            // "NONE" | "SWIMMING_RACE"
     gameState: "IDLE",              // "IDLE" | "RACING" | "FINISHED"
     raceMode: "WORD_RELAY",         // "WORD_RELAY" | "AUTO_SPEED"
-    raceDurationSeconds: 90,       // Thời lượng đua tối đa (15s - 120s)
-    timeLeftSeconds: 90,           // Đếm ngược thời gian còn lại của cuộc đua
+    raceDurationSeconds: 90,       // Thời lượng đua tối đa cho Word Relay
+    raceDistanceMeters: 500,       // Độ dài đường đua mét cho Auto Speed (100m - 2000m)
+    timeLeftSeconds: 90,           // Đếm ngược thời gian cho Word Relay
     wordCategory: "ALL",           // Chủ đề từ vựng bơi tiếp sức
     currentWordObj: null,          // Từ vựng mục tiêu hiện tại { word, hint, emoji }
     students: [],                  // Danh sách vận động viên bơi
@@ -220,43 +221,58 @@
     }
   }
 
+  let distanceMeters = {}; // { "Bảo Nam": 120.5 } Quãng đường bơi tuyệt đối (Mét)
+  let swimmerEffects = {}; // { "Bảo Nam": { state: "NORMAL"|"BOOST"|"SLOW", ticksLeft: 0 } }
+  let swimmerSkills = {}; // { "Bảo Nam": 0.3..2.5 } Hệ số kỹ năng/thể lực cá nhân tạo khoảng cách phân hóa cực xa
+
   function updateOverlayTimerUI() {
     const timerValEl = document.getElementById("kyna-swim-timer-val");
     const fillEl = document.getElementById("kyna-swim-progress-fill");
     if (!timerValEl || !fillEl) return;
 
-    const current = Math.max(0, raceState.timeLeftSeconds || 0);
-    const total = raceState.raceDurationSeconds || 60;
-    timerValEl.textContent = `⏳ ${current}s`;
-
-    const pct = Math.max(0, (current / total) * 100);
-    fillEl.style.width = `${pct}%`;
+    if (raceState.raceMode === "AUTO_SPEED") {
+      const totalMeters = raceState.raceDistanceMeters || 500;
+      let maxMeters = 0;
+      (raceState.students || []).forEach(name => {
+        const d = distanceMeters[name] || 0;
+        if (d > maxMeters) maxMeters = d;
+      });
+      timerValEl.textContent = `🚩 Leader: ${Math.floor(maxMeters)}m / ${totalMeters}m`;
+      const pct = Math.min(100, Math.max(0, (maxMeters / totalMeters) * 100));
+      fillEl.style.width = `${pct}%`;
+    } else {
+      const current = Math.max(0, raceState.timeLeftSeconds || 0);
+      const total = raceState.raceDurationSeconds || 90;
+      timerValEl.textContent = `⏳ ${current}s`;
+      const pct = Math.max(0, (current / total) * 100);
+      fillEl.style.width = `${pct}%`;
+    }
   }
-
-  let swimmerEffects = {}; // { "Bảo Nam": { state: "NORMAL"|"BOOST"|"SLOW", ticksLeft: 0 } }
-  let swimmerSkills = {}; // { "Bảo Nam": 0.65..1.55 } Hệ số kỹ năng/thể lực cá nhân tạo khoảng cách phân hóa rõ rệt
 
   /**
    * Vòng lặp hoạt ảnh đua bơi ngẫu nhiên kiểu Game Vịt (AUTO_SPEED)
-   * Tích hợp bứt tốc (Sprint Burst), thụt lùi (Drift) và cuộn sóng nước sinh động
+   * Tự động đua theo độ dài đường đua Mét (100m - 2000m) với góc quay Camera bám đuổi & tụt lùi off-screen
    */
   function startRaceAnimation() {
     stopRaceAnimation();
     if (raceState.raceMode !== "AUTO_SPEED") return;
 
-    const durationSec = raceState.raceDurationSeconds || 90;
+    const totalMeters = raceState.raceDistanceMeters || 500;
     const intervalMs = 200;
-    const totalSteps = (durationSec * 1000) / intervalMs;
-    const baseIncrement = 100 / totalSteps;
+    // Mỗi tick 200ms di chuyển 1 lượng mét chuẩn tùy theo độ dài đường đua
+    const baseStepMeters = totalMeters / 120;
 
     raceState.raceStartTime = Date.now();
     swimmerEffects = {};
     swimmerSkills = {};
+    distanceMeters = {};
 
     raceState.students.forEach(name => {
       swimmerEffects[name] = { state: "NORMAL", ticksLeft: 0 };
-      // Mỗi vận động viên có thể lực/kỹ năng riêng ngẫu nhiên từ 0.65x đến 1.55x để tạo sự bứt phá cách biệt rõ rệt
-      swimmerSkills[name] = Math.random() * 0.9 + 0.65;
+      // Kỹ năng/thể lực ngẫu nhiên đa dạng từ 0.3x (vịt lười/chậm) đến 2.5x (vịt tên lửa) để phân hóa cực xa
+      swimmerSkills[name] = Math.random() * 2.2 + 0.3;
+      distanceMeters[name] = 0;
+      raceState.positions[name] = 0;
     });
 
     const poolEl = document.getElementById("kyna-swim-lanes-container");
@@ -268,17 +284,17 @@
       let allFinished = true;
       const totalStudents = raceState.students.length;
 
-      // Tìm vị trí của người dẫn đầu để hỗ trợ cơ chế bám đuổi (Rubberbanding)
-      let maxPos = 0;
+      // Tìm vị trí mét của người dẫn đầu
+      let maxMeters = 0;
       raceState.students.forEach(name => {
-        const p = raceState.positions[name] || 0;
-        if (p > maxPos) maxPos = p;
+        const d = distanceMeters[name] || 0;
+        if (d > maxMeters) maxMeters = d;
       });
 
       raceState.students.forEach((name) => {
-        let currentPos = raceState.positions[name] || 0;
+        let currentMeters = distanceMeters[name] || 0;
 
-        if (currentPos < 100) {
+        if (currentMeters < totalMeters) {
           allFinished = false;
 
           let effect = swimmerEffects[name] || { state: "NORMAL", ticksLeft: 0 };
@@ -287,10 +303,10 @@
           if (effect.ticksLeft > 0) {
             effect.ticksLeft--;
           } else {
-            // Học sinh ở xa người dẫn đầu có cơ hội Bứt Tốc cao hơn (tạo kịch tính bám đuổi)
-            const distFromLeader = maxPos - currentPos;
-            const boostChance = 0.12 + (distFromLeader > 20 ? 0.12 : 0);
-            const slowChance = 0.08;
+            // Học sinh ở xa người dẫn đầu có cơ hội bứt tốc bám đuổi
+            const distFromLeader = maxMeters - currentMeters;
+            const boostChance = 0.12 + (distFromLeader > 50 ? 0.15 : 0);
+            const slowChance = 0.15;
 
             const roll = Math.random();
             if (roll < boostChance) {
@@ -298,7 +314,7 @@
               effect.ticksLeft = Math.floor(Math.random() * 6) + 4; // Bứt tốc 0.8s - 2.0s
             } else if (roll < boostChance + slowChance) {
               effect.state = "SLOW";
-              effect.ticksLeft = Math.floor(Math.random() * 4) + 3; // Đuối sức 0.6s - 1.4s
+              effect.ticksLeft = Math.floor(Math.random() * 8) + 5; // Đuối sức/thong thả 1.0s - 2.6s
             } else {
               effect.state = "NORMAL";
               effect.ticksLeft = 0;
@@ -307,21 +323,24 @@
 
           swimmerEffects[name] = effect;
 
-          // Nhân hệ số tốc độ tương ứng với trạng thái và kỹ năng cá nhân
+          // Hệ số tốc độ tương ứng với trạng thái
           let speedMultiplier = 1.0;
           if (effect.state === "BOOST") {
-            speedMultiplier = (Math.random() * 2.5 + 3.5) * skill; // Bứt tốc mạnh 3.5x - 6.0x * skill!
+            speedMultiplier = (Math.random() * 3.5 + 4.5) * skill; // Bứt tốc mạnh 4.5x - 8.0x * skill!
           } else if (effect.state === "SLOW") {
-            speedMultiplier = Math.random() * 0.15 + 0.05; // Đuối sức giảm mạnh còn 0.05x - 0.2x
+            speedMultiplier = Math.random() * 0.05; // Đuối sức / Dừng chân bơi thong thả 0.0x - 0.05x
           } else {
-            speedMultiplier = (Math.random() * 1.4 + 0.4) * skill; // Tốc độ bình thường 0.4x - 1.8x * skill
+            speedMultiplier = (Math.random() * 1.2 + 0.3) * skill; // Tốc độ bình thường
           }
 
-          const speedDelta = baseIncrement * speedMultiplier;
-          currentPos = Math.min(100, currentPos + speedDelta);
-          raceState.positions[name] = currentPos;
+          const deltaMeters = baseStepMeters * speedMultiplier;
+          currentMeters = Math.min(totalMeters, currentMeters + deltaMeters);
+          distanceMeters[name] = currentMeters;
 
-          if (currentPos >= 100 && !raceState.rankings.includes(name)) {
+          const pct = Math.min(100, (currentMeters / totalMeters) * 100);
+          raceState.positions[name] = pct;
+
+          if (currentMeters >= totalMeters && !raceState.rankings.includes(name)) {
             raceState.rankings.push(name);
             raceState.finishedStudents[name] = { rank: raceState.rankings.length };
           }
@@ -329,6 +348,7 @@
       });
 
       renderSwimmerPositionsUI();
+      updateOverlayTimerUI();
 
       if (allFinished || raceState.rankings.length >= totalStudents) {
         finishRaceNow();
@@ -536,7 +556,7 @@
     if (titleEl) {
       titleEl.textContent = raceState.raceMode === "WORD_RELAY" 
         ? "🔤 ĐUA BƠI TIẾP SỨC TỪ VỰNG" 
-        : `🦆 ĐUA BƠI TỰ ĐỘNG GAME VỊT (${raceState.raceDurationSeconds || 90}s)`;
+        : `🦆 ĐUA BƠI TỰ ĐỘNG GAME VỊT (${raceState.raceDistanceMeters || 500}m)`;
     }
 
     const statusTextEl = document.getElementById("kyna-swim-status-text");
@@ -593,16 +613,17 @@
         return `🔤 Hãy nhắn "${wordStr}" vào chat BBB để tiến lên!`;
       }
 
-      let maxPos = 0;
+      const totalMeters = raceState.raceDistanceMeters || 500;
+      let maxMeters = 0;
       (raceState.students || []).forEach(name => {
-        const p = raceState.positions[name] || 0;
-        if (p > maxPos) maxPos = p;
+        const d = distanceMeters[name] || 0;
+        if (d > maxMeters) maxMeters = d;
       });
 
-      if (maxPos >= 75) {
+      if (maxMeters >= totalMeters * 0.75) {
         return `🏁 VẠCH ĐÍCH ĐÃ XUẤT HIỆN! Các vận động viên đang bứt tốc về đích! ⚡`;
       }
-      return `⚡ Đang đua bơi tự động kiểu Game Vịt! (${raceState.timeLeftSeconds || 60}s còn lại)`;
+      return `⚡ Đang đua bơi tự động kiểu Game Vịt! (${Math.floor(maxMeters)}m / ${totalMeters}m)`;
     }
     if (raceState.gameState === "FINISHED") {
       return "🏁 Cuộc đua kết thúc! Chúc mừng các nhà vô địch!";
@@ -656,6 +677,7 @@
 
   /**
    * Cập nhật vị trí di chuyển của các vận động viên bơi
+   * Hỗ trợ hệ thống Camera tracking đuổi theo tay bơi dẫn đầu & đẩy các tay bơi tụt hậu trôi khỏi màn hình (Left < 0)
    */
   function renderSwimmerPositionsUI() {
     if (!raceState.students) return;
@@ -663,18 +685,31 @@
     const startPx = 55;
     const maxDistancePx = 360;
 
-    let maxPos = 0;
-    raceState.students.forEach((name) => {
-      const p = raceState.positions[name] || 0;
-      if (p > maxPos) maxPos = p;
+    let maxMeters = 0;
+    (raceState.students || []).forEach((name) => {
+      const d = distanceMeters[name] || 0;
+      if (d > maxMeters) maxMeters = d;
     });
 
-    // Vạch đích chỉ xuất hiện khi có vận động viên bơi tới 75% quãng đường hoặc khi đã cán đích!
+    const totalMeters = raceState.raceDistanceMeters || 500;
+    
+    // Tính toán góc quay Camera bám đuổi tay bơi dẫn đầu
+    const viewportSpanMeters = Math.max(80, totalMeters * 0.25);
+    let cameraStartMeters = 0;
+
+    if (maxMeters < totalMeters - viewportSpanMeters * 0.5) {
+      cameraStartMeters = Math.max(0, maxMeters - viewportSpanMeters * 0.70);
+    } else {
+      // Đã tới chặng vạch đích -> Giữ cố định Camera ở cuối bể bơi
+      cameraStartMeters = Math.max(0, totalMeters - viewportSpanMeters);
+    }
+
+    // Hiển thị vạch đích khi Camera đã quay tới chặng vạch đích!
     const poolContainer = document.getElementById("kyna-swim-lanes-container");
     if (poolContainer) {
       const finishLineEl = poolContainer.querySelector(".kyna-finish-line");
       if (finishLineEl) {
-        if (maxPos >= 75 || raceState.gameState === "FINISHED") {
+        if (cameraStartMeters >= totalMeters - viewportSpanMeters * 0.95 || raceState.gameState === "FINISHED") {
           finishLineEl.classList.add("show-finish-line");
         } else {
           finishLineEl.classList.remove("show-finish-line");
@@ -687,11 +722,20 @@
       const rankSlotEl = document.getElementById(`rank-slot-${idx}`);
       if (!swimmerEl) return;
 
-      const pct = raceState.positions[name] || 0;
-      const currentPx = startPx + (pct / 100) * maxDistancePx;
+      const currentM = distanceMeters[name] || 0;
+      let relPct = 0;
+      
+      if (raceState.raceMode === "AUTO_SPEED") {
+        const relMeter = currentM - cameraStartMeters;
+        relPct = relMeter / viewportSpanMeters;
+      } else {
+        relPct = (raceState.positions[name] || 0) / 100;
+      }
+
+      const currentPx = startPx + relPct * maxDistancePx;
       swimmerEl.style.left = `${currentPx}px`;
 
-      // Cập nhật hiệu ứng Bứt Tốc / Đuối Sức cho vận động viên
+      // Cập nhật hiệu ứng Bứt Tốc / Đuối Sức trực tiếp trên avatar & tên (không dùng thẻ chữ)
       const effect = swimmerEffects[name];
       if (effect && effect.state === "BOOST") {
         swimmerEl.classList.add("is-boosting");
@@ -709,9 +753,7 @@
         else if (rankIdx === 1) rankSlotEl.innerHTML = `<span class="kyna-rank-badge kyna-rank-2">🥈 Hạng 2</span>`;
         else if (rankIdx === 2) rankSlotEl.innerHTML = `<span class="kyna-rank-badge kyna-rank-3">🥉 Hạng 3</span>`;
         else if (rankIdx > 2) rankSlotEl.innerHTML = `<span class="kyna-rank-badge" style="background:rgba(255,255,255,0.1);">#${rankIdx + 1}</span>`;
-        else if (effect && effect.state === "BOOST") rankSlotEl.innerHTML = `<span class="kyna-boost-tag">⚡ BỨT TỐC!</span>`;
-        else if (effect && effect.state === "SLOW") rankSlotEl.innerHTML = `<span class="kyna-slow-tag">💦 ĐUỐI SỨC</span>`;
-        else if (pct >= 100) rankSlotEl.innerHTML = `<span class="kyna-finished-tag">🏁 Đã về đích</span>`;
+        else if (currentM >= totalMeters || (raceState.positions[name] || 0) >= 100) rankSlotEl.innerHTML = `<span class="kyna-finished-tag">🏁 Đã về đích</span>`;
         else rankSlotEl.innerHTML = "";
       }
     });

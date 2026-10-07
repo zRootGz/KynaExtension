@@ -180,22 +180,32 @@
             <label style="font-weight: 700; font-size: 13px; margin-bottom: 4px; display: block;">Chọn thể thức cuộc đua:</label>
             <select id="select-swim-mode" class="form-control">
               <option value="WORD_RELAY" selected>🔤 Đua Bơi Tiếp Sức Từ Vựng (Gõ đúng từ để bơi & đổi từ)</option>
-              <option value="AUTO_SPEED">🦆 Đua Bơi Tự Động kiểu Game Vịt (Đua ngẫu nhiên theo thời gian)</option>
+              <option value="AUTO_SPEED">🦆 Đua Bơi Tự Động kiểu Game Vịt (Đua ngẫu nhiên theo mét đường đua)</option>
             </select>
           </div>
 
-          <!-- Setting sub-panel for race duration setting -->
+          <!-- Setting sub-panel for AUTO_SPEED mode: Track Distance -->
+          <div id="swim-auto-distance-group" class="form-group" style="margin-top: 10px;">
+            <label style="font-weight: 700; font-size: 13px; margin-bottom: 4px; display: block;">🚩 Độ dài đường đua (Mét):</label>
+            <select id="select-swim-distance" class="form-control">
+              <option value="100">100m (Siêu bứt tốc)</option>
+              <option value="200">200m (Tiêu chuẩn)</option>
+              <option value="500" selected>500m (Dài - Tách tốp kịch tính)</option>
+              <option value="1000">1000m (Rất dài - Duck Race Lạc Trôi)</option>
+              <option value="2000">2000m (Siêu dài - Thách thức tay bơi)</option>
+            </select>
+          </div>
+
+          <!-- Setting sub-panel for WORD_RELAY mode: Race Duration -->
           <div id="swim-auto-timer-group" class="form-group" style="margin-top: 10px;">
-            <label style="font-weight: 700; font-size: 13px; margin-bottom: 4px; display: block;">⏱️ Thời lượng tối đa cuộc đua (Giây):</label>
+            <label style="font-weight: 700; font-size: 13px; margin-bottom: 4px; display: block;">⏱️ Thời lượng tối đa bơi tiếp sức (Giây):</label>
             <select id="select-swim-duration" class="form-control">
-              <option value="15">15 giây (Siêu tốc)</option>
               <option value="30">30 giây</option>
               <option value="45">45 giây</option>
               <option value="60">60 giây</option>
               <option value="90" selected>90 giây (Khuyên dùng)</option>
               <option value="120">120 giây (2 phút)</option>
               <option value="180">180 giây (3 phút)</option>
-              <option value="240">240 giây (4 phút)</option>
               <option value="300">300 giây (5 phút)</option>
               <option value="600">600 giây (10 phút)</option>
             </select>
