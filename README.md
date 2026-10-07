@@ -134,7 +134,7 @@ Game **Đua Bơi** tạo không khí thi đấu sôi nổi kịch tính giữa c
 | Sự cố | Nguyên nhân | Cách khắc phục |
 | :--- | :--- | :--- |
 | **Không thấy Overlay xuất hiện trên BBB** | Chưa bật Overlay hoặc tab BBB bị mất kết nối script | Bấm nút `🎮 Bật Overlay` trên Extension hoặc nhấn `F5` làm mới trang BBB. |
-| **Extension không đọc được chat học sinh** | Cột Khung Chat trong BBB đang bị thu nhỏ/đóng | Đảm bảo cột Chat công khai trong BigBlueButton đang được mở. |
+| **Extension không đọc được chat học sinh** | Cột Khung Chat trong BBB đang bị thu nhỏ/đóng | Đảm bảo cột Chat công khai trong BigBlueButton đang được mở và các quyền của extension đã được bật hết trong mục `Details` |
 | **File Excel nhập vào bị báo lỗi** | Cột 1 không có Từ Tiếng Anh hoặc cột 2 thiếu Gợi ý | Bấm nút `📥 Tải File mẫu Excel (.xls)` để lấy chuẩn định dạng file. |
 | **Tên học sinh không cập nhật vào Đua bơi** | Học sinh nhắn từ khác không phải `join` | Nhắc học sinh nhắn đúng từ `join` hoặc `ready` vào chat, hoặc bấm `📥 Lấy từ lớp BBB`. |
 
