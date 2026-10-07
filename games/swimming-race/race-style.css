@@ -159,7 +159,7 @@
   flex-shrink: 0 !important;
   max-width: none !important;
   overflow: visible !important;
-  transition: left 0.22s ease-out, transform 0.22s ease-out;
+  transition: left 0.08s linear, transform 0.15s ease-out;
   z-index: 10;
 }
 
