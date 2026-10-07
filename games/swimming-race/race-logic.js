@@ -136,6 +136,7 @@
     }
 
     const oldGameState = raceState.gameState;
+    const existingWordObj = raceState.currentWordObj;
 
     raceState = { 
       ...raceState, 
@@ -143,14 +144,17 @@
       students: newState.students || raceState.students || [],
       positions: newState.positions || raceState.positions || {},
       rankings: newState.rankings || raceState.rankings || [],
-      finishedStudents: newState.finishedStudents || raceState.finishedStudents || {}
+      finishedStudents: newState.finishedStudents || raceState.finishedStudents || {},
+      currentWordObj: newState.currentWordObj || existingWordObj
     };
 
     if (raceState.activeGame === "SWIMMING_RACE") {
-      if (raceState.gameState === "RACING" && oldGameState !== "RACING") {
-        usedWordsList = [];
-        if (raceState.raceMode === "WORD_RELAY" && (!raceState.currentWordObj || !raceState.currentWordObj.word)) {
-          raceState.currentWordObj = pickNextRelayWord();
+      if (raceState.gameState === "RACING") {
+        if (raceState.raceMode === "WORD_RELAY") {
+          if (!raceState.currentWordObj || !raceState.currentWordObj.word) {
+            raceState.currentWordObj = pickNextRelayWord();
+            saveStateToStorage();
+          }
         }
       }
 
@@ -294,9 +298,10 @@
 
       if (targetWordObj && targetWordObj.word) {
         const normTarget = normStr(targetWordObj.word);
+        const tokens = messageText.toString().trim().toUpperCase().split(/[^A-Z0-9]+/);
 
         // HỌC SINH GÕ ĐÚNG TỪ VỰNG MỤC TIÊU!
-        if (normUserMsg === normTarget) {
+        if (normUserMsg === normTarget || tokens.includes(normTarget)) {
           // Tiến lên 1 bước (+16%)
           const newPos = Math.min(100, currentPos + 16);
           raceState.positions[matchedName] = newPos;
@@ -321,13 +326,12 @@
 
           renderSwimmerPositionsUI();
           createOrUpdateOverlay();
+          saveStateToStorage();
 
           // Kiểm tra xem tất cả học sinh đã về đích chưa
           const allDone = raceState.students.every(s => (raceState.positions[s] || 0) >= 100);
           if (allDone || raceState.rankings.length >= raceState.students.length) {
             finishRaceNow();
-          } else {
-            saveStateToStorage();
           }
         }
       }
@@ -412,18 +416,35 @@
     const container = document.getElementById("kyna-relay-word-prompt-container");
     if (!container) return;
 
-    if (raceState.raceMode !== "WORD_RELAY" || raceState.gameState !== "RACING") {
+    if (raceState.raceMode !== "WORD_RELAY") {
       container.innerHTML = "";
       return;
     }
 
-    const w = raceState.currentWordObj || { word: "READY", hint: "Gõ từ vựng xuất hiện để bơi!", emoji: "🎯" };
+    // Tự động chọn từ nếu đang đua mà chưa có từ
+    if (raceState.gameState === "RACING" && (!raceState.currentWordObj || !raceState.currentWordObj.word)) {
+      raceState.currentWordObj = pickNextRelayWord();
+    }
+
+    const w = raceState.currentWordObj;
+    if (!w || !w.word || raceState.gameState !== "RACING") {
+      if (raceState.gameState === "IDLE") {
+        container.innerHTML = `
+          <div class="kyna-swim-word-card" style="border-color:#f59e0b;">
+            <div class="kyna-word-prompt-label">🏁 THỂ THỨC: ĐUA BƠI TIẾP SỨC TỪ VỰNG</div>
+            <div class="kyna-target-hint">Học sinh nhắn 'join' trong chat BBB để ghi tên. GV nhấn 'Bắt đầu' để hiển thị từ vựng đua!</div>
+          </div>`;
+      } else {
+        container.innerHTML = "";
+      }
+      return;
+    }
 
     container.innerHTML = `
       <div class="kyna-swim-word-card">
-        <div class="kyna-word-prompt-label">🎯 GÕ TỪ ĐÚNG VÀO CHAT BBB ĐỂ BƠI TIẾN LÊN:</div>
+        <div class="kyna-word-prompt-label">🎯 GÕ CHÍNH XÁC TỪ NÀY VÀO CHAT BBB ĐỂ BƠI TIẾN LÊN:</div>
         <div class="kyna-word-target-display">
-          <span class="kyna-target-emoji">${w.emoji || "✨"}</span>
+          <span class="kyna-target-emoji">${w.emoji || "🏊"}</span>
           <span class="kyna-target-text">${escapeHtml(w.word)}</span>
         </div>
         <div class="kyna-target-hint">💡 Gợi ý: ${escapeHtml(w.hint || "")}</div>
@@ -434,7 +455,8 @@
   function getRaceStatusText() {
     if (raceState.gameState === "RACING") {
       if (raceState.raceMode === "WORD_RELAY") {
-        return `🔤 Hãy nhắn "${raceState.currentWordObj ? raceState.currentWordObj.word : "TỪ KHÓA"}" vào chat để tiến lên!`;
+        const wordStr = raceState.currentWordObj ? raceState.currentWordObj.word : "TỪ KHÓA";
+        return `🔤 Hãy nhắn "${wordStr}" vào chat BBB để tiến lên!`;
       }
       return `⚡ Đang đua bơi tự động kiểu Game Vịt! (${raceState.raceDurationSeconds || 30}s)`;
     }
