@@ -263,9 +263,19 @@
 
     const totalMeters = raceState.raceDistanceMeters || 500;
     const intervalMs = 60; // Tần số 60ms cho chuyển động siêu mượt không giật lag
-    const baseStepMeters = totalMeters / 500; // Khoảng cách cơ bản mỗi tick 60ms
+
+    // Tính toán tốc độ bơi thực tế tùy theo độ dài đường đua (2000m diễn ra trong ~3.5 phút kịch tính)
+    let targetRaceTicks = 950;
+    if (totalMeters <= 100) targetRaceTicks = 280;        // ~17s
+    else if (totalMeters <= 200) targetRaceTicks = 480;   // ~28s
+    else if (totalMeters <= 500) targetRaceTicks = 950;   // ~57s
+    else if (totalMeters <= 1000) targetRaceTicks = 1800; // ~108s (1.8m)
+    else targetRaceTicks = 3400;                         // ~204s (3.4m)
+
+    const baseStepMeters = totalMeters / targetRaceTicks;
 
     raceState.raceStartTime = Date.now();
+    raceState.finishTimeoutId = null;
     swimmerEffects = {};
     swimmerSkills = {};
     distanceMeters = {};
@@ -315,7 +325,7 @@
           } else {
             // Thay đổi trạng thái bứt tốc / nghỉ ngơi mượt mà
             const distFromLeader = maxMeters - currentMeters;
-            const boostChance = 0.15 + (distFromLeader > 40 ? 0.15 : 0);
+            const boostChance = 0.15 + (distFromLeader > 30 ? 0.15 : 0);
             const slowChance = 0.20;
 
             const roll = Math.random();
@@ -325,11 +335,11 @@
 
             if (roll < boostChance) {
               effectState = "BOOST";
-              targetSpd = (Math.random() * 0.6 + 1.5) * skill; // Bứt tốc mượt 1.5x - 2.1x * skill
+              targetSpd = (Math.random() * 0.5 + 1.4) * skill; // Bứt tốc mượt 1.4x - 1.9x * skill
               durationTicks = Math.floor(Math.random() * 25) + 20; // 1.2s - 2.7s
             } else if (roll < boostChance + slowChance) {
               effectState = "SLOW";
-              targetSpd = (Math.random() * 0.25 + 0.3) * skill; // Đuối sức mượt 0.3x - 0.55x * skill
+              targetSpd = (Math.random() * 0.25 + 0.35) * skill; // Đuối sức mượt 0.35x - 0.6x * skill
               durationTicks = Math.floor(Math.random() * 30) + 20;
             }
 
@@ -361,8 +371,15 @@
       renderSwimmerPositionsUI();
       updateOverlayTimerUI();
 
-      if (allFinished || raceState.rankings.length >= totalStudents) {
-        finishRaceNow();
+      // Dừng cuộc đua ngay lập tức khi đã xác định đủ Top 3 nhà vô địch (🥇 🥈 🥉)!
+      const targetWinnersCount = Math.min(3, totalStudents);
+      if (allFinished || raceState.rankings.length >= targetWinnersCount) {
+        if (!raceState.finishTimeoutId) {
+          raceState.finishTimeoutId = setTimeout(() => {
+            raceState.finishTimeoutId = null;
+            finishRaceNow();
+          }, 1200);
+        }
       }
     }, intervalMs);
   }
@@ -704,19 +721,20 @@
 
     const totalMeters = raceState.raceDistanceMeters || 500;
     
-    // Tính toán góc quay Camera smooth lerp bám đuổi tay bơi dẫn đầu
-    const viewportSpanMeters = Math.max(80, totalMeters * 0.28);
+    // Tính toán góc quay Camera bám chặt tay bơi dẫn đầu (Viewport cố định 50m nước)
+    const viewportSpanMeters = 50;
     let targetCam = 0;
 
-    if (maxMeters < totalMeters - viewportSpanMeters * 0.5) {
+    if (maxMeters < totalMeters - viewportSpanMeters * 0.4) {
+      // Giữ người dẫn đầu luôn ở vị trí 65% khung nhìn lane
       targetCam = Math.max(0, maxMeters - viewportSpanMeters * 0.65);
     } else {
       // Đã tới chặng vạch đích -> Giữ cố định Camera ở cuối bể bơi
       targetCam = Math.max(0, totalMeters - viewportSpanMeters);
     }
 
-    // Nội suy mượt mà vị trí Camera
-    currentCameraStartMeters += (targetCam - currentCameraStartMeters) * 0.08;
+    // Nội suy mượt mà vị trí Camera bám đuổi tay bơi dẫn đầu
+    currentCameraStartMeters += (targetCam - currentCameraStartMeters) * 0.12;
 
     // Hiển thị vạch đích khi Camera đã quay tới chặng vạch đích!
     const poolContainer = document.getElementById("kyna-swim-lanes-container");

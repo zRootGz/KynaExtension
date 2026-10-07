@@ -122,10 +122,9 @@ Game **Đua Bơi** tạo không khí thi đấu sôi nổi kịch tính giữa c
   - Học sinh cán đích (100%) sẽ nhận huy chương (🥇 Hạng 1, 🥈 Hạng 2, 🥉 Hạng 3) và hiển thị `🏁 Đã về đích`.
 
 ### Thể thức 2: 🦆 Đua Bơi Tự Động kiểu Game Vịt (Duck Race)
-- **Thi đấu theo Độ dài Đường đua Mét (100m - 2000m)**: Thay vì giới hạn thời gian đếm ngược (dễ gây xung đột cut-off), cuộc đua diễn ra theo độ dài đường đua tùy chọn (**100m, 200m, 500m, 1000m, 2000m**). Cuộc đua tự động tiếp diễn cho đến khi các vận động viên lần lượt cán đích!
-- **Hệ thống Camera Tracking & Tụt lùi trôi khỏi màn hình (Off-screen)**:
-  - Khung nhìn camera tự động bám đuổi theo nhóm dẫn đầu.
-  - Vận động viên có hệ số thể lực/kỹ năng ngẫu nhiên cực lớn ($0.3\times \rightarrow 2.5\times$). Những tay bơi lười/đuối sức sẽ dừng chân trôi dần khỏi màn hình về phía bên trái ($Left < 0$), tạo cảm giác đường đua cực kỳ dài và hồi hộp chuẩn Game Vịt.
+- **Thi đấu theo Độ dài Đường đua Mét (100m - 2000m)**: Tốc độ bơi được điều tiết chuẩn thực tế theo từng độ dài đường đua (100m diễn ra ~17s, 500m ~1 phút, 2000m diễn ra ~3.5 phút kịch tính).
+- **Camera Bám Chặt Người Dẫn Đầu (Leader Focus - Viewport 50m)**: Khung nhìn camera tự động khóa chặt người dẫn đầu ở vị trí 65% làn bơi; những con bơi tụt hậu hơn 35m sẽ trôi khỏi màn hình sang mép trái, tạo độ sâu và hồi hộp chuẩn Game Vịt.
+- **Tự động Dừng Game & Vinh danh khi tìm đủ Top 1, 2, 3**: Ngay khi xác định đủ 3 nhà vô địch cán đích (🥇 Hạng 1, 🥈 Hạng 2, 🥉 Hạng 3), cuộc đua tự động hoàn tất và hiển thị Bảng Vinh Danh Podiums lập tức!
 - **Hiệu ứng Hình ảnh Tinh tế (Bỏ thẻ chữ rác)**: Loại bỏ các thẻ chữ "BỨT TỐC!" và "ĐUỐI SỨC" gây rối mắt; trạng thái bứt tốc/đuối sức được thể hiện trực quan 100% qua hoạt ảnh quạt tay bơi nhanh, quầng sáng điện quang và bóng nước bao quanh nhân vật.
 - **Tối ưu Giao diện Vạch Đích**: Thẻ tên vận động viên được bảo vệ bằng quy tắc `white-space: nowrap` và điểm dừng 360px sát vạch cảm ứng, tuyệt đối không bị dồn ép hay vỡ chữ khi cán đích.
 
