@@ -32,8 +32,11 @@
     revealedLetters: [],
     timerId: null,
     timeLeft: 60,
-    isFirstWinner: true
+    isFirstWinner: true,
+    isSolved: false
   };
+
+  let autoNextTimeoutId = null;
 
   // Phần tử DOM Overlay
   let overlayEl = null;
@@ -112,7 +115,7 @@
    * Bắt đầu một vòng chơi từ mới
    */
   async function startNewRound() {
-    clearInterval(currentRound.timerId);
+    stopCurrentRound();
 
     if (!gameState.quizWords || gameState.quizWords.length === 0) {
       if (typeof window.getWordsByCategory === "function") {
@@ -157,6 +160,10 @@
       clearInterval(currentRound.timerId);
       currentRound.timerId = null;
     }
+    if (autoNextTimeoutId) {
+      clearTimeout(autoNextTimeoutId);
+      autoNextTimeoutId = null;
+    }
   }
 
   /**
@@ -169,18 +176,52 @@
 
       if (currentRound.timeLeft <= 0) {
         clearInterval(currentRound.timerId);
+        currentRound.timerId = null;
         onRoundTimeOut();
       }
     }, 1000);
   }
 
   /**
-   * Khi hết thời gian đếm ngược
+   * Khi hết thời gian đếm ngược (60s)
    */
   function onRoundTimeOut() {
+    if (currentRound.isSolved) return;
+    currentRound.isSolved = true;
+
+    if (currentRound.timerId) {
+      clearInterval(currentRound.timerId);
+      currentRound.timerId = null;
+    }
+
     currentRound.revealedLetters.fill(true);
     renderWordSlotsUI();
-    showToastNotification("⏰ Hết giờ!", `Đáp án đúng là: ${currentRound.wordObj.word}`);
+
+    const winnerBox = document.getElementById("kyna-winner-box");
+    if (winnerBox) {
+      winnerBox.innerHTML = `⏰ <strong>Hết giờ!</strong> Đáp án đúng là: <strong>${escapeHtml(currentRound.wordObj.word)}</strong>`;
+      winnerBox.style.display = "block";
+      winnerBox.style.background = "rgba(239, 68, 68, 0.25)";
+      winnerBox.style.borderColor = "#EF4444";
+      winnerBox.style.color = "#F87171";
+    }
+
+    showToastNotification("⏰ HẾT GIỜ!", `Đáp án đúng là: <strong>${escapeHtml(currentRound.wordObj.word)}</strong>`);
+
+    if (autoNextTimeoutId) clearTimeout(autoNextTimeoutId);
+
+    autoNextTimeoutId = setTimeout(() => {
+      autoNextTimeoutId = null;
+      if (gameState.gameState === "RUNNING") {
+        if (gameState.currentWordIndex + 1 < gameState.quizWords.length) {
+          gameState.currentWordIndex++;
+          saveStateToStorage();
+          startNewRound();
+        } else {
+          showToastNotification("🏁 HOÀN THÀNH!", "Đã hết toàn bộ danh sách từ vựng!");
+        }
+      }
+    }, 3500);
   }
 
   /**
@@ -220,7 +261,7 @@
             </div>
           </div>
 
-          <div class="kyna-winner-box hidden" id="kyna-winner-box" style="margin-top: 10px; padding: 10px; background: rgba(16, 185, 129, 0.2); border: 1px solid #10B981; border-radius: 8px; text-align: center; color: #10B981; font-weight: bold; font-size: 16px;"></div>
+          <div class="kyna-winner-box hidden" id="kyna-winner-box" style="margin-top: 10px; padding: 12px; background: rgba(16, 185, 129, 0.25); border: 1.5px solid #10B981; border-radius: 12px; text-align: center; color: #34D399; font-weight: bold; font-size: 16px;"></div>
 
           <div class="kyna-controls-row">
             <button class="kyna-action-btn kyna-btn-hint" id="kyna-action-hint">💡 Mở 1 chữ cái</button>
@@ -244,6 +285,10 @@
       });
 
       document.getElementById("kyna-action-next").addEventListener("click", () => {
+        if (autoNextTimeoutId) {
+          clearTimeout(autoNextTimeoutId);
+          autoNextTimeoutId = null;
+        }
         if (gameState.currentWordIndex + 1 < gameState.quizWords.length) {
           gameState.currentWordIndex++;
           saveStateToStorage();
@@ -333,20 +378,50 @@
   }
 
   /**
-   * Render các ô chữ ẩn
+   * Render các ô chữ ẩn theo nhóm từ (Word Groups) & tự động điều chỉnh cỡ ô chữ cho từ/cụm từ dài
    */
   function renderWordSlotsUI() {
     const container = document.getElementById("kyna-slots-container");
     if (!container) return;
 
-    const norm = currentRound.normalizedWord;
-    container.innerHTML = norm.split("").map((char, i) => {
-      const isRevealed = currentRound.revealedLetters[i];
-      return `
-        <div class="kyna-letter-box ${isRevealed ? "revealed" : ""}">
+    const rawWordStr = (currentRound.wordObj && currentRound.wordObj.word) ? currentRound.wordObj.word.trim() : "";
+    if (!rawWordStr) {
+      container.innerHTML = "";
+      return;
+    }
+
+    // Tách các từ trong câu/cụm từ theo khoảng trắng
+    const words = rawWordStr.split(/\s+/);
+
+    // Tính tổng số ký tự để scaling cỡ ô chữ
+    let totalChars = 0;
+    words.forEach(w => {
+      totalChars += window.normalizeAnswerString(w).length;
+    });
+
+    let sizeClass = "";
+    if (totalChars > 10) {
+      sizeClass = "box-small";
+    } else if (totalChars > 7) {
+      sizeClass = "box-medium";
+    }
+
+    let globalNormIdx = 0;
+
+    const groupsHtml = words.map(w => {
+      const normChars = window.normalizeAnswerString(w).split("");
+      const boxesHtml = normChars.map(char => {
+        const charIdx = globalNormIdx++;
+        const isRevealed = currentRound.revealedLetters[charIdx];
+        return `<div class="kyna-letter-box ${sizeClass} ${isRevealed ? "revealed" : ""}">
           ${isRevealed ? char : "_"}
         </div>`;
+      }).join("");
+
+      return `<div class="kyna-word-group">${boxesHtml}</div>`;
     }).join("");
+
+    container.innerHTML = groupsHtml;
   }
 
   /**
@@ -383,6 +458,7 @@
    * Xóa Overlay khỏi DOM
    */
   function removeOverlay() {
+    stopCurrentRound();
     if (overlayEl && overlayEl.parentNode) {
       overlayEl.parentNode.removeChild(overlayEl);
       overlayEl = null;
@@ -416,11 +492,16 @@
     const isMatched = (normalizedGuess === targetWord) || tokens.includes(targetWord);
 
     if (isMatched) {
+      if (currentRound.isSolved) return;
       currentRound.isSolved = true;
+
       if (msgEl && msgEl.dataset) {
         msgEl.dataset.kynaRound = currentRound.roundId;
       }
-      clearInterval(currentRound.timerId);
+      if (currentRound.timerId) {
+        clearInterval(currentRound.timerId);
+        currentRound.timerId = null;
+      }
 
       const points = gameState.settings.scoreFirst || 10;
 
@@ -436,8 +517,11 @@
 
       const winnerBox = document.getElementById("kyna-winner-box");
       if (winnerBox) {
-        winnerBox.innerHTML = `🎉 <strong>${escapeHtml(senderName)}</strong> đã đoán đúng!`;
+        winnerBox.innerHTML = `🎉 <strong>${escapeHtml(senderName)}</strong> đã đoán đúng! (+${points}đ)`;
         winnerBox.style.display = "block";
+        winnerBox.style.background = "rgba(16, 185, 129, 0.25)";
+        winnerBox.style.borderColor = "#10B981";
+        winnerBox.style.color = "#34D399";
       }
 
       if (typeof window.playVictorySound === "function") {
@@ -446,12 +530,15 @@
 
       showToastNotification(
         "🎉 CHÚC MỪNG!",
-        `<strong>${escapeHtml(senderName)}</strong> đã đoán đúng từ <strong>${currentRound.wordObj.word}</strong>! (+${points} điểm)`
+        `<strong>${escapeHtml(senderName)}</strong> đã đoán đúng từ <strong>${escapeHtml(currentRound.wordObj.word)}</strong>! (+${points} điểm)`
       );
 
       saveStateToStorage();
 
-      setTimeout(() => {
+      if (autoNextTimeoutId) clearTimeout(autoNextTimeoutId);
+
+      autoNextTimeoutId = setTimeout(() => {
+        autoNextTimeoutId = null;
         if (gameState.gameState === "RUNNING") {
           if (gameState.currentWordIndex + 1 < gameState.quizWords.length) {
             gameState.currentWordIndex++;
@@ -514,3 +601,4 @@
     );
   }
 })();
+

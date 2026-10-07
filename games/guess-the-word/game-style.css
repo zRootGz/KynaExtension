@@ -3,15 +3,16 @@
 /* Base Overlay Container */
 #kyna-game-overlay {
   position: fixed;
-  top: 50px;
+  top: 40px;
   right: 20px;
-  width: 540px;
-  background: rgba(15, 23, 42, 0.95);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  border: 1px solid rgba(99, 102, 241, 0.45);
-  border-radius: 20px;
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.12);
+  width: 680px;
+  max-width: 92vw;
+  background: rgba(15, 23, 42, 0.96);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 2px solid rgba(99, 102, 241, 0.55);
+  border-radius: 24px;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.75), 0 0 35px rgba(99, 102, 241, 0.35);
   color: #f8fafc;
   font-family: 'Segoe UI', -apple-system, Roboto, sans-serif;
   z-index: 999999;
@@ -24,7 +25,7 @@
   display: none !important;
 }
 #kyna-game-overlay.minimized {
-  width: 280px;
+  width: 300px;
 }
 
 /* Draggable Header */
@@ -32,19 +33,20 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 14px 20px;
-  background: linear-gradient(90deg, rgba(99, 102, 241, 0.4) 0%, rgba(14, 165, 233, 0.4) 100%);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 14px 22px;
+  background: linear-gradient(90deg, #4f46e5 0%, #0284c7 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
   cursor: move;
 }
 
 .kyna-header-title {
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-size: 17px;
-  font-weight: 700;
+  gap: 12px;
+  font-size: 18px;
+  font-weight: 800;
   color: #ffffff;
+  letter-spacing: 0.5px;
 }
 
 .kyna-header-actions {
@@ -54,13 +56,13 @@
 }
 
 .kyna-icon-btn {
-  background: transparent;
+  background: rgba(255, 255, 255, 0.15);
   border: none;
-  color: #cbd5e1;
+  color: #ffffff;
   font-size: 16px;
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -68,27 +70,28 @@
   transition: all 0.2s;
 }
 .kyna-icon-btn:hover {
-  background: rgba(255, 255, 255, 0.18);
-  color: #ffffff;
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
 }
 
 /* Body Content */
 .kyna-overlay-body {
-  padding: 20px;
+  padding: 22px;
   display: flex;
   flex-direction: column;
   gap: 16px;
   align-items: center;
 }
 
-/* Image Viewer Frame */
+/* Image Viewer Frame - PHÓNG TO ẢNH MINH HỌA */
 .kyna-image-frame {
   width: 100%;
-  height: 330px;
-  background: #0f172a;
-  border-radius: 16px;
+  height: 380px;
+  background: #090d1a;
+  border-radius: 18px;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 2px solid rgba(99, 102, 241, 0.3);
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.6);
   position: relative;
   display: flex;
   align-items: center;
@@ -104,53 +107,84 @@
 
 .kyna-image-loading {
   position: absolute;
-  font-size: 14px;
+  font-size: 15px;
+  font-weight: 700;
   color: #a5b4fc;
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-/* Masked Letter Slots */
+/* Masked Letter Slots & Word Grouping - HỖ TRỢ CỤM TỪ & TỪ DÀI */
 .kyna-word-slots {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 12px;
-  margin: 8px 0;
+  align-items: center;
+  gap: 16px;
+  margin: 6px 0;
+  width: 100%;
+}
+
+.kyna-word-group {
+  display: inline-flex;
+  flex-wrap: nowrap;
+  gap: 6px;
+  align-items: center;
 }
 
 .kyna-letter-box {
-  width: 52px;
-  height: 62px;
-  background: rgba(30, 41, 59, 0.88);
+  width: 48px;
+  height: 58px;
+  background: rgba(30, 41, 59, 0.92);
   border: 2.5px solid #6366f1;
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 30px;
+  font-size: 28px;
   font-weight: 800;
   color: #67e8f9;
   box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+  transition: all 0.2s ease;
+}
+
+/* Scale kích thước ô chữ nhỏ hơn cho các từ dài */
+.kyna-letter-box.box-medium {
+  width: 40px;
+  height: 50px;
+  font-size: 24px;
+  border-width: 2px;
+}
+
+.kyna-letter-box.box-small {
+  width: 34px;
+  height: 44px;
+  font-size: 20px;
+  border-width: 2px;
+  border-radius: 8px;
 }
 
 .kyna-letter-box.revealed {
-  background: rgba(16, 185, 129, 0.3);
+  background: rgba(16, 185, 129, 0.35);
   border-color: #10b981;
   color: #34d399;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.5);
+  animation: popIn 0.3s ease-out;
 }
 
 /* Hint & Category Badges */
 .kyna-hint-box {
-  font-size: 16px;
-  color: #f1f5f9;
+  font-size: 17px;
+  font-weight: 700;
+  color: #f8fafc;
   text-align: center;
   background: rgba(255, 255, 255, 0.08);
-  padding: 10px 16px;
+  padding: 12px 20px;
   border-radius: 24px;
-  border: 1px dashed rgba(255, 255, 255, 0.22);
+  border: 1.5px dashed rgba(56, 189, 248, 0.5);
   width: 100%;
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
 }
 
 /* Timer & Progress Bar */
@@ -162,17 +196,17 @@
 }
 
 .kyna-timer-text {
-  font-size: 18px;
-  font-weight: 800;
+  font-size: 20px;
+  font-weight: 900;
   color: #f59e0b;
-  min-width: 60px;
+  min-width: 65px;
 }
 
 .kyna-progress-bar-bg {
   flex: 1;
-  height: 14px;
+  height: 16px;
   background: rgba(255, 255, 255, 0.12);
-  border-radius: 7px;
+  border-radius: 8px;
   overflow: hidden;
 }
 
@@ -186,29 +220,30 @@
 /* Overlay Action Buttons */
 .kyna-controls-row {
   display: flex;
-  gap: 12px;
+  gap: 14px;
   width: 100%;
 }
 
 .kyna-action-btn {
   flex: 1;
-  padding: 12px 16px;
+  padding: 14px 20px;
   border: none;
-  border-radius: 12px;
-  font-size: 14px;
-  font-weight: 700;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 800;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 .kyna-btn-next { background: #6366f1; color: #ffffff; }
-.kyna-btn-next:hover { background: #4f46e5; }
+.kyna-btn-next:hover { background: #4f46e5; transform: translateY(-2px); }
 
 .kyna-btn-hint { background: #f59e0b; color: #0f172a; }
-.kyna-btn-hint:hover { background: #d97706; }
+.kyna-btn-hint:hover { background: #d97706; transform: translateY(-2px); }
 
 /* Toast Notifications Container */
 #kyna-toast-container {
@@ -226,14 +261,14 @@
 .kyna-toast {
   background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   color: #ffffff;
-  padding: 12px 24px;
+  padding: 14px 28px;
   border-radius: 30px;
-  font-weight: 700;
-  font-size: 15px;
-  box-shadow: 0 10px 25px rgba(16, 185, 129, 0.5), 0 0 0 2px rgba(255, 255, 255, 0.3);
+  font-weight: 800;
+  font-size: 16px;
+  box-shadow: 0 12px 30px rgba(16, 185, 129, 0.5), 0 0 0 2px rgba(255, 255, 255, 0.3);
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   animation: kynaSlideDown 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
   pointer-events: auto;
 }
@@ -247,3 +282,4 @@
   from { opacity: 1; transform: translateY(0) scale(1); }
   to { opacity: 0; transform: translateY(-20px) scale(0.9); }
 }
+

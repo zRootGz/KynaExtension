@@ -38,9 +38,9 @@ function createCustomDoodleSvg(word, hint, emoji, themeColor = "#6366F1") {
     <polygon points="30,250 50,230 70,260" stroke="#10B981" stroke-width="2.5" fill="none" stroke-dasharray="3,2"/>
 
     <!-- Vùng Icon nét vẽ Doodle chính -->
-    <g transform="translate(140, 50)">
-      <circle cx="60" cy="55" r="55" stroke="${themeColor}" stroke-width="4" fill="#FFFFFF" stroke-dasharray="6,3"/>
-      <text x="60" y="72" font-size="62" text-anchor="middle" font-family="'Segoe UI Emoji', sans-serif">${emoji}</text>
+    <g transform="translate(140, 45)">
+      <circle cx="60" cy="60" r="58" stroke="${themeColor}" stroke-width="4" fill="#FFFFFF" stroke-dasharray="6,3"/>
+      <text x="60" y="82" font-size="76" text-anchor="middle" font-family="'Segoe UI Emoji', sans-serif">${emoji}</text>
     </g>
 
     <!-- Khung Trang trí Doodle Puzzle (KHÔNG HIỆN ĐÁP ÁN) -->
