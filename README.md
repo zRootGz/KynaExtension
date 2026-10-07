@@ -122,11 +122,12 @@ Game **Đua Bơi** tạo không khí thi đấu sôi nổi kịch tính giữa c
   - Học sinh cán đích (100%) sẽ nhận huy chương (🥇 Hạng 1, 🥈 Hạng 2, 🥉 Hạng 3) và hiển thị `🏁 Đã về đích`.
 
 ### Thể thức 2: 🦆 Đua Bơi Tự Động kiểu Game Vịt (Duck Race)
-- **Bứt tốc (`⚡ BỨT TỐC!`) & Đuối sức (`💦 ĐUỐI SỨC`) kịch tính**: Các nhân vật bơi ngẫu nhiên bứt phá tốc độ gấp **$2.5\times - 4.0\times$** hoặc bị đuối sức chậm lại, kết hợp cơ chế bám đuổi (rubberbanding) lật kèo dồn dập.
+- **Hệ số Thể lực & Bứt tốc Phân hóa (`⚡ BỨT TỐC!`, `💦 ĐUỐI SỨC`)**: Mỗi vận động viên được gán hệ số thể lực/kỹ năng riêng ngẫu nhiên ($0.65\times - 1.55\times$) kết hợp bứt tốc ngẫu nhiên khủng (**$3.5\times - 6.0\times$**), giúp các tay bơi bỏ xa nhau kịch tính thực sự chuẩn phong cách Game Vịt.
+- **Tối ưu Giao diện Vạch Đích**: Khung thông tin vận động viên (`.kyna-swimmer`) được bảo vệ bằng quy tắc `white-space: nowrap` và giới hạn điểm dừng 360px sát vạch cảm ứng, tuyệt đối không bị dồn ép hay vỡ chữ khi sát vạch đích.
 - **Hiệu ứng Sóng nước Cuộn dài (`is-racing`)**: Nền đường bơi có hoạt ảnh sóng nước cuộn về phía sau mượt mà, tạo cảm giác đường đua có chiều sâu thực sự.
 
 ### ⏱️ Bộ đếm thời gian tổng cuộc đua & Trao giải khi Hết giờ:
-- **Tùy chỉnh thời lượng:** Giáo viên có thể chọn thời gian cuộc đua: **15s, 30s, 45s, 60s, 90s (Khuyên dùng), 120s**.
+- **Đa dạng Tùy chọn Thời lượng:** Giáo viên có thể tùy chọn linh hoạt từ **15s, 30s, 45s, 60s, 90s (Khuyên dùng), 120s, 180s (3m), 240s (4m), 300s (5m)** đến **600s (10m)**.
 - **Trao giải khi Hết giờ:** Khi đồng hồ đếm ngược về `0s`, cuộc đua tự động dừng lại. Học sinh chưa về đích 100% sẽ được tự động xếp hạng trao giải (🥇 🥈 🥉) dựa trên **phần trăm quãng đường đã bơi xa nhất**!
 
 ### Ghi danh học sinh & Quyền bắt đầu:

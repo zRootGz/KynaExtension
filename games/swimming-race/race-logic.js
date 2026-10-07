@@ -234,6 +234,7 @@
   }
 
   let swimmerEffects = {}; // { "Bảo Nam": { state: "NORMAL"|"BOOST"|"SLOW", ticksLeft: 0 } }
+  let swimmerSkills = {}; // { "Bảo Nam": 0.65..1.55 } Hệ số kỹ năng/thể lực cá nhân tạo khoảng cách phân hóa rõ rệt
 
   /**
    * Vòng lặp hoạt ảnh đua bơi ngẫu nhiên kiểu Game Vịt (AUTO_SPEED)
@@ -250,9 +251,12 @@
 
     raceState.raceStartTime = Date.now();
     swimmerEffects = {};
+    swimmerSkills = {};
 
     raceState.students.forEach(name => {
       swimmerEffects[name] = { state: "NORMAL", ticksLeft: 0 };
+      // Mỗi vận động viên có thể lực/kỹ năng riêng ngẫu nhiên từ 0.65x đến 1.55x để tạo sự bứt phá cách biệt rõ rệt
+      swimmerSkills[name] = Math.random() * 0.9 + 0.65;
     });
 
     const poolEl = document.getElementById("kyna-swim-lanes-container");
@@ -278,22 +282,23 @@
           allFinished = false;
 
           let effect = swimmerEffects[name] || { state: "NORMAL", ticksLeft: 0 };
+          const skill = swimmerSkills[name] || 1.0;
 
           if (effect.ticksLeft > 0) {
             effect.ticksLeft--;
           } else {
             // Học sinh ở xa người dẫn đầu có cơ hội Bứt Tốc cao hơn (tạo kịch tính bám đuổi)
             const distFromLeader = maxPos - currentPos;
-            const boostChance = 0.08 + (distFromLeader > 15 ? 0.08 : 0);
-            const slowChance = 0.05;
+            const boostChance = 0.12 + (distFromLeader > 20 ? 0.12 : 0);
+            const slowChance = 0.08;
 
             const roll = Math.random();
             if (roll < boostChance) {
               effect.state = "BOOST";
-              effect.ticksLeft = Math.floor(Math.random() * 5) + 4; // Bứt tốc 0.8s - 1.6s
+              effect.ticksLeft = Math.floor(Math.random() * 6) + 4; // Bứt tốc 0.8s - 2.0s
             } else if (roll < boostChance + slowChance) {
               effect.state = "SLOW";
-              effect.ticksLeft = Math.floor(Math.random() * 4) + 3; // Đuối sức 0.6s - 1.2s
+              effect.ticksLeft = Math.floor(Math.random() * 4) + 3; // Đuối sức 0.6s - 1.4s
             } else {
               effect.state = "NORMAL";
               effect.ticksLeft = 0;
@@ -302,14 +307,14 @@
 
           swimmerEffects[name] = effect;
 
-          // Nhân hệ số tốc độ tương ứng với trạng thái
+          // Nhân hệ số tốc độ tương ứng với trạng thái và kỹ năng cá nhân
           let speedMultiplier = 1.0;
           if (effect.state === "BOOST") {
-            speedMultiplier = Math.random() * 1.5 + 2.5; // Bứt tốc gấp 2.5x - 4.0x!
+            speedMultiplier = (Math.random() * 2.5 + 3.5) * skill; // Bứt tốc mạnh 3.5x - 6.0x * skill!
           } else if (effect.state === "SLOW") {
-            speedMultiplier = Math.random() * 0.2 + 0.1; // Đuối sức giảm còn 0.1x - 0.3x
+            speedMultiplier = Math.random() * 0.15 + 0.05; // Đuối sức giảm mạnh còn 0.05x - 0.2x
           } else {
-            speedMultiplier = Math.random() * 1.1 + 0.5; // Tốc độ bình thường 0.5x - 1.6x
+            speedMultiplier = (Math.random() * 1.4 + 0.4) * skill; // Tốc độ bình thường 0.4x - 1.8x * skill
           }
 
           const speedDelta = baseIncrement * speedMultiplier;
@@ -656,7 +661,7 @@
     if (!raceState.students) return;
 
     const startPx = 55;
-    const maxDistancePx = 425;
+    const maxDistancePx = 360;
 
     let maxPos = 0;
     raceState.students.forEach((name) => {
