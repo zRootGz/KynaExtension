@@ -121,13 +121,13 @@
   z-index: 5;
 }
 
-/* Finish Line Touchpad */
+/* Finish Line Touchpad - Slide-in Entrance at final stretch */
 .kyna-finish-line {
   position: absolute;
-  right: 0;
+  right: -55px;
   top: 0;
   bottom: 0;
-  width: 42px;
+  width: 44px;
   background: repeating-linear-gradient(
     45deg,
     #ffffff,
@@ -136,8 +136,15 @@
     #0f172a 16px
   );
   border-left: 4px solid #ef4444;
-  box-shadow: -4px 0 10px rgba(0,0,0,0.5);
+  box-shadow: -6px 0 16px rgba(239, 68, 68, 0.6);
   z-index: 4;
+  opacity: 0;
+  transition: right 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.5s ease;
+}
+
+.kyna-finish-line.show-finish-line {
+  right: 0px;
+  opacity: 1;
 }
 
 /* Swimmer Container */

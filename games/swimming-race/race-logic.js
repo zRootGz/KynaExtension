@@ -32,7 +32,7 @@
   let raceTimerId = null;
   let countdownTimerId = null;
   let usedWordsList = [];
-  const avatars = ["🏊‍♂️", "🏊‍♀️", "🐬", "🦈", "🏊", "🏼‍♀️", "🚴‍♂️"];
+  const avatars = ["🏊‍♂️", "🏊‍♀️", "🐬", "🦈", "🧜‍♀️", "🦆", "⛵", "🚴‍♂️"];
 
   init();
 
@@ -153,8 +153,10 @@
 
     if (raceState.activeGame === "SWIMMING_RACE") {
       if (raceState.gameState === "RACING") {
-        if (oldGameState !== "RACING") {
-          raceState.timeLeftSeconds = raceState.raceDurationSeconds || 90;
+        if (!raceState.timeLeftSeconds || raceState.timeLeftSeconds <= 0 || oldGameState !== "RACING") {
+          if (!raceState.timeLeftSeconds || raceState.timeLeftSeconds <= 0) {
+            raceState.timeLeftSeconds = raceState.raceDurationSeconds || 60;
+          }
           startRaceCountdownTimer();
         }
 
@@ -170,9 +172,7 @@
 
       if (raceState.gameState === "RACING") {
         if (raceState.raceMode === "AUTO_SPEED") {
-          if (oldGameState !== "RACING") {
-            startRaceAnimation();
-          }
+          startRaceAnimation();
         } else {
           stopRaceAnimation();
         }
@@ -194,9 +194,11 @@
     stopRaceCountdownTimer();
     if (raceState.gameState !== "RACING") return;
 
-    if (!raceState.timeLeftSeconds) {
-      raceState.timeLeftSeconds = raceState.raceDurationSeconds || 90;
+    if (!raceState.timeLeftSeconds || raceState.timeLeftSeconds <= 0) {
+      raceState.timeLeftSeconds = raceState.raceDurationSeconds || 60;
     }
+
+    updateOverlayTimerUI();
 
     countdownTimerId = setInterval(() => {
       if (raceState.gameState !== "RACING") return;
@@ -224,7 +226,7 @@
     if (!timerValEl || !fillEl) return;
 
     const current = Math.max(0, raceState.timeLeftSeconds || 0);
-    const total = raceState.raceDurationSeconds || 90;
+    const total = raceState.raceDurationSeconds || 60;
     timerValEl.textContent = `⏳ ${current}s`;
 
     const pct = Math.max(0, (current / total) * 100);
@@ -585,7 +587,17 @@
         const wordStr = raceState.currentWordObj ? raceState.currentWordObj.word : "TỪ KHÓA";
         return `🔤 Hãy nhắn "${wordStr}" vào chat BBB để tiến lên!`;
       }
-      return `⚡ Đang đua bơi tự động kiểu Game Vịt! (${raceState.raceDurationSeconds || 30}s)`;
+
+      let maxPos = 0;
+      (raceState.students || []).forEach(name => {
+        const p = raceState.positions[name] || 0;
+        if (p > maxPos) maxPos = p;
+      });
+
+      if (maxPos >= 75) {
+        return `🏁 VẠCH ĐÍCH ĐÃ XUẤT HIỆN! Các vận động viên đang bứt tốc về đích! ⚡`;
+      }
+      return `⚡ Đang đua bơi tự động kiểu Game Vịt! (${raceState.timeLeftSeconds || 60}s còn lại)`;
     }
     if (raceState.gameState === "FINISHED") {
       return "🏁 Cuộc đua kết thúc! Chúc mừng các nhà vô địch!";
@@ -645,6 +657,25 @@
 
     const startPx = 55;
     const maxDistancePx = 425;
+
+    let maxPos = 0;
+    raceState.students.forEach((name) => {
+      const p = raceState.positions[name] || 0;
+      if (p > maxPos) maxPos = p;
+    });
+
+    // Vạch đích chỉ xuất hiện khi có vận động viên bơi tới 75% quãng đường hoặc khi đã cán đích!
+    const poolContainer = document.getElementById("kyna-swim-lanes-container");
+    if (poolContainer) {
+      const finishLineEl = poolContainer.querySelector(".kyna-finish-line");
+      if (finishLineEl) {
+        if (maxPos >= 75 || raceState.gameState === "FINISHED") {
+          finishLineEl.classList.add("show-finish-line");
+        } else {
+          finishLineEl.classList.remove("show-finish-line");
+        }
+      }
+    }
 
     raceState.students.forEach((name, idx) => {
       const swimmerEl = document.getElementById(`swimmer-lane-${idx}`);
