@@ -608,8 +608,13 @@
       if (msgEl && msgEl.dataset) {
         msgEl.dataset.kynaRound = currentRound.roundId;
       }
+
+      // Stop the round timer
       if (currentRound.timerId) {
         clearInterval(currentRound.timerId);
+        currentRound.timerId = null;
+      }
+
       const points = gameState.settings.scoreFirst || 10;
 
       if (!gameState.scores[senderName]) {
