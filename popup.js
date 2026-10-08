@@ -190,13 +190,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       localStorage.setItem("kynaGameState", JSON.stringify(state));
     } catch (e) {}
 
-    if (typeof chrome !== "undefined" && chrome.tabs && chrome.storage && chrome.storage.local) {
-      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        const activeTab = tabs && tabs[0];
-        if (activeTab && activeTab.id) {
-          state.targetTabId = activeTab.id;
-        }
-        chrome.storage.local.set({ kynaGameState: state }, () => {
+    if (typeof chrome !== "undefined" && chrome.storage && chrome.storage.local) {
+      chrome.storage.local.set({ kynaGameState: state });
+    }
+
+    if (typeof chrome !== "undefined" && chrome.tabs) {
+      chrome.tabs.query({ active: true }, (tabs) => {
+        if (!tabs || tabs.length === 0) return;
+        tabs.forEach(activeTab => {
           if (activeTab && activeTab.id) {
             ensureContentScriptInjected(activeTab.id, () => {
               chrome.tabs.sendMessage(activeTab.id, {
@@ -204,7 +205,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 tabId: activeTab.id,
                 payload: state
               }, () => {
-                const err = chrome.runtime.lastError; // Bỏ qua thông báo thừa khi tab không lắng nghe
+                const err = chrome.runtime.lastError;
               });
             });
           }
@@ -1021,13 +1022,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       localStorage.setItem("kynaSwimRaceState", JSON.stringify(swimState));
     } catch (e) {}
 
-    if (typeof chrome !== "undefined" && chrome.tabs && chrome.storage && chrome.storage.local) {
-      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        const activeTab = tabs && tabs[0];
-        if (activeTab && activeTab.id) {
-          swimState.targetTabId = activeTab.id;
-        }
-        chrome.storage.local.set({ kynaSwimRaceState: swimState }, () => {
+    if (typeof chrome !== "undefined" && chrome.storage && chrome.storage.local) {
+      chrome.storage.local.set({ kynaSwimRaceState: swimState });
+    }
+
+    if (typeof chrome !== "undefined" && chrome.tabs) {
+      chrome.tabs.query({ active: true }, (tabs) => {
+        if (!tabs || tabs.length === 0) return;
+        tabs.forEach(activeTab => {
           if (activeTab && activeTab.id) {
             ensureContentScriptInjected(activeTab.id, () => {
               chrome.tabs.sendMessage(activeTab.id, {
@@ -1035,7 +1037,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 tabId: activeTab.id,
                 payload: swimState
               }, () => {
-                const err = chrome.runtime.lastError; // Bỏ qua thông báo thừa
+                const err = chrome.runtime.lastError;
               });
             });
           }
