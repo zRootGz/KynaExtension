@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kyna BBB - Guess The Word Control Panel</title>
+  <title>Kyna BBB - Class Minigames Panel</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="popup.css">
 </head>
@@ -17,131 +17,135 @@
         <div class="logo-icon"><i class="fa-solid fa-gamepad"></i></div>
         <div class="brand-text">
           <h1>Kyna Class Minigames</h1>
-          <span class="sub-title">Game Tương Tác BigBlueButton</span>
+          <span class="sub-title">BigBlueButton Minigames</span>
         </div>
       </div>
       <div id="game-status-badge" class="status-badge status-idle">
         <span class="dot"></span>
-        <span id="status-text">Chưa bắt đầu</span>
+        <span id="status-text">Not Started</span>
       </div>
     </header>
 
     <!-- Navigation Tabs -->
     <nav class="nav-tabs">
-      <button class="tab-btn active" data-tab="tab-control"><i class="fa-solid fa-puzzle-piece"></i> Đoán Chữ</button>
-      <button class="tab-btn" data-tab="tab-swimming"><i class="fa-solid fa-person-swimming"></i> Đua Bơi</button>
-      <button class="tab-btn" data-tab="tab-settings"><i class="fa-solid fa-gear"></i> Cài đặt</button>
+      <button class="tab-btn active" data-tab="tab-control"><i class="fa-solid fa-puzzle-piece"></i> Guess Word</button>
+      <button class="tab-btn" data-tab="tab-swimming"><i class="fa-solid fa-person-swimming"></i> Swimming Race</button>
+      <button class="tab-btn" data-tab="tab-settings"><i class="fa-solid fa-gear"></i> Settings</button>
     </nav>
 
     <!-- Main Content Panels -->
     <main class="tab-contents">
 
-      <!-- TAB 1: BẢNG ĐIỀU KHIỂN & QUẢN LÝ TỪ VỰNG -->
+      <!-- TAB 1: GUESS THE WORD & WORD MANAGEMENT -->
       <section id="tab-control" class="tab-panel active">
 
         <!-- Controls Bar -->
         <div class="main-action-card">
           <div class="button-group">
             <button id="btn-start-game" class="btn btn-success btn-lg">
-              <span class="icon"><i class="fa-solid fa-rocket"></i></span> Bắt đầu Game
+              <span class="icon"><i class="fa-solid fa-rocket"></i></span> Start Game
             </button>
             <button id="btn-next-word" class="btn btn-secondary btn-lg" disabled>
-              <span class="icon"><i class="fa-solid fa-forward-step"></i></span> Từ tiếp theo
+              <span class="icon"><i class="fa-solid fa-forward-step"></i></span> Next Word
             </button>
             <button id="btn-stop-game" class="btn btn-danger btn-lg" disabled>
-              <span class="icon"><i class="fa-solid fa-circle-stop"></i></span> Dừng Game
+              <span class="icon"><i class="fa-solid fa-circle-stop"></i></span> Stop Game
             </button>
           </div>
           <div id="active-word-display" class="active-word-banner hidden">
-            <span class="label">Từ hiện tại:</span>
+            <span class="label">Current Word:</span>
             <span id="current-word-text" class="word-highlight">---</span>
             <span id="current-timer-text" class="timer-badge">60s</span>
           </div>
         </div>
 
-        <!-- Topic Selector -->
+        <!-- Topic Selector Card -->
         <div class="card">
           <div class="card-header">
-            <h3><i class="fa-solid fa-book-open"></i> Chọn chủ đề từ vựng</h3>
-            <span class="badge info" id="topic-word-count">10 từ</span>
+            <h3><i class="fa-solid fa-book-open"></i> Select Topic</h3>
+            <span class="badge info" id="topic-word-count">32 words</span>
           </div>
           <div class="topic-row">
             <select id="select-category" class="form-control">
-              <option value="Animals">🐶 Animals (Động vật)</option>
-              <option value="Fruits">🍎 Fruits (Hoa quả)</option>
-              <option value="Occupations">👨‍⚕️ Occupations (Nghề nghiệp)</option>
-              <option value="School">✏️ School (Trường học)</option>
-              <option value="Transport">🚀 Transport (Giao thông)</option>
-              <option value="Clothing">👕 Clothing (Trang phục)</option>
-              <option value="Colors">🌈 Colors (Màu sắc)</option>
-              <option value="Actions">🏃 Actions (Hành động)</option>
-              <option value="Sports & Hobbies">⚽ Sports & Hobbies (Thể thao)</option>
-              <option value="Food & Drinks">🍕 Food & Drinks (Đồ ăn & Thức uống)</option>
-              <option value="Family & People">👨‍👩‍👧‍👦 Family & People (Gia đình)</option>
-              <option value="Weather & Nature">🌈 Weather & Nature (Thời tiết)</option>
-              <option value="Body Parts">👁️ Body Parts (Cơ thể)</option>
-              <option value="House & Items">🏠 House & Items (Đồ dùng gia đình)</option>
-              <option value="ALL">🌟 Tất cả các chủ đề (400+ từ)</option>
+              <option value="Animals">🐶 Animals</option>
+              <option value="Fruits">🍎 Fruits</option>
+              <option value="Occupations">👨‍⚕️ Occupations</option>
+              <option value="School">✏️ School</option>
+              <option value="Transport">🚀 Transport</option>
+              <option value="Clothing">👕 Clothing</option>
+              <option value="Colors">🌈 Colors</option>
+              <option value="Actions">🏃 Actions</option>
+              <option value="Sports & Hobbies">⚽ Sports & Hobbies</option>
+              <option value="Food & Drinks">🍕 Food & Drinks</option>
+              <option value="Family & People">👨‍👩‍👧‍👦 Family & People</option>
+              <option value="Weather & Nature">🌈 Weather & Nature</option>
+              <option value="Body Parts">👁️ Body Parts</option>
+              <option value="House & Items">🏠 House & Items</option>
+              <option value="ALL">🌟 All Topics (400+ words)</option>
             </select>
-            <button id="btn-load-topic" class="btn btn-primary"><i class="fa-solid fa-cloud-arrow-down"></i> Tải bộ từ này</button>
+            <button id="btn-load-topic" class="btn btn-primary"><i class="fa-solid fa-cloud-arrow-down"></i> Load Topic</button>
           </div>
         </div>
 
-        <!-- Search & Add Word Tool -->
+        <!-- CARD 2: SEARCH BUILT-IN DATABASE -->
         <div class="card">
           <div class="card-header">
-            <h3><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm & Thêm từ vựng</h3>
-            <div style="display: flex; gap: 6px;">
-              <button id="btn-toggle-custom" class="btn btn-sm btn-outline"><i class="fa-solid fa-plus"></i> Tạo 1 từ</button>
-              <button id="btn-toggle-import-excel" class="btn btn-sm btn-success"><i class="fa-solid fa-file-excel"></i> Nhập Excel/CSV</button>
-            </div>
+            <h3><i class="fa-solid fa-magnifying-glass"></i> Search Database</h3>
           </div>
-
           <div class="search-box">
             <input type="text" id="input-search-word" class="form-control"
-              placeholder="Gõ từ tiếng Anh (VD: Apple, Tiger)...">
+              placeholder="Search word (e.g. Apple, Tiger)...">
           </div>
 
           <!-- Quick Search Results List -->
           <div id="search-results-list" class="search-results-container hidden"></div>
+        </div>
+
+        <!-- CARD 3: CUSTOM WORDS & BULK EXCEL IMPORT -->
+        <div class="card">
+          <div class="card-header">
+            <h3><i class="fa-solid fa-folder-plus"></i> Custom & Import</h3>
+            <div class="card-actions">
+              <button id="btn-toggle-custom" class="btn btn-sm btn-outline"><i class="fa-solid fa-plus"></i> + Custom</button>
+              <button id="btn-toggle-import-excel" class="btn btn-sm btn-success"><i class="fa-solid fa-file-excel"></i> Import Excel</button>
+            </div>
+          </div>
 
           <!-- Custom Single Word Creator Form (Accordion) -->
           <div id="custom-word-form" class="custom-form hidden">
             <div class="form-grid">
               <div class="form-group">
-                <label>Từ Tiếng Anh *</label>
-                <input type="text" id="custom-word-input" class="form-control" placeholder="VD: BUTTERFLY">
+                <label>English Word *</label>
+                <input type="text" id="custom-word-input" class="form-control" placeholder="e.g. BUTTERFLY">
               </div>
               <div class="form-group">
-                <label>Gợi ý Tiếng Anh (English Hint) *</label>
+                <label>English Hint *</label>
                 <input type="text" id="custom-hint-input" class="form-control"
-                  placeholder="VD: A beautiful insect with wings">
+                  placeholder="e.g. A beautiful insect with wings">
               </div>
             </div>
             <div class="form-group">
-              <label>Từ khóa ảnh Unsplash (Tùy chọn)</label>
-              <input type="text" id="custom-query-input" class="form-control" placeholder="VD: butterfly sketch doodle">
+              <label>Image Keyword (Optional)</label>
+              <input type="text" id="custom-query-input" class="form-control" placeholder="e.g. butterfly sketch doodle">
             </div>
-            <button id="btn-save-custom" class="btn btn-success btn-block"><i class="fa-solid fa-plus"></i> Thêm vào danh sách Game</button>
+            <button id="btn-save-custom" class="btn btn-success btn-block"><i class="fa-solid fa-plus"></i> Add to Quiz List</button>
           </div>
 
           <!-- Excel / CSV Bulk Import Form (Accordion) -->
           <div id="import-excel-form" class="custom-form hidden"
             style="background: rgba(16, 185, 129, 0.08); border-color: rgba(16, 185, 129, 0.4);">
             <div style="margin-bottom: 10px;">
-              <h4 style="margin:0 0 4px 0; color:#10b981; font-size:14px; font-weight:800;"><i class="fa-solid fa-table"></i> Nhập từ vựng hàng loạt từ
-                File Excel (.xls / .csv)</h4>
-              <p style="margin:0; font-size:12px; color:#94a3b8;">Tải file mẫu Excel (.xls), điền Từ Tiếng Anh + Gợi ý
-                Tiếng Anh (English Hint) + Link Ảnh (tùy chọn). File mẫu đã được định dạng rộng cột cực kỳ dễ đọc!</p>
+              <h4 style="margin:0 0 4px 0; color:#10b981; font-size:13px; font-weight:800;"><i class="fa-solid fa-table"></i> Bulk Import from Excel / CSV</h4>
+              <p style="margin:0; font-size:11px; color:#94a3b8;">Download Excel template (.xls), fill Words + English Hints + Image URLs (optional).</p>
             </div>
 
-            <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:6px;">
+            <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-bottom:6px;">
               <button id="btn-download-excel-template" class="btn btn-sm btn-outline"
                 style="border-color:#10b981; color:#10b981;">
-                <i class="fa-solid fa-file-arrow-down"></i> Tải File mẫu Excel (.xls)
+                <i class="fa-solid fa-file-arrow-down"></i> Download Template (.xls)
               </button>
               <label class="btn btn-sm btn-success" style="cursor:pointer; margin:0;">
-                <i class="fa-solid fa-file-arrow-up"></i> Chọn File Excel/CSV tải lên
+                <i class="fa-solid fa-file-arrow-up"></i> Upload Excel/CSV
                 <input type="file" id="input-import-excel-file" accept=".xls,.xlsx,.csv,.tsv,.txt"
                   style="display:none;">
               </label>
@@ -152,26 +156,26 @@
           </div>
         </div>
 
-        <!-- Current Quiz Word List -->
+        <!-- Current Quiz Word List Card -->
         <div class="card">
           <div class="card-header">
-            <h3><i class="fa-solid fa-list-check"></i> Danh sách từ trong lượt chơi này (<span id="quiz-list-count">0</span>)</h3>
-            <div class="card-actions" style="display: flex; gap: 4px;">
+            <h3><i class="fa-solid fa-list-check"></i> Current Quiz Words (<span id="quiz-list-count">0</span>)</h3>
+            <div class="card-actions">
               <button id="btn-export-quiz-excel" class="btn btn-sm btn-outline"
-                title="Xuất bộ từ vựng hiện tại ra Excel CSV"><i class="fa-solid fa-file-export"></i> Xuất Excel</button>
+                title="Export current words to CSV"><i class="fa-solid fa-file-export"></i> Export</button>
               <button id="btn-shuffle-quiz-list" class="btn btn-sm btn-outline"
-                title="Trộn ngẫu nhiên thứ tự từ vựng"><i class="fa-solid fa-shuffle"></i> Trộn từ</button>
-              <button id="btn-clear-quiz-list" class="btn btn-sm btn-ghost"><i class="fa-solid fa-trash-can"></i> Xóa hết</button>
+                title="Shuffle word order"><i class="fa-solid fa-shuffle"></i> Shuffle</button>
+              <button id="btn-clear-quiz-list" class="btn btn-sm btn-ghost"><i class="fa-solid fa-trash-can"></i> Clear</button>
             </div>
           </div>
           <div id="quiz-word-list" class="quiz-words-container">
-            <div class="empty-state">Chưa có từ nào. Hãy chọn chủ đề hoặc tìm kiếm thêm từ!</div>
+            <div class="empty-state">No words added yet. Select a topic or search to add words!</div>
           </div>
         </div>
 
       </section>
 
-      <!-- TAB 2: GAME ĐUA BƠI KỲ PHÙNG ĐỊCH THỦ -->
+      <!-- TAB 2: SWIMMING RACE GAME -->
       <section id="tab-swimming" class="tab-panel">
 
         <!-- Controls Bar for Swimming Race -->
@@ -179,13 +183,13 @@
           style="background: linear-gradient(135deg, rgba(14, 165, 233, 0.2) 0%, rgba(2, 132, 199, 0.2) 100%); border-color: rgba(14, 165, 233, 0.4);">
           <div class="button-group">
             <button id="btn-toggle-swim-overlay" class="btn btn-primary btn-lg">
-              <span class="icon"><i class="fa-solid fa-display"></i></span> Bật Overlay Phòng Chờ
+              <span class="icon"><i class="fa-solid fa-display"></i></span> Toggle Overlay
             </button>
             <button id="btn-start-swim-race" class="btn btn-success btn-lg">
-              <span class="icon"><i class="fa-solid fa-flag-checkered"></i></span> Bắt đầu Đua Bơi
+              <span class="icon"><i class="fa-solid fa-flag-checkered"></i></span> Start Race
             </button>
             <button id="btn-stop-swim-race" class="btn btn-danger btn-lg" disabled>
-              <span class="icon"><i class="fa-solid fa-circle-stop"></i></span> Dừng Game
+              <span class="icon"><i class="fa-solid fa-circle-stop"></i></span> Stop Game
             </button>
           </div>
         </div>
@@ -193,66 +197,62 @@
         <!-- Swimming Race Mode Setting -->
         <div class="card">
           <div class="card-header">
-            <h3><i class="fa-solid fa-sliders"></i> Chế độ Đua Bơi & Tùy chỉnh</h3>
+            <h3><i class="fa-solid fa-sliders"></i> Race Settings</h3>
           </div>
           <div class="form-group">
-            <label style="font-weight: 700; font-size: 13px; margin-bottom: 4px; display: block;">Chọn thể thức cuộc
-              đua:</label>
+            <label style="font-weight: 700; font-size: 12px; margin-bottom: 4px; display: block;">Race Format:</label>
             <select id="select-swim-mode" class="form-control">
-              <option value="WORD_RELAY" selected>🔤 Đua Bơi Tiếp Sức Từ Vựng (Gõ đúng từ để bơi & đổi từ)</option>
-              <option value="AUTO_SPEED">🦆 Đua Bơi Tự Động kiểu Game Vịt (Đua ngẫu nhiên theo mét đường đua)</option>
+              <option value="WORD_RELAY" selected>🔤 Word Relay Race (Type word to swim)</option>
+              <option value="AUTO_SPEED">🦆 Auto Duck Race (Random speed meters)</option>
             </select>
           </div>
 
           <!-- Setting sub-panel for AUTO_SPEED mode: Track Distance -->
           <div id="swim-auto-distance-group" class="form-group" style="margin-top: 10px;">
-            <label style="font-weight: 700; font-size: 13px; margin-bottom: 4px; display: block;">🚩 Độ dài đường đua
-              (Mét):</label>
+            <label style="font-weight: 700; font-size: 12px; margin-bottom: 4px; display: block;">Track Distance (Meters):</label>
             <select id="select-swim-distance" class="form-control">
-              <option value="100">100m (Siêu bứt tốc)</option>
-              <option value="200">200m (Tiêu chuẩn)</option>
-              <option value="500" selected>500m (Dài - Tách tốp kịch tính)</option>
-              <option value="1000">1000m (Rất dài - Duck Race Lạc Trôi)</option>
-              <option value="2000">2000m (Siêu dài - Thách thức tay bơi)</option>
+              <option value="100">100m (Sprint)</option>
+              <option value="200">200m (Standard)</option>
+              <option value="500" selected>500m (Long - Exciting Split)</option>
+              <option value="1000">1000m (Very Long - Duck Race)</option>
+              <option value="2000">2000m (Marathon)</option>
             </select>
           </div>
 
           <!-- Setting sub-panel for WORD_RELAY mode: Race Duration -->
           <div id="swim-auto-timer-group" class="form-group" style="margin-top: 10px;">
-            <label style="font-weight: 700; font-size: 13px; margin-bottom: 4px; display: block;">⏱️ Thời lượng tối đa
-              bơi tiếp sức (Giây):</label>
+            <label style="font-weight: 700; font-size: 12px; margin-bottom: 4px; display: block;">Max Relay Time (Seconds):</label>
             <select id="select-swim-duration" class="form-control">
-              <option value="30">30 giây</option>
-              <option value="45">45 giây</option>
-              <option value="60">60 giây</option>
-              <option value="90" selected>90 giây (Khuyên dùng)</option>
-              <option value="120">120 giây (2 phút)</option>
-              <option value="180">180 giây (3 phút)</option>
-              <option value="300">300 giây (5 phút)</option>
-              <option value="600">600 giây (10 phút)</option>
+              <option value="30">30 seconds</option>
+              <option value="45">45 seconds</option>
+              <option value="60">60 seconds</option>
+              <option value="90" selected>90 seconds (Recommended)</option>
+              <option value="120">120 seconds (2 mins)</option>
+              <option value="180">180 seconds (3 mins)</option>
+              <option value="300">300 seconds (5 mins)</option>
+              <option value="600">600 seconds (10 mins)</option>
             </select>
           </div>
 
           <!-- Setting sub-panel for WORD_RELAY mode -->
           <div id="swim-word-cat-group" class="form-group" style="margin-top: 10px;">
-            <label style="font-weight: 700; font-size: 13px; margin-bottom: 4px; display: block;">Bộ từ vựng bơi tiếp
-              sức:</label>
+            <label style="font-weight: 700; font-size: 12px; margin-bottom: 4px; display: block;">Relay Word Topic:</label>
             <select id="select-swim-word-category" class="form-control">
-              <option value="ALL" selected>🌟 Ngẫu nhiên tất cả chủ đề (400+ từ)</option>
-              <option value="Animals">🐶 Animals (Động vật)</option>
-              <option value="Fruits">🍎 Fruits (Hoa quả)</option>
-              <option value="Occupations">👨‍⚕️ Occupations (Nghề nghiệp)</option>
-              <option value="School">✏️ School (Trường học)</option>
-              <option value="Transport">🚀 Transport (Giao thông)</option>
-              <option value="Clothing">👕 Clothing (Trang phục)</option>
-              <option value="Colors">🌈 Colors (Màu sắc)</option>
-              <option value="Actions">🏃 Actions (Hành động)</option>
-              <option value="Sports & Hobbies">⚽ Sports & Hobbies (Thể thao)</option>
-              <option value="Food & Drinks">🍕 Food & Drinks (Đồ ăn & Thức uống)</option>
-              <option value="Family & People">👨‍👩‍👧‍👦 Family & People (Gia đình)</option>
-              <option value="Weather & Nature">🌈 Weather & Nature (Thời tiết)</option>
-              <option value="Body Parts">👁️ Body Parts (Cơ thể)</option>
-              <option value="House & Items">🏠 House & Items (Đồ dùng gia đình)</option>
+              <option value="ALL" selected>🌟 Random All Topics (400+ words)</option>
+              <option value="Animals">🐶 Animals</option>
+              <option value="Fruits">🍎 Fruits</option>
+              <option value="Occupations">👨‍⚕️ Occupations</option>
+              <option value="School">✏️ School</option>
+              <option value="Transport">🚀 Transport</option>
+              <option value="Clothing">👕 Clothing</option>
+              <option value="Colors">🌈 Colors</option>
+              <option value="Actions">🏃 Actions</option>
+              <option value="Sports & Hobbies">⚽ Sports & Hobbies</option>
+              <option value="Food & Drinks">🍕 Food & Drinks</option>
+              <option value="Family & People">👨‍👩‍👧‍👦 Family & People</option>
+              <option value="Weather & Nature">🌈 Weather & Nature</option>
+              <option value="Body Parts">👁️ Body Parts</option>
+              <option value="House & Items">🏠 House & Items</option>
             </select>
           </div>
         </div>
@@ -260,58 +260,57 @@
         <!-- Swimmer Names List Input -->
         <div class="card">
           <div class="card-header">
-            <h3><i class="fa-solid fa-users"></i> Vận động viên tham gia (<span id="swim-student-count">0</span>)</h3>
-            <div style="display:flex; gap:6px;">
+            <h3><i class="fa-solid fa-users"></i> Participating Swimmers (<span id="swim-student-count">0</span>)</h3>
+            <div class="card-actions">
               <button id="btn-clear-swim-students" class="btn btn-sm btn-ghost" style="color:#ef4444;"
-                title="Xóa sạch danh sách học sinh hiện tại"><i class="fa-solid fa-trash-can"></i> Xóa danh sách</button>
+                title="Clear student list"><i class="fa-solid fa-trash-can"></i> Clear</button>
               <button id="btn-fetch-bbb-students" class="btn btn-sm btn-outline"
-                style="border-color:#38bdf8; color:#38bdf8;"><i class="fa-solid fa-user-plus"></i> Lấy từ lớp BBB</button>
-              <button id="btn-load-sample-students" class="btn btn-sm btn-outline"><i class="fa-solid fa-list-ol"></i> Nhập mẫu</button>
+                style="border-color:#38bdf8; color:#38bdf8;"><i class="fa-solid fa-user-plus"></i> Scan BBB</button>
+              <button id="btn-load-sample-students" class="btn btn-sm btn-outline"><i class="fa-solid fa-list-ol"></i> Sample</button>
             </div>
           </div>
           <div class="form-group">
             <textarea id="input-swim-students" class="form-control" rows="3"
-              placeholder="Gõ 'join' trong chat BBB để ghi tên tự động...&#10;Hoặc nhập tên thủ công (phân cách bằng dấu phẩy): Bảo Nam, Hoàng Minh, Tuệ Nhi"></textarea>
+              placeholder="Students type 'join' in BBB chat to auto-register...\nOr enter manually separated by commas: Alex, Ben, Clara"></textarea>
           </div>
           <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
-            <span style="font-size:11px; color:#94a3b8;">💡 Học sinh nhắn <strong>"join"</strong> trong chat để tự ghi
-              tên. Nút Bắt đầu do GV ấn!</span>
-            <button id="btn-save-swim-students" class="btn btn-primary btn-sm"><i class="fa-solid fa-floppy-disk"></i> Cập nhật danh sách</button>
+            <span style="font-size:11px; color:#94a3b8;">💡 Students type <strong>"join"</strong> in chat to sign up. Teacher clicks Start!</span>
+            <button id="btn-save-swim-students" class="btn btn-primary btn-sm"><i class="fa-solid fa-floppy-disk"></i> Save List</button>
           </div>
         </div>
 
       </section>
 
-      <!-- TAB 3: CÀI ĐẶT GAME -->
+      <!-- TAB 3: GAME SETTINGS -->
       <section id="tab-settings" class="tab-panel">
         <div class="card">
           <div class="card-header">
-            <h3><i class="fa-solid fa-gears"></i> Tùy chỉnh luật chơi</h3>
+            <h3><i class="fa-solid fa-gears"></i> Game Settings</h3>
           </div>
 
           <div class="setting-item">
-            <label for="setting-timer">Thời gian đếm ngược mỗi từ (giây):</label>
+            <label for="setting-timer">Timer per word (seconds):</label>
             <select id="setting-timer" class="form-control">
-              <option value="30">30 giây (Nhanh)</option>
-              <option value="45">45 giây</option>
-              <option value="60" selected>60 giây (Khuyên dùng)</option>
-              <option value="90">90 giây (Thư thả)</option>
+              <option value="30">30 seconds (Fast)</option>
+              <option value="45">45 seconds</option>
+              <option value="60" selected>60 seconds (Recommended)</option>
+              <option value="90">90 seconds (Relaxed)</option>
             </select>
           </div>
 
           <div class="setting-item">
-            <label for="setting-score-first">Điểm cho người đúng nhanh nhất:</label>
+            <label for="setting-score-first">Points for fastest correct answer:</label>
             <input type="number" id="setting-score-first" class="form-control" value="10" min="1" max="100">
           </div>
 
           <div class="setting-item">
             <label class="checkbox-label">
               <input type="checkbox" id="setting-sound" checked>
-              <span><i class="fa-solid fa-volume-high"></i> Bật hiệu ứng âm thanh (Tiếng đếm ngược, tiếng trả lời đúng)</span>
+              <span><i class="fa-solid fa-volume-high"></i> Enable Sound Effects & BGM</span>
             </label>
           </div>
 
-          <button id="btn-save-settings" class="btn btn-primary btn-block"><i class="fa-solid fa-floppy-disk"></i> Lưu cài đặt</button>
+          <button id="btn-save-settings" class="btn btn-primary btn-block"><i class="fa-solid fa-floppy-disk"></i> Save Settings</button>
         </div>
       </section>
 

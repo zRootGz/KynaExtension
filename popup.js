@@ -214,7 +214,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // 1. Trạng thái Game Badge
     if (state.gameState === "RUNNING") {
       elements.statusBadge.className = "status-badge status-running";
-      elements.statusText.textContent = "Đang diễn ra (Đoán chữ)";
+      elements.statusText.textContent = "In Progress (Guess Word)";
       elements.btnStartGame.disabled = true;
       elements.btnNextWord.disabled = false;
       elements.btnStopGame.disabled = false;
@@ -224,14 +224,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       elements.currentWordText.textContent = currentWordObj ? currentWordObj.word : "N/A";
     } else if (swimState.gameState === "RACING" && swimState.activeGame === "SWIMMING_RACE") {
       elements.statusBadge.className = "status-badge status-running";
-      elements.statusText.textContent = "Đang diễn ra (Đua bơi)";
+      elements.statusText.textContent = "In Progress (Swimming Race)";
       elements.btnStartGame.disabled = state.quizWords.length === 0;
       elements.btnNextWord.disabled = true;
       elements.btnStopGame.disabled = true;
       elements.activeWordDisplay.classList.add("hidden");
     } else {
       elements.statusBadge.className = "status-badge status-idle";
-      elements.statusText.textContent = "Chưa bắt đầu";
+      elements.statusText.textContent = "Not Started";
       elements.btnStartGame.disabled = state.quizWords.length === 0;
       elements.btnNextWord.disabled = true;
       elements.btnStopGame.disabled = true;
@@ -270,10 +270,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (elements.btnToggleSwimOverlay) {
       if (swimState.activeGame === "SWIMMING_RACE") {
-        elements.btnToggleSwimOverlay.innerHTML = `<span class="icon">🎮</span> Tắt Overlay Phòng Chờ`;
+        elements.btnToggleSwimOverlay.innerHTML = `<i class="fa-solid fa-gamepad icon"></i> Turn Off Lobby Overlay`;
         elements.btnToggleSwimOverlay.className = "btn btn-secondary btn-lg";
       } else {
-        elements.btnToggleSwimOverlay.innerHTML = `<span class="icon">🎮</span> Bật Overlay Phòng Chờ`;
+        elements.btnToggleSwimOverlay.innerHTML = `<i class="fa-solid fa-gamepad icon"></i> Turn On Lobby Overlay`;
         elements.btnToggleSwimOverlay.className = "btn btn-primary btn-lg";
       }
     }
@@ -322,7 +322,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     elements.selectCategory.addEventListener("change", (e) => {
       const cat = e.target.value;
       const words = window.getWordsByCategory(cat);
-      elements.topicWordCount.textContent = `${words.length} từ`;
+      elements.topicWordCount.textContent = `${words.length} words`;
     });
 
     // Nút "Tải bộ từ này"
@@ -444,7 +444,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           const parsedWords = parseCSVWordList(text);
 
           if (parsedWords.length === 0) {
-            alert("Không tìm thấy từ vựng hợp lệ trong file Excel! Hãy đảm bảo cột 1 là Từ Tiếng Anh và cột 2 là Gợi ý Tiếng Anh.");
+            alert("No valid words found in Excel file! Make sure column 1 is English Word and column 2 is English Hint.");
             return;
           }
 
@@ -460,11 +460,11 @@ document.addEventListener("DOMContentLoaded", async () => {
           renderUI();
 
           if (elements.importExcelStatus) {
-            elements.importExcelStatus.textContent = `🎉 Đã nhập thành công ${addedCount} từ mới vào danh sách game! (Tổng: ${state.quizWords.length} từ)`;
+            elements.importExcelStatus.textContent = `🎉 Successfully imported ${addedCount} new words! (Total: ${state.quizWords.length} words)`;
             elements.importExcelStatus.classList.remove("hidden");
           }
 
-          alert(`🎉 Đã nhập thành công ${addedCount} từ vựng từ file Excel vào bộ từ game hiện tại!`);
+          alert(`🎉 Successfully imported ${addedCount} words from Excel file into current quiz list!`);
           e.target.value = "";
         };
 
@@ -476,7 +476,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (elements.btnExportQuizExcel) {
       elements.btnExportQuizExcel.addEventListener("click", () => {
         if (!state.quizWords || state.quizWords.length === 0) {
-          alert("Danh sách từ vựng hiện tại đang trống!");
+          alert("Current word list is empty!");
           return;
         }
 
@@ -493,7 +493,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const link = document.createElement("a");
         const timestamp = new Date().toISOString().slice(0, 10);
         link.setAttribute("href", url);
-        link.setAttribute("download", `Bo_Tu_Vung_Kyna_${timestamp}.csv`);
+        link.setAttribute("download", `Kyna_Word_List_${timestamp}.csv`);
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -507,7 +507,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const query = elements.customQueryInput.value.trim() || `${word.toLowerCase()} doodle sketch`;
 
       if (!word || !hint) {
-        alert("Vui lòng nhập Từ Tiếng Anh và Gợi ý!");
+        alert("Please enter English Word and Hint!");
         return;
       }
 
@@ -534,7 +534,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Nút Trộn thứ tự từ vựng trong danh sách
     elements.btnShuffleQuizList.addEventListener("click", () => {
       if (state.quizWords.length <= 1) {
-        alert("Cần có ít nhất 2 từ vựng để thực hiện trộn thứ tự!");
+        alert("At least 2 words are required to shuffle!");
         return;
       }
       // Thuật toán xáo trộn Fisher-Yates
@@ -549,7 +549,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Nút Xóa toàn bộ từ trong danh sách
     elements.btnClearQuizList.addEventListener("click", () => {
-      if (confirm("Bạn có chắc muốn xóa hết danh sách từ hiện tại?")) {
+      if (confirm("Are you sure you want to clear the current word list?")) {
         state.quizWords = [];
         state.currentWordIndex = 0;
         saveStateToStorage();
@@ -638,7 +638,7 @@ document.addEventListener("DOMContentLoaded", async () => {
    */
   function renderSearchResults(results) {
     if (results.length === 0) {
-      elements.searchResultsList.innerHTML = `<div class="empty-state">Không tìm thấy từ trong kho mẫu. Bạn có thể bấm "+ Tạo từ mới" ở trên.</div>`;
+      elements.searchResultsList.innerHTML = `<div class="empty-state">No matching words found in database. You can click "+ Create Custom Word" above.</div>`;
     } else {
       elements.searchResultsList.innerHTML = results.slice(0, 5).map(item => `
         <div class="result-item">
@@ -646,14 +646,14 @@ document.addEventListener("DOMContentLoaded", async () => {
             <span class="result-word">${item.word}</span>
             <span class="result-hint"> (${item.hint})</span>
           </div>
-          <button class="btn btn-sm btn-outline btn-add-search-word" data-word="${item.word}">+ Thêm</button>
+          <button class="btn btn-sm btn-outline btn-add-search-word" data-word="${item.word}"><i class="fa-solid fa-plus"></i> Add</button>
         </div>
       `).join("");
 
       // Nút Thêm từng từ tìm được
       document.querySelectorAll(".btn-add-search-word").forEach(btn => {
         btn.addEventListener("click", (e) => {
-          const targetWord = e.target.getAttribute("data-word");
+          const targetWord = e.target.getAttribute("data-word") || e.target.closest(".btn-add-search-word").getAttribute("data-word");
           const found = window.MASTER_WORD_DATABASE.find(w => w.word === targetWord);
           if (found) {
             if (!state.quizWords.some(w => w.word === found.word)) {
@@ -673,7 +673,7 @@ document.addEventListener("DOMContentLoaded", async () => {
    */
   function renderQuizWordList() {
     if (state.quizWords.length === 0) {
-      elements.quizWordList.innerHTML = `<div class="empty-state">Chưa có từ nào. Hãy chọn chủ đề hoặc tìm kiếm thêm từ!</div>`;
+      elements.quizWordList.innerHTML = `<div class="empty-state">No words loaded yet. Select a topic or search for words!</div>`;
       return;
     }
 
@@ -681,16 +681,16 @@ document.addEventListener("DOMContentLoaded", async () => {
       <div class="word-chip ${idx === state.currentWordIndex && state.gameState === "RUNNING" ? "active-chip" : ""}">
         <div>
           <span class="chip-title">${idx + 1}. ${item.word}</span>
-          <span class="chip-hint">- Gợi ý: ${item.hint}</span>
+          <span class="chip-hint">- Hint: ${item.hint}</span>
         </div>
-        <button class="btn btn-ghost btn-sm btn-remove-word" data-index="${idx}">❌</button>
+        <button class="btn btn-ghost btn-sm btn-remove-word" data-index="${idx}"><i class="fa-solid fa-xmark"></i></button>
       </div>
     `).join("");
 
     // Sự kiện nút Xóa từng từ
     document.querySelectorAll(".btn-remove-word").forEach(btn => {
       btn.addEventListener("click", (e) => {
-        const idx = parseInt(e.target.getAttribute("data-index"), 10);
+        const idx = parseInt(e.target.getAttribute("data-index") || e.target.closest(".btn-remove-word").getAttribute("data-index"), 10);
         state.quizWords.splice(idx, 1);
         if (state.currentWordIndex >= state.quizWords.length) {
           state.currentWordIndex = Math.max(0, state.quizWords.length - 1);
@@ -708,7 +708,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Bắt đầu Game
     elements.btnStartGame.addEventListener("click", () => {
       if (state.quizWords.length === 0) {
-        alert("Vui lòng thêm ít nhất 1 từ vựng trước khi bắt đầu!");
+        alert("Please add at least 1 word before starting!");
         return;
       }
       state.gameState = "RUNNING";
@@ -724,13 +724,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         saveStateToStorage();
         renderUI();
       } else {
-        alert("Đã đến từ cuối cùng trong danh sách!");
+        alert("Reached the end of the word list!");
       }
     });
 
     // Dừng Game
     elements.btnStopGame.addEventListener("click", () => {
-      if (confirm("Bạn có chắc muốn dừng game hiện tại?")) {
+      if (confirm("Are you sure you want to stop the current game?")) {
         state.gameState = "IDLE";
         saveStateToStorage();
         renderUI();
@@ -747,7 +747,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
     if (elements.btnResetScores) {
       elements.btnResetScores.addEventListener("click", () => {
-        if (confirm("Bạn có chắc chắn muốn xóa toàn bộ điểm số học sinh?")) {
+        if (confirm("Are you sure you want to reset all student scores?")) {
           state.scores = {};
           saveStateToStorage();
           renderUI();
@@ -773,7 +773,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (scoreEntries.length === 0) {
       elements.scoresTableBody.innerHTML = `
         <tr>
-          <td colspan="4" class="text-center text-muted">Chưa có học sinh nào ghi điểm.</td>
+          <td colspan="4" class="text-center text-muted">No student scores recorded yet.</td>
         </tr>`;
       return;
     }
@@ -788,7 +788,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         <tr>
           <td>${rankBadge}</td>
           <td><strong>${escapeHtml(item.name)}</strong></td>
-          <td>${item.correctCount || 0} câu</td>
+          <td>${item.correctCount || 0} pts</td>
           <td><strong style="color:#34d399;">+${item.totalScore || 0}</strong></td>
         </tr>`;
     }).join("");
@@ -803,12 +803,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       .sort((a, b) => b.totalScore - a.totalScore);
 
     if (scoreEntries.length === 0) {
-      alert("Chưa có dữ liệu điểm số học sinh để xuất file!");
+      alert("No student score data available to export!");
       return;
     }
 
-    // Định dạng CSVUTF-8 BOM
-    let csvContent = "\uFEFFHọ và Tên Học Sinh,Số Câu Đúng,Tổng Điểm,Danh Sách Từ Đúng\n";
+    // Định dạng CSV UTF-8 BOM
+    let csvContent = "\uFEFFStudent Name,Correct Answers,Total Score,Correct Word List\n";
 
     scoreEntries.forEach((item) => {
       const name = `"${item.name.replace(/"/g, '""')}"`;
@@ -824,7 +824,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const link = document.createElement("a");
     const timestamp = new Date().toISOString().slice(0, 10);
     link.setAttribute("href", url);
-    link.setAttribute("download", `Diem_Game_BBB_Kyna_${timestamp}.csv`);
+    link.setAttribute("download", `Kyna_BBB_Scores_${timestamp}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -842,7 +842,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       };
       chrome.storage.local.set({ kynaSoundMuted: !elements.settingSound.checked });
       saveStateToStorage();
-      alert("Đã lưu cài đặt thành công!");
+      alert("Settings saved successfully!");
     });
   }
 
@@ -877,19 +877,19 @@ document.addEventListener("DOMContentLoaded", async () => {
         chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
           const activeTab = tabs && tabs[0];
           if (!activeTab || !activeTab.id) {
-            alert("Không tìm thấy tab lớp học BBB đang hoạt động!");
+            alert("Active BBB classroom tab not found!");
             return;
           }
           ensureContentScriptInjected(activeTab.id, () => {
             chrome.tabs.sendMessage(activeTab.id, { action: "FETCH_BBB_STUDENTS" }, (res) => {
               if (chrome.runtime.lastError || !res || !res.students || res.students.length === 0) {
-                alert("Chưa quét thấy tên học sinh trong danh sách thành viên BBB. Hãy kiểm tra xem cột 'Thành viên' đã được mở chưa!");
+                alert("No students detected in BBB member list. Make sure the 'Users' panel is open in BBB!");
                 return;
               }
               const fetchedList = res.students.join(", ");
               elements.inputSwimStudents.value = fetchedList;
               updateSwimStudentsList(fetchedList);
-              alert(`🎉 Đã tự động quét thành công ${res.students.length} học sinh từ lớp BBB!`);
+              alert(`🎉 Successfully scanned ${res.students.length} students from BBB classroom!`);
             });
           });
         });
@@ -899,7 +899,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Xóa sạch danh sách vận động viên bơi
     if (elements.btnClearSwimStudents) {
       elements.btnClearSwimStudents.addEventListener("click", () => {
-        if (confirm("Bạn có chắc muốn xóa sạch toàn bộ danh sách học sinh bơi?")) {
+        if (confirm("Are you sure you want to clear all student swimmers?")) {
           swimState.students = [];
           swimState.positions = {};
           swimState.rankings = [];
@@ -914,7 +914,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Nhập mẫu danh sách học sinh bơi
     elements.btnLoadSampleStudents.addEventListener("click", () => {
-      const sampleText = "Bảo Nam, Hoàng Minh, Tuệ Nhi, Gia Bảo, Khánh An, Linh Chi";
+      const sampleText = "Bao Nam, Hoang Minh, Tue Nhi, Gia Bao, Khanh An, Linh Chi";
       elements.inputSwimStudents.value = sampleText;
       updateSwimStudentsList(sampleText);
     });
@@ -922,13 +922,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Lưu danh sách vận động viên bơi
     elements.btnSaveSwimStudents.addEventListener("click", () => {
       updateSwimStudentsList(elements.inputSwimStudents.value);
-      alert("Đã cập nhật danh sách vận động viên đua bơi!");
+      alert("Swimmer list updated successfully!");
     });
 
     // Bắt đầu Đua Bơi
     elements.btnStartSwimRace.addEventListener("click", () => {
       if (!swimState.students || swimState.students.length < 1) {
-        alert("Cần ít nhất 1 học sinh để bắt đầu cuộc đua bơi! Học sinh gõ 'join' trong chat BBB để tự động ghi tên.");
+        alert("At least 1 student is required to start the swimming race! Students can type 'join' in BBB chat to register automatically.");
         return;
       }
 
@@ -959,7 +959,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Dừng Đua Bơi
     elements.btnStopSwimRace.addEventListener("click", () => {
-      if (confirm("Bạn có chắc muốn dừng cuộc đua bơi?")) {
+      if (confirm("Are you sure you want to stop the swimming race?")) {
         swimState.gameState = "IDLE";
         swimState.activeGame = "NONE";
         saveSwimStateToStorage();
