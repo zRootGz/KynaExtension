@@ -843,6 +843,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         scoreFirst: parseInt(elements.settingScoreFirst.value, 10) || 10,
         soundEnabled: elements.settingSound.checked
       };
+      chrome.storage.local.set({ kynaSoundMuted: !elements.settingSound.checked });
       saveStateToStorage();
       alert("Đã lưu cài đặt thành công!");
     });

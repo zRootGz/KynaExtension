@@ -244,6 +244,7 @@
             <span style="font-size:12px; opacity:0.8;" id="kyna-overlay-category">(${currentRound.wordObj.category})</span>
           </div>
           <div class="kyna-header-actions">
+            <button class="kyna-icon-btn" id="kyna-btn-toggle-sound" title="Bật/Tắt Âm thanh & Nhạc nền">🔊</button>
             <button class="kyna-icon-btn" id="kyna-btn-toggle-min" title="Thu nhỏ/Mở rộng">➖</button>
           </div>
         </div>
@@ -286,6 +287,17 @@
         overlayEl.classList.toggle("minimized");
       });
 
+      const soundBtn = document.getElementById("kyna-btn-toggle-sound");
+      if (soundBtn) {
+        soundBtn.addEventListener("click", () => {
+          const isMuted = typeof window.toggleSoundMuted === "function" ? window.toggleSoundMuted() : false;
+          soundBtn.textContent = isMuted ? "🔇" : "🔊";
+          if (!isMuted && gameState.gameState === "RUNNING") {
+            if (typeof window.playBgmSound === "function") window.playBgmSound("GUESS_THE_WORD");
+          }
+        });
+      }
+
       document.getElementById("kyna-action-hint").addEventListener("click", () => {
         revealRandomLetter();
       });
@@ -303,6 +315,12 @@
           showToastNotification("🏁 Hoàn thành!", "Đã hết danh sách từ vựng!");
         }
       });
+    }
+
+    const soundBtn = document.getElementById("kyna-btn-toggle-sound");
+    if (soundBtn) {
+      const isMuted = typeof window.getSoundMuted === "function" ? window.getSoundMuted() : false;
+      soundBtn.textContent = isMuted ? "🔇" : "🔊";
     }
 
     document.getElementById("kyna-overlay-category").textContent = `(${currentRound.wordObj.category})`;

@@ -548,6 +548,7 @@
             <span id="kyna-swim-mode-title">🏊 ĐUA BƠI KÝ PHÙNG ĐỊCH THỦ</span>
           </div>
           <div style="display:flex; gap:4px;">
+            <button class="kyna-icon-btn" id="kyna-swim-sound-btn" title="Bật/Tắt Âm thanh & Nhạc nền">🔊</button>
             <button class="kyna-icon-btn" id="kyna-swim-min-btn" title="Thu nhỏ">➖</button>
           </div>
         </div>
@@ -583,6 +584,23 @@
       document.getElementById("kyna-swim-min-btn").addEventListener("click", () => {
         overlayEl.classList.toggle("minimized");
       });
+
+      const swimSoundBtn = document.getElementById("kyna-swim-sound-btn");
+      if (swimSoundBtn) {
+        swimSoundBtn.addEventListener("click", () => {
+          const isMuted = typeof window.toggleSoundMuted === "function" ? window.toggleSoundMuted() : false;
+          swimSoundBtn.textContent = isMuted ? "🔇" : "🔊";
+          if (!isMuted && raceState.gameState === "RACING") {
+            if (typeof window.playBgmSound === "function") window.playBgmSound("SWIMMING_RACE");
+          }
+        });
+      }
+    }
+
+    const swimSoundBtn = document.getElementById("kyna-swim-sound-btn");
+    if (swimSoundBtn) {
+      const isMuted = typeof window.getSoundMuted === "function" ? window.getSoundMuted() : false;
+      swimSoundBtn.textContent = isMuted ? "🔇" : "🔊";
     }
 
     // Cập nhật thẻ hiển thị Từ vựng mục tiêu (Word Relay Mode)
