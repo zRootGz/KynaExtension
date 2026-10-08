@@ -273,8 +273,9 @@
           <div class="kyna-winner-box hidden" id="kyna-winner-box" style="margin-top: 10px; padding: 12px; background: rgba(16, 185, 129, 0.25); border: 1.5px solid #10B981; border-radius: 12px; text-align: center; color: #34D399; font-weight: bold; font-size: 16px;"></div>
 
           <div class="kyna-controls-row">
-            <button class="kyna-action-btn kyna-btn-hint" id="kyna-action-hint">💡 Mở 1 chữ cái</button>
-            <button class="kyna-action-btn kyna-btn-next" id="kyna-action-next">⏭️ Từ tiếp theo</button>
+            <button class="kyna-action-btn kyna-btn-hint" id="kyna-action-hint">💡 Gợi ý</button>
+            <button class="kyna-action-btn kyna-btn-next" id="kyna-action-next">⏭️ Từ tiếp</button>
+            <button class="kyna-action-btn kyna-btn-restart-quiz" id="kyna-action-restart">🔄 Chơi lại</button>
             <button class="kyna-action-btn kyna-btn-summary" id="kyna-action-summary">🏆 Tổng kết</button>
           </div>
         </div>
@@ -332,6 +333,15 @@
         } else {
           showToastNotification("🏁 Hoàn thành!", "Đã hết danh sách từ vựng!");
           showGuessWordSummaryModal();
+        }
+      });
+
+      document.getElementById("kyna-action-restart").addEventListener("click", () => {
+        if (confirm("Bạn có muốn chơi lại lượt đoán từ từ câu đầu tiên?")) {
+          gameState.currentWordIndex = 0;
+          gameState.scores = {};
+          saveStateToStorage();
+          startNewRound();
         }
       });
 

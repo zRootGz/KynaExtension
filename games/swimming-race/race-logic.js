@@ -940,8 +940,43 @@
             </div>
           </div>` : ""}
         </div>
+
+        <div class="kyna-podium-actions">
+          <button class="kyna-podium-btn btn-restart-race" id="kyna-btn-restart-swim-race">🔄 Chơi lại cuộc đua</button>
+          <button class="kyna-podium-btn btn-close-podium" id="kyna-btn-close-podium">✖ Đóng</button>
+        </div>
       </div>
     `;
+
+    const restartBtn = podiumOverlayEl.querySelector("#kyna-btn-restart-swim-race");
+    if (restartBtn) {
+      restartBtn.addEventListener("click", () => {
+        stopRaceAnimation();
+        stopRaceCountdownTimer();
+        raceState.gameState = "IDLE";
+        raceState.rankings = [];
+        raceState.finishedStudents = {};
+        (raceState.students || []).forEach(name => {
+          raceState.positions[name] = 0;
+        });
+        distanceMeters = {};
+        currentSpeeds = {};
+        targetSpeeds = {};
+        phaseTicksLeft = {};
+        swimmerEffects = {};
+        swimmerSkills = {};
+        currentCameraStartMeters = 0;
+        saveStateToStorage();
+        createOrUpdateOverlay();
+      });
+    }
+
+    const closePodiumBtn = podiumOverlayEl.querySelector("#kyna-btn-close-podium");
+    if (closePodiumBtn) {
+      closePodiumBtn.addEventListener("click", () => {
+        if (podiumOverlayEl) podiumOverlayEl.remove();
+      });
+    }
   }
 
   function removeOverlay() {

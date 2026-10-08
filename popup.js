@@ -310,14 +310,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         elements.tabPanels.forEach(p => p.classList.remove("active"));
         btn.classList.add("active");
         document.getElementById(tabId).classList.add("active");
-
-        if (tabId === "tab-swimming") {
-          if (swimState.activeGame === "NONE") {
-            swimState.activeGame = "SWIMMING_RACE";
-            swimState.gameState = "IDLE";
-            saveSwimStateToStorage();
-          }
-        }
       });
     });
   }

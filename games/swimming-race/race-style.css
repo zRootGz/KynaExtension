@@ -544,3 +544,50 @@
   color: #FFFFFF;
   text-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
+
+/* Podium Victory Action Buttons */
+.kyna-podium-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+  width: 100%;
+}
+
+.kyna-podium-btn {
+  padding: 8px 18px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 800;
+  font-family: 'Nunito', sans-serif;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.kyna-podium-btn.btn-restart-race {
+  background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+  color: #FFFFFF;
+  border-color: #34D399;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.kyna-podium-btn.btn-restart-race:hover {
+  background: #047857;
+  transform: translateY(-1px);
+}
+
+.kyna-podium-btn.btn-close-podium {
+  background: #E2E8F0;
+  color: #334155;
+  border-color: #CBD5E1;
+}
+
+.kyna-podium-btn.btn-close-podium:hover {
+  background: #CBD5E1;
+  color: #0F172A;
+}

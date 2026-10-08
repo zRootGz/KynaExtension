@@ -293,6 +293,18 @@
   transform: translateY(-1px);
 }
 
+.kyna-btn-restart-quiz {
+  background: #8B5CF6;
+  color: #FFFFFF;
+  border-color: #A78BFA;
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+}
+
+.kyna-btn-restart-quiz:hover {
+  background: #7C3AED;
+  transform: translateY(-1px);
+}
+
 .kyna-btn-summary {
   background: #10B981;
   color: #FFFFFF;
