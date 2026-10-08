@@ -546,12 +546,12 @@
       overlayEl.innerHTML = `
         <div class="kyna-swim-header" id="kyna-swim-drag">
           <div class="kyna-swim-title">
-            <span id="kyna-swim-mode-title"><i class="fa-solid fa-person-swimming"></i> ĐUA BƠI KỲ PHÙNG ĐỊCH THỦ</span>
+            <span id="kyna-swim-mode-title">🏊 SWIMMING RACE</span>
           </div>
           <div style="display:flex; gap:6px;">
-            <button class="kyna-icon-btn" id="kyna-swim-sound-btn" title="Bật/Tắt Âm thanh & Nhạc nền"><i class="fa-solid fa-volume-high"></i></button>
-            <button class="kyna-icon-btn" id="kyna-swim-min-btn" title="Thu nhỏ"><i class="fa-solid fa-minus"></i></button>
-            <button class="kyna-icon-btn kyna-close-btn" id="kyna-swim-close-btn" title="Dừng & Đóng Game"><i class="fa-solid fa-xmark"></i></button>
+            <button class="kyna-icon-btn" id="kyna-swim-sound-btn" title="Toggle BGM & Sound">🔊</button>
+            <button class="kyna-icon-btn" id="kyna-swim-min-btn" title="Minimize/Expand">➖</button>
+            <button class="kyna-icon-btn kyna-close-btn" id="kyna-swim-close-btn" title="Close Game">✖</button>
           </div>
         </div>
 
@@ -559,7 +559,7 @@
           <div id="kyna-relay-word-prompt-container"></div>
 
           <div class="kyna-swim-timer-bar">
-            <span class="kyna-swim-timer-text" id="kyna-swim-timer-val"><i class="fa-solid fa-stopwatch"></i> ${raceState.timeLeftSeconds || 90}s</span>
+            <span class="kyna-swim-timer-text" id="kyna-swim-timer-val">⏱ ${raceState.timeLeftSeconds || 90}s</span>
             <div class="kyna-swim-progress-bg">
               <div class="kyna-swim-progress-fill" id="kyna-swim-progress-fill"></div>
             </div>
@@ -606,7 +606,7 @@
       if (swimSoundBtn) {
         swimSoundBtn.addEventListener("click", () => {
           const isMuted = typeof window.toggleSoundMuted === "function" ? window.toggleSoundMuted() : false;
-          swimSoundBtn.innerHTML = isMuted ? '<i class="fa-solid fa-volume-xmark"></i>' : '<i class="fa-solid fa-volume-high"></i>';
+          swimSoundBtn.innerHTML = isMuted ? '🔇' : '🔊';
           if (!isMuted && raceState.gameState === "RACING") {
             if (typeof window.playBgmSound === "function") window.playBgmSound("SWIMMING_RACE");
           }
@@ -617,7 +617,7 @@
     const swimSoundBtn = document.getElementById("kyna-swim-sound-btn");
     if (swimSoundBtn) {
       const isMuted = typeof window.getSoundMuted === "function" ? window.getSoundMuted() : false;
-      swimSoundBtn.innerHTML = isMuted ? '<i class="fa-solid fa-volume-xmark"></i>' : '<i class="fa-solid fa-volume-high"></i>';
+      swimSoundBtn.innerHTML = isMuted ? '🔇' : '🔊';
     }
 
     // Cập nhật thẻ hiển thị Từ vựng mục tiêu (Word Relay Mode)
@@ -630,8 +630,8 @@
     const titleEl = document.getElementById("kyna-swim-mode-title");
     if (titleEl) {
       titleEl.textContent = raceState.raceMode === "WORD_RELAY" 
-        ? "🔤 ĐUA BƠI TIẾP SỨC TỪ VỰNG" 
-        : `🦆 ĐUA BƠI TỰ ĐỘNG GAME VỊT (${raceState.raceDistanceMeters || 500}m)`;
+        ? "🔤 WORD RELAY RACE" 
+        : `🦆 DUCK AUTO RACE (${raceState.raceDistanceMeters || 500}m)`;
     }
 
     const statusTextEl = document.getElementById("kyna-swim-status-text");
@@ -660,8 +660,8 @@
       if (raceState.gameState === "IDLE") {
         container.innerHTML = `
           <div class="kyna-swim-word-card" style="border-color:#f59e0b;">
-            <div class="kyna-word-prompt-label">🏁 THỂ THỨC: ĐUA BƠI TIẾP SỨC TỪ VỰNG</div>
-            <div class="kyna-target-hint">Học sinh nhắn 'join' trong chat BBB để ghi tên. GV nhấn 'Bắt đầu' để hiển thị từ vựng đua!</div>
+            <div class="kyna-word-prompt-label">🏁 MODE: WORD RELAY RACE</div>
+            <div class="kyna-target-hint">Students type 'join' in BBB chat to register. Teacher clicks 'Start' to race!</div>
           </div>`;
       } else {
         container.innerHTML = "";
@@ -671,12 +671,12 @@
 
     container.innerHTML = `
       <div class="kyna-swim-word-card">
-        <div class="kyna-word-prompt-label">🎯 GÕ CHÍNH XÁC TỪ NÀY VÀO CHAT BBB ĐỂ BƠI TIẾN LÊN:</div>
+        <div class="kyna-word-prompt-label">🎯 TYPE THIS WORD IN BBB CHAT TO SWIM FORWARD:</div>
         <div class="kyna-word-target-display">
           <span class="kyna-target-emoji">${w.emoji || "🏊"}</span>
           <span class="kyna-target-text">${escapeHtml(w.word)}</span>
         </div>
-        <div class="kyna-target-hint">💡 Gợi ý: ${escapeHtml(w.hint || "")}</div>
+        <div class="kyna-target-hint">💡 Hint: ${escapeHtml(w.hint || "")}</div>
       </div>
     `;
   }
@@ -684,8 +684,8 @@
   function getRaceStatusText() {
     if (raceState.gameState === "RACING") {
       if (raceState.raceMode === "WORD_RELAY") {
-        const wordStr = raceState.currentWordObj ? raceState.currentWordObj.word : "TỪ KHÓA";
-        return `🔤 Hãy nhắn "${wordStr}" vào chat BBB để tiến lên!`;
+        const wordStr = raceState.currentWordObj ? raceState.currentWordObj.word : "WORD";
+        return `🔤 Type "${wordStr}" in BBB chat to move forward!`;
       }
 
       const totalMeters = raceState.raceDistanceMeters || 500;
@@ -696,20 +696,20 @@
       });
 
       if (maxMeters >= totalMeters * 0.75) {
-        return `🏁 VẠCH ĐÍCH ĐÃ XUẤT HIỆN! Các vận động viên đang bứt tốc về đích! ⚡`;
+        return `🏁 FINISH LINE APPEARED! Swimmers are sprinting to the finish line! ⚡`;
       }
-      return `⚡ Đang đua bơi tự động kiểu Game Vịt! (${Math.floor(maxMeters)}m / ${totalMeters}m)`;
+      return `⚡ Auto Duck Race in progress! (${Math.floor(maxMeters)}m / ${totalMeters}m)`;
     }
     if (raceState.gameState === "FINISHED") {
-      return "🏁 Cuộc đua kết thúc! Chúc mừng các nhà vô địch!";
+      return "🏁 Race Finished! Congratulations to the champions!";
     }
 
     const total = (raceState.students || []).length;
     if (total === 0) {
-      return "🚩 PHÒNG CHỜ: Học sinh nhắn 'join' trong chat BBB để ghi tên! (GV bấm Bắt đầu)";
+      return "🚩 LOBBY: Students type 'join' in BBB chat to register! (Teacher clicks Start)";
     }
 
-    return `🚩 PHÒNG CHỜ (${total} người bơi): Học sinh nhắn 'join' để ghi tên. GV nhấn 'Bắt đầu' để đua!`;
+    return `🚩 LOBBY (${total} swimmers): Students type 'join' in chat to register. Teacher clicks 'Start' to race!`;
   }
 
   /**
@@ -722,19 +722,19 @@
     if (!raceState.students || raceState.students.length === 0) {
       container.innerHTML = `
         <div style="text-align:center; padding:24px; color:#94a3b8; font-size:13px; font-weight:600;">
-          📥 Chưa có học sinh. Nhắn <strong style="color:#38bdf8;">'join'</strong> trong chat BBB hoặc bấm <strong style="color:#38bdf8;">'📥 Lấy từ lớp BBB'</strong> trên Extension.
+          📥 No swimmers registered. Type <strong style="color:#38bdf8;">'join'</strong> in BBB chat or click <strong style="color:#38bdf8;">'📥 Fetch from BBB'</strong> in Popup.
         </div>`;
       return;
     }
 
     container.innerHTML = `
-      <div class="kyna-finish-line" title="Vạch cán đích"></div>
+      <div class="kyna-finish-line" title="Finish Line"></div>
       ${raceState.students.map((name, idx) => {
         const avatar = avatars[idx % avatars.length];
         
         let statusTag = "";
         if (raceState.gameState === "IDLE") {
-          statusTag = `<span class="kyna-ready-tag tag-ready">⏳ PHÒNG CHỜ</span>`;
+          statusTag = `<span class="kyna-ready-tag tag-ready">⏳ LOBBY</span>`;
         }
 
         return `
@@ -895,7 +895,7 @@
       <div class="kyna-podium-ceremony-card">
         <div class="kyna-podium-header-banner">
           <span class="kyna-podium-crown-icon">👑</span>
-          <span class="kyna-podium-header-title">BẢNG VINH DANH NHÀ VÔ ĐỊCH</span>
+          <span class="kyna-podium-header-title">HALL OF FAME - CHAMPIONS</span>
           <span class="kyna-podium-crown-icon">👑</span>
         </div>
 
@@ -916,7 +916,7 @@
           <!-- TOP 1 (CHÍNH GIỮA - QUÁN QUÂN CAO NHẤT) -->
           ${r1 ? `
           <div class="kyna-podium-col col-rank-1">
-            <div class="kyna-podium-top1-crown">👑 QUÁN QUÂN</div>
+            <div class="kyna-podium-top1-crown">👑 CHAMPION</div>
             <div class="kyna-podium-student-badge is-gold-winner">
               <span class="kyna-podium-avatar-icon gold-avatar">${r1.avatar}</span>
               <span class="kyna-podium-student-name gold-name">${escapeHtml(r1.name)}</span>
@@ -942,8 +942,8 @@
         </div>
 
         <div class="kyna-podium-actions">
-          <button class="kyna-podium-btn btn-restart-race" id="kyna-btn-restart-swim-race"><i class="fa-solid fa-rotate-left"></i> Chơi lại cuộc đua</button>
-          <button class="kyna-podium-btn btn-close-podium" id="kyna-btn-close-podium"><i class="fa-solid fa-xmark"></i> Đóng</button>
+          <button class="kyna-podium-btn btn-restart-race" id="kyna-btn-restart-swim-race">🔄 Restart Race</button>
+          <button class="kyna-podium-btn btn-close-podium" id="kyna-btn-close-podium">✖ Close</button>
         </div>
       </div>
     `;

@@ -205,14 +205,14 @@
 
     const winnerBox = document.getElementById("kyna-winner-box");
     if (winnerBox) {
-      winnerBox.innerHTML = `⏰ <strong>Hết giờ!</strong> Đáp án đúng là: <strong>${escapeHtml(currentRound.wordObj.word)}</strong>`;
+      winnerBox.innerHTML = `⏰ <strong>Time's up!</strong> Correct answer is: <strong>${escapeHtml(currentRound.wordObj.word)}</strong>`;
       winnerBox.style.display = "block";
       winnerBox.style.background = "rgba(239, 68, 68, 0.25)";
       winnerBox.style.borderColor = "#EF4444";
       winnerBox.style.color = "#F87171";
     }
 
-    showToastNotification("⏰ HẾT GIỜ!", `Đáp án đúng là: <strong>${escapeHtml(currentRound.wordObj.word)}</strong>`);
+    showToastNotification("⏰ TIME'S UP!", `Correct answer is: <strong>${escapeHtml(currentRound.wordObj.word)}</strong>`);
 
     if (autoNextTimeoutId) clearTimeout(autoNextTimeoutId);
 
@@ -224,7 +224,7 @@
           saveStateToStorage();
           startNewRound();
         } else {
-          showToastNotification("🏁 HOÀN THÀNH!", "Đã hết toàn bộ danh sách từ vựng!");
+          showToastNotification("🏁 FINISHED!", "Completed all words in list!");
           showGuessWordSummaryModal();
         }
       }
@@ -241,26 +241,26 @@
       overlayEl.innerHTML = `
         <div class="kyna-overlay-header" id="kyna-header-drag">
           <div class="kyna-header-title">
-            <span><i class="fa-solid fa-puzzle-piece"></i> Guess The Word</span>
+            <span>🧩 Guess The Word</span>
             <span style="font-size:12px; opacity:0.8;" id="kyna-overlay-category">(${currentRound.wordObj.category})</span>
           </div>
           <div class="kyna-header-actions">
-            <button class="kyna-icon-btn" id="kyna-btn-toggle-sound" title="Bật/Tắt Âm thanh & Nhạc nền"><i class="fa-solid fa-volume-high"></i></button>
-            <button class="kyna-icon-btn" id="kyna-btn-toggle-min" title="Thu nhỏ/Mở rộng"><i class="fa-solid fa-minus"></i></button>
-            <button class="kyna-icon-btn kyna-close-btn" id="kyna-btn-close-game" title="Dừng & Đóng Game"><i class="fa-solid fa-xmark"></i></button>
+            <button class="kyna-icon-btn" id="kyna-btn-toggle-sound" title="Toggle BGM & Sound">🔊</button>
+            <button class="kyna-icon-btn" id="kyna-btn-toggle-min" title="Minimize/Expand">➖</button>
+            <button class="kyna-icon-btn kyna-close-btn" id="kyna-btn-close-game" title="Close Game">✖</button>
           </div>
         </div>
 
         <div class="kyna-overlay-body">
           <div class="kyna-image-frame">
-            <div class="kyna-image-loading" id="kyna-img-loader" style="display: none;"><i class="fa-solid fa-spinner fa-spin"></i> Đang tải ảnh...</div>
+            <div class="kyna-image-loading" id="kyna-img-loader" style="display: none;">⏳ Loading image...</div>
             <img id="kyna-doodle-img" src="" alt="Doodle sketch" style="opacity: 1;">
           </div>
 
           <div class="kyna-word-slots" id="kyna-slots-container"></div>
 
           <div class="kyna-hint-box">
-            <i class="fa-solid fa-lightbulb" style="color:#2563EB;"></i> Gợi ý: <span id="kyna-hint-text">${currentRound.wordObj.hint}</span>
+            💡 <strong style="color:#2563EB;">Hint:</strong> <span id="kyna-hint-text">${currentRound.wordObj.hint}</span>
           </div>
 
           <div class="kyna-timer-container">
@@ -273,10 +273,10 @@
           <div class="kyna-winner-box hidden" id="kyna-winner-box" style="margin-top: 10px; padding: 12px; background: rgba(16, 185, 129, 0.25); border: 1.5px solid #10B981; border-radius: 12px; text-align: center; color: #34D399; font-weight: bold; font-size: 16px;"></div>
 
           <div class="kyna-controls-row">
-            <button class="kyna-action-btn kyna-btn-hint" id="kyna-action-hint"><i class="fa-solid fa-lightbulb"></i> Gợi ý</button>
-            <button class="kyna-action-btn kyna-btn-next" id="kyna-action-next"><i class="fa-solid fa-forward-step"></i> Từ tiếp</button>
-            <button class="kyna-action-btn kyna-btn-restart-quiz" id="kyna-action-restart"><i class="fa-solid fa-rotate-left"></i> Chơi lại</button>
-            <button class="kyna-action-btn kyna-btn-summary" id="kyna-action-summary"><i class="fa-solid fa-trophy"></i> Tổng kết</button>
+            <button class="kyna-action-btn kyna-btn-hint" id="kyna-action-hint">💡 Hint</button>
+            <button class="kyna-action-btn kyna-btn-next" id="kyna-action-next">⏩ Next Word</button>
+            <button class="kyna-action-btn kyna-btn-restart-quiz" id="kyna-action-restart">🔄 Restart</button>
+            <button class="kyna-action-btn kyna-btn-summary" id="kyna-action-summary">🏆 Summary</button>
           </div>
         </div>
       `;
@@ -310,7 +310,7 @@
       if (soundBtn) {
         soundBtn.addEventListener("click", () => {
           const isMuted = typeof window.toggleSoundMuted === "function" ? window.toggleSoundMuted() : false;
-          soundBtn.innerHTML = isMuted ? '<i class="fa-solid fa-volume-xmark"></i>' : '<i class="fa-solid fa-volume-high"></i>';
+          soundBtn.innerHTML = isMuted ? '🔇' : '🔊';
           if (!isMuted && gameState.gameState === "RUNNING") {
             if (typeof window.playBgmSound === "function") window.playBgmSound("GUESS_THE_WORD");
           }
@@ -331,13 +331,13 @@
           saveStateToStorage();
           startNewRound();
         } else {
-          showToastNotification("🏁 Hoàn thành!", "Đã hết danh sách từ vựng!");
+          showToastNotification("🏁 Finished!", "Completed all words in list!");
           showGuessWordSummaryModal();
         }
       });
 
       document.getElementById("kyna-action-restart").addEventListener("click", () => {
-        if (confirm("Bạn có muốn chơi lại lượt đoán từ từ câu đầu tiên?")) {
+        if (confirm("Do you want to restart the quiz from the first word?")) {
           gameState.currentWordIndex = 0;
           gameState.scores = {};
           saveStateToStorage();
@@ -353,7 +353,7 @@
     const soundBtn = document.getElementById("kyna-btn-toggle-sound");
     if (soundBtn) {
       const isMuted = typeof window.getSoundMuted === "function" ? window.getSoundMuted() : false;
-      soundBtn.innerHTML = isMuted ? '<i class="fa-solid fa-volume-xmark"></i>' : '<i class="fa-solid fa-volume-high"></i>';
+      soundBtn.innerHTML = isMuted ? '🔇' : '🔊';
     }
 
     document.getElementById("kyna-overlay-category").textContent = `(${currentRound.wordObj.category})`;
@@ -557,9 +557,6 @@
       }
       if (currentRound.timerId) {
         clearInterval(currentRound.timerId);
-        currentRound.timerId = null;
-      }
-
       const points = gameState.settings.scoreFirst || 10;
 
       if (!gameState.scores[senderName]) {
@@ -574,7 +571,7 @@
 
       const winnerBox = document.getElementById("kyna-winner-box");
       if (winnerBox) {
-        winnerBox.innerHTML = `🎉 <strong>${escapeHtml(senderName)}</strong> đã đoán đúng! (+${points}đ)`;
+        winnerBox.innerHTML = `🎉 <strong>${escapeHtml(senderName)}</strong> guessed correctly! (+${points} pts)`;
         winnerBox.style.display = "block";
         winnerBox.style.background = "rgba(16, 185, 129, 0.25)";
         winnerBox.style.borderColor = "#10B981";
@@ -586,8 +583,8 @@
       }
 
       showToastNotification(
-        "🎉 CHÚC MỪNG!",
-        `<strong>${escapeHtml(senderName)}</strong> đã đoán đúng từ <strong>${escapeHtml(currentRound.wordObj.word)}</strong>! (+${points} điểm)`
+        "🎉 CONGRATULATIONS!",
+        `<strong>${escapeHtml(senderName)}</strong> guessed the word <strong>${escapeHtml(currentRound.wordObj.word)}</strong>! (+${points} pts)`
       );
 
       saveStateToStorage();
@@ -602,8 +599,8 @@
             saveStateToStorage();
             startNewRound();
           } else {
-            showToastNotification("🏁 HOÀN THÀNH!", "Đã hết toàn bộ danh sách từ vựng!");
-          showGuessWordSummaryModal();
+            showToastNotification("🏁 FINISHED!", "Completed all words in list!");
+            showGuessWordSummaryModal();
           }
         }
       }, 3500);
@@ -695,13 +692,13 @@
     summaryEl.innerHTML = `
       <div class="kyna-summary-card">
         <div class="kyna-summary-header">
-          <div class="kyna-summary-title">👑 BẢNG VINH DANH & TỔNG KẾT ĐOÁN CHỮ</div>
-          <div class="kyna-summary-subtitle">Đã hoàn thành ${gameState.currentWordIndex + 1}/${totalWordsCount} từ • Chủ đề: ${escapeHtml(gameState.category || "General")}</div>
+          <div class="kyna-summary-title">👑 GUESS THE WORD HALL OF FAME</div>
+          <div class="kyna-summary-subtitle">Completed ${gameState.currentWordIndex + 1}/${totalWordsCount} words • Category: ${escapeHtml(gameState.category || "General")}</div>
         </div>
 
         ${sortedScores.length === 0 ? `
           <div class="kyna-empty-summary">
-            📥 Chưa có học sinh nào ghi điểm trong lượt chơi này!
+            📥 No student scores recorded in this game round yet!
           </div>
         ` : `
           <!-- BỤC TRAO GIẢI PODIUM 3D TOP 3 -->
@@ -712,7 +709,7 @@
               <div class="kyna-podium-student-badge">
                 <span class="kyna-podium-avatar-icon">${avatars[1 % avatars.length]}</span>
                 <span class="kyna-podium-student-name">${escapeHtml(r2.name)}</span>
-                <span class="kyna-podium-score-tag"><b>${r2.correctCount || 0}</b> câu (${r2.totalScore || 0}đ)</span>
+                <span class="kyna-podium-score-tag"><b>${r2.correctCount || 0}</b> correct (${r2.totalScore || 0} pts)</span>
               </div>
               <div class="kyna-podium-pedestal pedestal-2">
                 <span class="kyna-podium-medal-icon">🥈</span>
@@ -723,11 +720,11 @@
             <!-- TOP 1 (QUÁN QUÂN CAO NHẤT BÁN NGUYỆT) -->
             ${r1 ? `
             <div class="kyna-podium-col col-rank-1">
-              <div class="kyna-podium-top1-crown">👑 QUÁN QUÂN</div>
+              <div class="kyna-podium-top1-crown">👑 CHAMPION</div>
               <div class="kyna-podium-student-badge is-gold-winner">
                 <span class="kyna-podium-avatar-icon">${avatars[0]}</span>
                 <span class="kyna-podium-student-name">${escapeHtml(r1.name)}</span>
-                <span class="kyna-podium-score-tag"><b>${r1.correctCount || 0}</b> câu (${r1.totalScore || 0}đ)</span>
+                <span class="kyna-podium-score-tag"><b>${r1.correctCount || 0}</b> correct (${r1.totalScore || 0} pts)</span>
               </div>
               <div class="kyna-podium-pedestal pedestal-1">
                 <span class="kyna-podium-medal-icon">🥇</span>
@@ -741,7 +738,7 @@
               <div class="kyna-podium-student-badge">
                 <span class="kyna-podium-avatar-icon">${avatars[2 % avatars.length]}</span>
                 <span class="kyna-podium-student-name">${escapeHtml(r3.name)}</span>
-                <span class="kyna-podium-score-tag"><b>${r3.correctCount || 0}</b> câu (${r3.totalScore || 0}đ)</span>
+                <span class="kyna-podium-score-tag"><b>${r3.correctCount || 0}</b> correct (${r3.totalScore || 0} pts)</span>
               </div>
               <div class="kyna-podium-pedestal pedestal-3">
                 <span class="kyna-podium-medal-icon">🥉</span>
@@ -755,10 +752,10 @@
             <table class="kyna-summary-table">
               <thead>
                 <tr>
-                  <th>Hạng</th>
-                  <th>Họ và tên Học Sinh</th>
-                  <th>Số câu đoán đúng</th>
-                  <th>Tổng điểm</th>
+                  <th>Rank</th>
+                  <th>Student Name</th>
+                  <th>Correct Guesses</th>
+                  <th>Total Score</th>
                 </tr>
               </thead>
               <tbody>
@@ -771,8 +768,8 @@
                     <tr>
                       <td>${badge}</td>
                       <td><strong>${escapeHtml(item.name)}</strong></td>
-                      <td><span class="kyna-correct-count-pill">${item.correctCount || 0} câu</span></td>
-                      <td><strong style="color: #34D399; font-size: 16px;">+${item.totalScore || 0} điểm</strong></td>
+                      <td><span class="kyna-correct-count-pill">${item.correctCount || 0} correct</span></td>
+                      <td><strong style="color: #34D399; font-size: 16px;">+${item.totalScore || 0} pts</strong></td>
                     </tr>
                   `;
                 }).join("")}
@@ -782,8 +779,8 @@
         `}
 
         <div class="kyna-summary-actions">
-          <button class="kyna-summary-btn btn-restart" id="kyna-btn-summary-restart">🔄 Chơi lại từ đầu</button>
-          <button class="kyna-summary-btn btn-close" id="kyna-btn-summary-close">✖ Đóng tổng kết</button>
+          <button class="kyna-summary-btn btn-restart" id="kyna-btn-summary-restart">🔄 Restart Quiz</button>
+          <button class="kyna-summary-btn btn-close" id="kyna-btn-summary-close">✖ Close Summary</button>
         </div>
       </div>
     `;
@@ -800,5 +797,6 @@
       summaryEl.remove();
     });
   }
+})();
 })();
 
