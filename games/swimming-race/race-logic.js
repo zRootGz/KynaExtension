@@ -132,13 +132,6 @@
   function updateLocalState(newState) {
     if (!newState) return;
 
-    if (newState.targetTabId && window.kynaMyTabId && newState.targetTabId !== window.kynaMyTabId) {
-      stopRaceAnimation();
-      stopRaceCountdownTimer();
-      removeOverlay();
-      return;
-    }
-
     const oldGameState = raceState.gameState;
     const existingWordObj = raceState.currentWordObj;
 
@@ -540,7 +533,8 @@
    * Tạo hoặc cập nhật Khung Overlay Đua Bơi
    */
   function createOrUpdateOverlay() {
-    if (!overlayEl) {
+    let existing = document.getElementById("kyna-swimming-overlay");
+    if (!existing) {
       overlayEl = document.createElement("div");
       overlayEl.id = "kyna-swimming-overlay";
       overlayEl.innerHTML = `
@@ -577,7 +571,7 @@
         </div>
       `;
 
-      document.body.appendChild(overlayEl);
+      (document.body || document.documentElement).appendChild(overlayEl);
 
       if (typeof window.makeElementDraggable === "function") {
         window.makeElementDraggable(overlayEl, document.getElementById("kyna-swim-drag"));
@@ -612,7 +606,11 @@
           }
         });
       }
+    } else {
+      overlayEl = existing;
     }
+
+    overlayEl.style.display = "block";
 
     const swimSoundBtn = document.getElementById("kyna-swim-sound-btn");
     if (swimSoundBtn) {

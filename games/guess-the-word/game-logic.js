@@ -90,12 +90,6 @@
   function updateLocalState(newState) {
     if (!newState) return;
 
-    if (newState.targetTabId && window.kynaMyTabId && newState.targetTabId !== window.kynaMyTabId) {
-      stopCurrentRound();
-      removeOverlay();
-      return;
-    }
-
     const oldGameState = gameState.gameState;
     const oldWordIndex = gameState.currentWordIndex;
 
@@ -105,8 +99,10 @@
       if (typeof window.playBgmSound === "function") {
         window.playBgmSound("GUESS_THE_WORD");
       }
-      if (oldGameState !== "RUNNING" || oldWordIndex !== gameState.currentWordIndex || !overlayEl) {
+      if (oldGameState !== "RUNNING" || oldWordIndex !== gameState.currentWordIndex || !overlayEl || !document.getElementById("kyna-game-overlay")) {
         startNewRound();
+      } else {
+        createOrUpdateOverlay();
       }
     } else {
       if (typeof window.stopBgmSound === "function") {
@@ -129,22 +125,32 @@
       }
     }
 
-    const currentWordObj = (gameState.quizWords && gameState.quizWords[gameState.currentWordIndex]) || (window.MASTER_WORD_DATABASE && window.MASTER_WORD_DATABASE[0]);
+    const currentWordObj = (gameState.quizWords && gameState.quizWords[gameState.currentWordIndex]) 
+      || (window.MASTER_WORD_DATABASE && window.MASTER_WORD_DATABASE[0])
+      || { word: "APPLE", hint: "A red or green fruit", category: "Animals", imageUrl: "" };
+
     if (!currentWordObj) {
       removeOverlay();
       return;
     }
 
-    const normWord = window.normalizeAnswerString(currentWordObj.word);
+    const safeNormalize = (str) => {
+      if (typeof window.normalizeAnswerString === "function") {
+        return window.normalizeAnswerString(str || "");
+      }
+      return (str || "").toString().toUpperCase().trim().replace(/[^A-Z0-9]/g, "");
+    };
+
+    const normWord = safeNormalize(currentWordObj.word);
 
     currentRound = {
       roundId: "R_" + Date.now() + "_" + Math.floor(Math.random() * 10000),
       wordObj: currentWordObj,
       normalizedWord: normWord,
       guessedStudentsSet: new Set(),
-      revealedLetters: new Array(normWord.length).fill(false),
+      revealedLetters: new Array(normWord.length || 1).fill(false),
       timerId: null,
-      timeLeft: gameState.settings.timerSeconds || 60,
+      timeLeft: gameState.settings ? (gameState.settings.timerSeconds || 60) : 60,
       isFirstWinner: true,
       isSolved: false
     };
@@ -235,14 +241,15 @@
    * Tạo hoặc cập nhật Khung Overlay nổi
    */
   function createOrUpdateOverlay() {
-    if (!overlayEl) {
+    let existing = document.getElementById("kyna-game-overlay");
+    if (!existing) {
       overlayEl = document.createElement("div");
       overlayEl.id = "kyna-game-overlay";
       overlayEl.innerHTML = `
         <div class="kyna-overlay-header" id="kyna-header-drag">
           <div class="kyna-header-title">
             <span>🧩 Guess The Word</span>
-            <span style="font-size:12px; opacity:0.8;" id="kyna-overlay-category">(${currentRound.wordObj.category})</span>
+            <span style="font-size:12px; opacity:0.8;" id="kyna-overlay-category">(${currentRound && currentRound.wordObj ? currentRound.wordObj.category : ""})</span>
           </div>
           <div class="kyna-header-actions">
             <button class="kyna-icon-btn" id="kyna-btn-toggle-sound" title="Toggle BGM & Sound">🔊</button>
@@ -260,11 +267,11 @@
           <div class="kyna-word-slots" id="kyna-slots-container"></div>
 
           <div class="kyna-hint-box">
-            💡 <strong style="color:#2563EB;">Hint:</strong> <span id="kyna-hint-text">${currentRound.wordObj.hint}</span>
+            💡 <strong style="color:#2563EB;">Hint:</strong> <span id="kyna-hint-text">${currentRound && currentRound.wordObj ? currentRound.wordObj.hint : ""}</span>
           </div>
 
           <div class="kyna-timer-container">
-            <span class="kyna-timer-text" id="kyna-timer-val">${currentRound.timeLeft}s</span>
+            <span class="kyna-timer-text" id="kyna-timer-val">${currentRound ? currentRound.timeLeft : 60}s</span>
             <div class="kyna-progress-bar-bg">
               <div class="kyna-progress-bar-fill" id="kyna-progress-fill"></div>
             </div>
@@ -281,7 +288,7 @@
         </div>
       `;
 
-      document.body.appendChild(overlayEl);
+      (document.body || document.documentElement).appendChild(overlayEl);
 
       if (typeof window.makeElementDraggable === "function") {
         window.makeElementDraggable(overlayEl, document.getElementById("kyna-header-drag"));
@@ -348,7 +355,11 @@
       document.getElementById("kyna-action-summary").addEventListener("click", () => {
         showGuessWordSummaryModal();
       });
+    } else {
+      overlayEl = existing;
     }
+
+    overlayEl.style.display = "block";
 
     const soundBtn = document.getElementById("kyna-btn-toggle-sound");
     if (soundBtn) {
@@ -356,8 +367,13 @@
       soundBtn.innerHTML = isMuted ? '🔇' : '🔊';
     }
 
-    document.getElementById("kyna-overlay-category").textContent = `(${currentRound.wordObj.category})`;
-    document.getElementById("kyna-hint-text").textContent = currentRound.wordObj.hint;
+    if (currentRound && currentRound.wordObj) {
+      const catEl = document.getElementById("kyna-overlay-category");
+      if (catEl) catEl.textContent = `(${currentRound.wordObj.category || "General"})`;
+
+      const hintEl = document.getElementById("kyna-hint-text");
+      if (hintEl) hintEl.textContent = currentRound.wordObj.hint || "";
+    }
     
     const winnerBox = document.getElementById("kyna-winner-box");
     if (winnerBox) {
@@ -367,7 +383,9 @@
 
     renderWordSlotsUI();
     updateOverlayTimerUI();
-    loadDoodleImageAsync(currentRound.wordObj);
+    if (currentRound && currentRound.wordObj) {
+      loadDoodleImageAsync(currentRound.wordObj);
+    }
   }
 
   /**
