@@ -56,18 +56,43 @@
   }
 
   /**
-   * Tải trạng thái ban đầu và lắng nghe sự thay đổi chrome.storage
+   * Tải trạng thái ban đầu và lắng nghe sự thay đổi chrome.storage / localStorage
    */
   function loadStateAndSync() {
-    chrome.storage.local.get(["kynaGameState"], (res) => {
-      if (res.kynaGameState) {
-        updateLocalState(res.kynaGameState);
+    if (typeof chrome !== "undefined" && chrome.storage && chrome.storage.local) {
+      try {
+        chrome.storage.local.get(["kynaGameState"], (res) => {
+          if (res && res.kynaGameState) {
+            updateLocalState(res.kynaGameState);
+          }
+        });
+
+        chrome.storage.onChanged.addListener((changes, area) => {
+          if (area === "local" && changes.kynaGameState) {
+            updateLocalState(changes.kynaGameState.newValue);
+          }
+        });
+      } catch (e) {}
+    }
+
+    try {
+      const saved = localStorage.getItem("kynaGameState");
+      if (saved) {
+        updateLocalState(JSON.parse(saved));
+      }
+    } catch (e) {}
+
+    window.addEventListener("storage", (e) => {
+      if (e.key === "kynaGameState" && e.newValue) {
+        try {
+          updateLocalState(JSON.parse(e.newValue));
+        } catch (err) {}
       }
     });
 
-    chrome.storage.onChanged.addListener((changes, area) => {
-      if (area === "local" && changes.kynaGameState) {
-        updateLocalState(changes.kynaGameState.newValue);
+    window.addEventListener("message", (e) => {
+      if (e.data && e.data.action === "SYNC_GAME_STATE") {
+        updateLocalState(e.data.payload);
       }
     });
   }
@@ -76,12 +101,16 @@
    * Lắng nghe tin nhắn trực tiếp từ popup.js
    */
   function setupMessageListeners() {
-    chrome.runtime.onMessage.addListener((message) => {
-      if (message.action === "SYNC_GAME_STATE") {
-        if (message.tabId) window.kynaMyTabId = message.tabId;
-        updateLocalState(message.payload);
-      }
-    });
+    if (typeof chrome !== "undefined" && chrome.runtime && chrome.runtime.onMessage) {
+      try {
+        chrome.runtime.onMessage.addListener((message) => {
+          if (message && message.action === "SYNC_GAME_STATE") {
+            if (message.tabId) window.kynaMyTabId = message.tabId;
+            updateLocalState(message.payload);
+          }
+        });
+      } catch (e) {}
+    }
   }
 
   /**

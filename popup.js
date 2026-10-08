@@ -186,25 +186,31 @@ document.addEventListener("DOMContentLoaded", async () => {
    * Lưu trạng thái vào chrome.storage.local & gửi tin nhắn trực tiếp CHỈ CHO TAB ĐANG MỞ
    */
   function saveStateToStorage() {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      const activeTab = tabs && tabs[0];
-      if (activeTab && activeTab.id) {
-        state.targetTabId = activeTab.id;
-      }
-      chrome.storage.local.set({ kynaGameState: state }, () => {
+    try {
+      localStorage.setItem("kynaGameState", JSON.stringify(state));
+    } catch (e) {}
+
+    if (typeof chrome !== "undefined" && chrome.tabs && chrome.storage && chrome.storage.local) {
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        const activeTab = tabs && tabs[0];
         if (activeTab && activeTab.id) {
-          ensureContentScriptInjected(activeTab.id, () => {
-            chrome.tabs.sendMessage(activeTab.id, {
-              action: "SYNC_GAME_STATE",
-              tabId: activeTab.id,
-              payload: state
-            }, () => {
-              const err = chrome.runtime.lastError; // Bỏ qua thông báo thừa khi tab không lắng nghe
-            });
-          });
+          state.targetTabId = activeTab.id;
         }
+        chrome.storage.local.set({ kynaGameState: state }, () => {
+          if (activeTab && activeTab.id) {
+            ensureContentScriptInjected(activeTab.id, () => {
+              chrome.tabs.sendMessage(activeTab.id, {
+                action: "SYNC_GAME_STATE",
+                tabId: activeTab.id,
+                payload: state
+              }, () => {
+                const err = chrome.runtime.lastError; // Bỏ qua thông báo thừa khi tab không lắng nghe
+              });
+            });
+          }
+        });
       });
-    });
+    }
   }
 
   /**
@@ -1011,25 +1017,31 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   function saveSwimStateToStorage() {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      const activeTab = tabs && tabs[0];
-      if (activeTab && activeTab.id) {
-        swimState.targetTabId = activeTab.id;
-      }
-      chrome.storage.local.set({ kynaSwimRaceState: swimState }, () => {
+    try {
+      localStorage.setItem("kynaSwimRaceState", JSON.stringify(swimState));
+    } catch (e) {}
+
+    if (typeof chrome !== "undefined" && chrome.tabs && chrome.storage && chrome.storage.local) {
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        const activeTab = tabs && tabs[0];
         if (activeTab && activeTab.id) {
-          ensureContentScriptInjected(activeTab.id, () => {
-            chrome.tabs.sendMessage(activeTab.id, {
-              action: "SYNC_SWIM_RACE_STATE",
-              tabId: activeTab.id,
-              payload: swimState
-            }, () => {
-              const err = chrome.runtime.lastError; // Bỏ qua thông báo thừa
-            });
-          });
+          swimState.targetTabId = activeTab.id;
         }
+        chrome.storage.local.set({ kynaSwimRaceState: swimState }, () => {
+          if (activeTab && activeTab.id) {
+            ensureContentScriptInjected(activeTab.id, () => {
+              chrome.tabs.sendMessage(activeTab.id, {
+                action: "SYNC_SWIM_RACE_STATE",
+                tabId: activeTab.id,
+                payload: swimState
+              }, () => {
+                const err = chrome.runtime.lastError; // Bỏ qua thông báo thừa
+              });
+            });
+          }
+        });
       });
-    });
+    }
   }
 
   function updateSwimStateFromPayload(payload) {

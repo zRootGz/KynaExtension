@@ -46,32 +46,61 @@
   }
 
   /**
-   * Đồng bộ state từ Storage
+   * Đồng bộ state từ Storage / LocalStorage
    */
   function loadStateAndSync() {
-    chrome.storage.local.get(["kynaSwimRaceState"], (res) => {
-      if (res.kynaSwimRaceState) {
-        updateLocalState(res.kynaSwimRaceState);
+    if (typeof chrome !== "undefined" && chrome.storage && chrome.storage.local) {
+      try {
+        chrome.storage.local.get(["kynaSwimRaceState"], (res) => {
+          if (res && res.kynaSwimRaceState) {
+            updateLocalState(res.kynaSwimRaceState);
+          }
+        });
+
+        chrome.storage.onChanged.addListener((changes, area) => {
+          if (area === "local" && changes.kynaSwimRaceState) {
+            updateLocalState(changes.kynaSwimRaceState.newValue);
+          }
+        });
+      } catch (e) {}
+    }
+
+    try {
+      const saved = localStorage.getItem("kynaSwimRaceState");
+      if (saved) {
+        updateLocalState(JSON.parse(saved));
+      }
+    } catch (e) {}
+
+    window.addEventListener("storage", (e) => {
+      if (e.key === "kynaSwimRaceState" && e.newValue) {
+        try {
+          updateLocalState(JSON.parse(e.newValue));
+        } catch (err) {}
       }
     });
 
-    chrome.storage.onChanged.addListener((changes, area) => {
-      if (area === "local" && changes.kynaSwimRaceState) {
-        updateLocalState(changes.kynaSwimRaceState.newValue);
+    window.addEventListener("message", (e) => {
+      if (e.data && e.data.action === "SYNC_SWIM_RACE_STATE") {
+        updateLocalState(e.data.payload);
       }
     });
   }
 
   function setupMessageListeners() {
-    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-      if (message.action === "SYNC_SWIM_RACE_STATE") {
-        if (message.tabId) window.kynaMyTabId = message.tabId;
-        updateLocalState(message.payload);
-      } else if (message.action === "FETCH_BBB_STUDENTS") {
-        const students = fetchBBBStudentsFromDOM();
-        sendResponse({ students: students });
-      }
-    });
+    if (typeof chrome !== "undefined" && chrome.runtime && chrome.runtime.onMessage) {
+      try {
+        chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+          if (message && message.action === "SYNC_SWIM_RACE_STATE") {
+            if (message.tabId) window.kynaMyTabId = message.tabId;
+            updateLocalState(message.payload);
+          } else if (message && message.action === "FETCH_BBB_STUDENTS") {
+            const students = fetchBBBStudentsFromDOM();
+            if (typeof sendResponse === "function") sendResponse({ students: students });
+          }
+        });
+      } catch (e) {}
+    }
   }
 
   function fetchBBBStudentsFromDOM() {
