@@ -225,6 +225,7 @@
           startNewRound();
         } else {
           showToastNotification("🏁 HOÀN THÀNH!", "Đã hết toàn bộ danh sách từ vựng!");
+          showGuessWordSummaryModal();
         }
       }
     }, 3500);
@@ -274,6 +275,7 @@
           <div class="kyna-controls-row">
             <button class="kyna-action-btn kyna-btn-hint" id="kyna-action-hint">💡 Mở 1 chữ cái</button>
             <button class="kyna-action-btn kyna-btn-next" id="kyna-action-next">⏭️ Từ tiếp theo</button>
+            <button class="kyna-action-btn kyna-btn-summary" id="kyna-action-summary">🏆 Tổng kết</button>
           </div>
         </div>
       `;
@@ -329,7 +331,12 @@
           startNewRound();
         } else {
           showToastNotification("🏁 Hoàn thành!", "Đã hết danh sách từ vựng!");
+          showGuessWordSummaryModal();
         }
+      });
+
+      document.getElementById("kyna-action-summary").addEventListener("click", () => {
+        showGuessWordSummaryModal();
       });
     }
 
@@ -586,6 +593,7 @@
             startNewRound();
           } else {
             showToastNotification("🏁 HOÀN THÀNH!", "Đã hết toàn bộ danh sách từ vựng!");
+          showGuessWordSummaryModal();
           }
         }
       }, 3500);
@@ -639,6 +647,148 @@
     return (str || "").replace(/[&<>'"]/g, 
       tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
     );
+  }
+
+  /**
+   * Hiển thị Màn hình Tổng kết & Xếp hạng Podiums như Đua bơi
+   */
+  function showGuessWordSummaryModal() {
+    stopCurrentRound();
+
+    if (typeof window.stopBgmSound === "function") {
+      window.stopBgmSound();
+    }
+    if (typeof window.playVictorySound === "function") {
+      window.playVictorySound(gameState.settings.soundEnabled);
+    }
+
+    let summaryEl = document.getElementById("kyna-guess-summary-modal");
+    if (!summaryEl) {
+      summaryEl = document.createElement("div");
+      summaryEl.id = "kyna-guess-summary-modal";
+      summaryEl.className = "kyna-guess-summary-overlay";
+      document.body.appendChild(summaryEl);
+    }
+
+    // Sắp xếp điểm số học sinh
+    const sortedScores = Object.entries(gameState.scores || {})
+      .map(([name, data]) => ({ name, ...data }))
+      .sort((a, b) => (b.totalScore || 0) - (a.totalScore || 0) || (b.correctCount || 0) - (a.correctCount || 0));
+
+    const totalWordsCount = gameState.quizWords ? gameState.quizWords.length : 0;
+    const r1 = sortedScores[0] || null;
+    const r2 = sortedScores[1] || null;
+    const r3 = sortedScores[2] || null;
+
+    const avatars = ["👨‍🎓", "👩‍🎓", "⭐", "🌟", "🏆", "🥇", "🥈", "🥉"];
+
+    summaryEl.innerHTML = `
+      <div class="kyna-summary-card">
+        <div class="kyna-summary-header">
+          <div class="kyna-summary-title">👑 BẢNG VINH DANH & TỔNG KẾT ĐOÁN CHỮ</div>
+          <div class="kyna-summary-subtitle">Đã hoàn thành ${gameState.currentWordIndex + 1}/${totalWordsCount} từ • Chủ đề: ${escapeHtml(gameState.category || "General")}</div>
+        </div>
+
+        ${sortedScores.length === 0 ? `
+          <div class="kyna-empty-summary">
+            📥 Chưa có học sinh nào ghi điểm trong lượt chơi này!
+          </div>
+        ` : `
+          <!-- BỤC TRAO GIẢI PODIUM 3D TOP 3 -->
+          <div class="kyna-summary-podium-stage">
+            <!-- TOP 2 -->
+            ${r2 ? `
+            <div class="kyna-podium-col col-rank-2">
+              <div class="kyna-podium-student-badge">
+                <span class="kyna-podium-avatar-icon">${avatars[1 % avatars.length]}</span>
+                <span class="kyna-podium-student-name">${escapeHtml(r2.name)}</span>
+                <span class="kyna-podium-score-tag"><b>${r2.correctCount || 0}</b> câu (${r2.totalScore || 0}đ)</span>
+              </div>
+              <div class="kyna-podium-pedestal pedestal-2">
+                <span class="kyna-podium-medal-icon">🥈</span>
+                <span class="kyna-podium-step-num">2</span>
+              </div>
+            </div>` : ""}
+
+            <!-- TOP 1 (QUÁN QUÂN CAO NHẤT BÁN NGUYỆT) -->
+            ${r1 ? `
+            <div class="kyna-podium-col col-rank-1">
+              <div class="kyna-podium-top1-crown">👑 QUÁN QUÂN</div>
+              <div class="kyna-podium-student-badge is-gold-winner">
+                <span class="kyna-podium-avatar-icon">${avatars[0]}</span>
+                <span class="kyna-podium-student-name">${escapeHtml(r1.name)}</span>
+                <span class="kyna-podium-score-tag"><b>${r1.correctCount || 0}</b> câu (${r1.totalScore || 0}đ)</span>
+              </div>
+              <div class="kyna-podium-pedestal pedestal-1">
+                <span class="kyna-podium-medal-icon">🥇</span>
+                <span class="kyna-podium-step-num">1</span>
+              </div>
+            </div>` : ""}
+
+            <!-- TOP 3 -->
+            ${r3 ? `
+            <div class="kyna-podium-col col-rank-3">
+              <div class="kyna-podium-student-badge">
+                <span class="kyna-podium-avatar-icon">${avatars[2 % avatars.length]}</span>
+                <span class="kyna-podium-student-name">${escapeHtml(r3.name)}</span>
+                <span class="kyna-podium-score-tag"><b>${r3.correctCount || 0}</b> câu (${r3.totalScore || 0}đ)</span>
+              </div>
+              <div class="kyna-podium-pedestal pedestal-3">
+                <span class="kyna-podium-medal-icon">🥉</span>
+                <span class="kyna-podium-step-num">3</span>
+              </div>
+            </div>` : ""}
+          </div>
+
+          <!-- BẢNG CHI TIẾT TOÀN BỘ HỌC SINH -->
+          <div class="kyna-summary-table-box">
+            <table class="kyna-summary-table">
+              <thead>
+                <tr>
+                  <th>Hạng</th>
+                  <th>Họ và tên Học Sinh</th>
+                  <th>Số câu đoán đúng</th>
+                  <th>Tổng điểm</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${sortedScores.map((item, idx) => {
+                  let badge = `<span class="kyna-rank-badge rank-other">${idx + 1}</span>`;
+                  if (idx === 0) badge = `<span class="kyna-rank-badge rank-1">🥇 1</span>`;
+                  if (idx === 1) badge = `<span class="kyna-rank-badge rank-2">🥈 2</span>`;
+                  if (idx === 2) badge = `<span class="kyna-rank-badge rank-3">🥉 3</span>`;
+                  return `
+                    <tr>
+                      <td>${badge}</td>
+                      <td><strong>${escapeHtml(item.name)}</strong></td>
+                      <td><span class="kyna-correct-count-pill">${item.correctCount || 0} câu</span></td>
+                      <td><strong style="color: #34D399; font-size: 16px;">+${item.totalScore || 0} điểm</strong></td>
+                    </tr>
+                  `;
+                }).join("")}
+              </tbody>
+            </table>
+          </div>
+        `}
+
+        <div class="kyna-summary-actions">
+          <button class="kyna-summary-btn btn-restart" id="kyna-btn-summary-restart">🔄 Chơi lại từ đầu</button>
+          <button class="kyna-summary-btn btn-close" id="kyna-btn-summary-close">✖ Đóng tổng kết</button>
+        </div>
+      </div>
+    `;
+
+    document.getElementById("kyna-btn-summary-restart").addEventListener("click", () => {
+      summaryEl.remove();
+      gameState.currentWordIndex = 0;
+      gameState.scores = {};
+      saveStateToStorage();
+      startNewRound();
+    });
+
+    document.getElementById("kyna-btn-summary-close").addEventListener("click", () => {
+      summaryEl.remove();
+    });
   }
 })();
 

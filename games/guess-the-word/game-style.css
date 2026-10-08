@@ -293,6 +293,18 @@
   transform: translateY(-1px);
 }
 
+.kyna-btn-summary {
+  background: #10B981;
+  color: #FFFFFF;
+  border-color: #34D399;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.kyna-btn-summary:hover {
+  background: #059669;
+  transform: translateY(-1px);
+}
+
 /* Floating Toast Notification - Top Right Banner */
 #kyna-toast-container {
   position: fixed;
@@ -330,4 +342,289 @@
 @keyframes kynaFadeOut {
   0% { opacity: 1; transform: translateX(0) scale(1); }
   100% { opacity: 0; transform: translateX(80px) scale(0.9); }
+}
+
+/* ==========================================
+   VICTORY SUMMARY PODIUM OVERLAY MODAL
+   ========================================== */
+.kyna-guess-summary-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.82);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 9999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: summaryFadeIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes summaryFadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.kyna-summary-card {
+  width: 100%;
+  max-width: 660px;
+  background: #1E293B;
+  border: 2.5px solid #2563EB;
+  border-radius: 24px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5), 0 0 30px rgba(37, 99, 235, 0.3);
+  padding: 24px;
+  color: #F8FAFC;
+  font-family: 'Nunito', sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.kyna-summary-header {
+  text-align: center;
+  border-bottom: 2px stroke #334155;
+  padding-bottom: 12px;
+}
+
+.kyna-summary-title {
+  font-size: 20px;
+  font-weight: 900;
+  color: #FCD34D;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-shadow: 0 2px 10px rgba(252, 211, 77, 0.3);
+}
+
+.kyna-summary-subtitle {
+  font-size: 13px;
+  color: #94A3B8;
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+.kyna-empty-summary {
+  text-align: center;
+  padding: 30px 15px;
+  color: #94A3B8;
+  font-size: 14px;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+}
+
+/* Podium 3D Stage */
+.kyna-summary-podium-stage {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 14px;
+  padding: 10px 0 6px 0;
+}
+
+.kyna-podium-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 140px;
+}
+
+.kyna-podium-top1-crown {
+  font-size: 13px;
+  font-weight: 900;
+  color: #FCD34D;
+  margin-bottom: 4px;
+  animation: pulseCrown 1.5s infinite alternate;
+}
+
+@keyframes pulseCrown {
+  from { transform: scale(1); }
+  to { transform: scale(1.08); }
+}
+
+.kyna-podium-student-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(30, 41, 59, 0.9);
+  border: 1.5px solid #475569;
+  border-radius: 14px;
+  padding: 8px;
+  width: 100%;
+  margin-bottom: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.kyna-podium-student-badge.is-gold-winner {
+  border-color: #FCD34D;
+  background: linear-gradient(180deg, rgba(252, 211, 77, 0.2) 0%, rgba(30, 41, 59, 0.9) 100%);
+  box-shadow: 0 0 15px rgba(252, 211, 77, 0.3);
+}
+
+.kyna-podium-avatar-icon {
+  font-size: 32px;
+}
+
+.kyna-podium-student-name {
+  font-size: 14px;
+  font-weight: 800;
+  color: #FFFFFF;
+  text-align: center;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
+}
+
+.kyna-podium-score-tag {
+  font-size: 12px;
+  color: #34D399;
+  font-weight: 800;
+  margin-top: 2px;
+}
+
+.kyna-podium-pedestal {
+  width: 100%;
+  border-radius: 14px 14px 0 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  box-shadow: inset 0 2px 4px rgba(255,255,255,0.3);
+}
+
+.pedestal-1 {
+  height: 105px;
+  background: linear-gradient(180deg, #F59E0B 0%, #D97706 100%);
+  border: 2px solid #FCD34D;
+  border-bottom: none;
+  color: #FFFFFF;
+}
+
+.pedestal-2 {
+  height: 80px;
+  background: linear-gradient(180deg, #94A3B8 0%, #64748B 100%);
+  border: 2px solid #CBD5E1;
+  border-bottom: none;
+  color: #FFFFFF;
+}
+
+.pedestal-3 {
+  height: 60px;
+  background: linear-gradient(180deg, #D97706 0%, #92400E 100%);
+  border: 2px solid #F59E0B;
+  border-bottom: none;
+  color: #FFFFFF;
+}
+
+.kyna-podium-medal-icon {
+  font-size: 24px;
+}
+
+.kyna-podium-step-num {
+  font-size: 20px;
+  font-weight: 900;
+}
+
+/* Detailed Leaderboard Table */
+.kyna-summary-table-box {
+  background: #0F172A;
+  border: 1.5px solid #334155;
+  border-radius: 16px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.kyna-summary-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.kyna-summary-table th {
+  background: #1E293B;
+  color: #94A3B8;
+  padding: 10px 14px;
+  text-align: left;
+  font-weight: 800;
+  border-bottom: 1px solid #334155;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.kyna-summary-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  color: #E2E8F0;
+}
+
+.kyna-rank-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-weight: 800;
+  font-size: 12px;
+}
+
+.kyna-rank-badge.rank-1 { background: #F59E0B; color: #FFFFFF; }
+.kyna-rank-badge.rank-2 { background: #64748B; color: #FFFFFF; }
+.kyna-rank-badge.rank-3 { background: #D97706; color: #FFFFFF; }
+.kyna-rank-badge.rank-other { background: rgba(255, 255, 255, 0.1); color: #94A3B8; }
+
+.kyna-correct-count-pill {
+  background: rgba(37, 99, 235, 0.2);
+  color: #60A5FA;
+  border: 1px solid rgba(96, 165, 250, 0.3);
+  padding: 3px 10px;
+  border-radius: 10px;
+  font-weight: 700;
+}
+
+/* Summary Actions */
+.kyna-summary-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 4px;
+}
+
+.kyna-summary-btn {
+  flex: 1;
+  padding: 12px 18px;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.kyna-summary-btn.btn-restart {
+  background: #2563EB;
+  color: #FFFFFF;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+}
+
+.kyna-summary-btn.btn-restart:hover {
+  background: #1D4ED8;
+  transform: translateY(-1px);
+}
+
+.kyna-summary-btn.btn-close {
+  background: #334155;
+  color: #94A3B8;
+}
+
+.kyna-summary-btn.btn-close:hover {
+  background: #475569;
+  color: #FFFFFF;
 }

@@ -747,31 +747,36 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   /**
-   * Đăng ký nút Bảng Điểm & Xuất file CSV / Reset
+   * Đăng ký nút Bảng Điểm & Xuất file CSV / Reset (Null-safe)
    */
   function initScoreboardAndExportEvents() {
-    // Xuất file Excel CSV
-    elements.btnExportCsv.addEventListener("click", exportScoresToCSV);
-
-    // Reset Điểm
-    elements.btnResetScores.addEventListener("click", () => {
-      if (confirm("Bạn có chắc chắn muốn xóa toàn bộ điểm số học sinh?")) {
-        state.scores = {};
-        saveStateToStorage();
-        renderUI();
-      }
-    });
+    if (elements.btnExportCsv) {
+      elements.btnExportCsv.addEventListener("click", exportScoresToCSV);
+    }
+    if (elements.btnResetScores) {
+      elements.btnResetScores.addEventListener("click", () => {
+        if (confirm("Bạn có chắc chắn muốn xóa toàn bộ điểm số học sinh?")) {
+          state.scores = {};
+          saveStateToStorage();
+          renderUI();
+        }
+      });
+    }
   }
 
   /**
-   * Render Bảng xếp hạng học sinh
+   * Render Bảng xếp hạng học sinh (Null-safe)
    */
   function renderScoreboard() {
+    if (!elements.scoresTableBody) return;
+
     const scoreEntries = Object.entries(state.scores || {})
       .map(([name, data]) => ({ name, ...data }))
       .sort((a, b) => b.totalScore - a.totalScore);
 
-    elements.tabScoreCount.textContent = scoreEntries.length;
+    if (elements.tabScoreCount) {
+      elements.tabScoreCount.textContent = scoreEntries.length;
+    }
 
     if (scoreEntries.length === 0) {
       elements.scoresTableBody.innerHTML = `

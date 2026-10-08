@@ -27,7 +27,6 @@
     <nav class="nav-tabs">
       <button class="tab-btn active" data-tab="tab-control">🎨 Đoán Chữ</button>
       <button class="tab-btn" data-tab="tab-swimming">🏊 Đua Bơi</button>
-      <button class="tab-btn" data-tab="tab-scores">🏆 Bảng điểm (<span id="tab-score-count">0</span>)</button>
       <button class="tab-btn" data-tab="tab-settings">⚙️ Cài đặt</button>
     </nav>
 
@@ -72,8 +71,14 @@
               <option value="Transport">🚀 Transport (Giao thông)</option>
               <option value="Clothing">👕 Clothing (Trang phục)</option>
               <option value="Colors">🌈 Colors (Màu sắc)</option>
-              <option value="Actions">🏊 Actions (Hành động)</option>
-              <option value="ALL">🌟 Tất cả các chủ đề</option>
+              <option value="Actions">🏃 Actions (Hành động)</option>
+              <option value="Sports & Hobbies">⚽ Sports & Hobbies (Thể thao)</option>
+              <option value="Food & Drinks">🍕 Food & Drinks (Đồ ăn & Thức uống)</option>
+              <option value="Family & People">👨‍👩‍👧‍👦 Family & People (Gia đình)</option>
+              <option value="Weather & Nature">🌈 Weather & Nature (Thời tiết)</option>
+              <option value="Body Parts">👁️ Body Parts (Cơ thể)</option>
+              <option value="House & Items">🏠 House & Items (Đồ dùng gia đình)</option>
+              <option value="ALL">🌟 Tất cả các chủ đề (400+ từ)</option>
             </select>
             <button id="btn-load-topic" class="btn btn-primary">Tải bộ từ này</button>
           </div>
@@ -215,7 +220,7 @@
           <div id="swim-word-cat-group" class="form-group" style="margin-top: 10px;">
             <label style="font-weight: 700; font-size: 13px; margin-bottom: 4px; display: block;">Bộ từ vựng bơi tiếp sức:</label>
             <select id="select-swim-word-category" class="form-control">
-              <option value="ALL" selected>🌟 Ngẫu nhiên tất cả chủ đề (240+ từ)</option>
+              <option value="ALL" selected>🌟 Ngẫu nhiên tất cả chủ đề (400+ từ)</option>
               <option value="Animals">🐶 Animals (Động vật)</option>
               <option value="Fruits">🍎 Fruits (Hoa quả)</option>
               <option value="Occupations">👨‍⚕️ Occupations (Nghề nghiệp)</option>
@@ -223,7 +228,13 @@
               <option value="Transport">🚀 Transport (Giao thông)</option>
               <option value="Clothing">👕 Clothing (Trang phục)</option>
               <option value="Colors">🌈 Colors (Màu sắc)</option>
-              <option value="Actions">🏊 Actions (Hành động)</option>
+              <option value="Actions">🏃 Actions (Hành động)</option>
+              <option value="Sports & Hobbies">⚽ Sports & Hobbies (Thể thao)</option>
+              <option value="Food & Drinks">🍕 Food & Drinks (Đồ ăn & Thức uống)</option>
+              <option value="Family & People">👨‍👩‍👧‍👦 Family & People (Gia đình)</option>
+              <option value="Weather & Nature">🌈 Weather & Nature (Thời tiết)</option>
+              <option value="Body Parts">👁️ Body Parts (Cơ thể)</option>
+              <option value="House & Items">🏠 House & Items (Đồ dùng gia đình)</option>
             </select>
           </div>
         </div>
@@ -247,39 +258,6 @@
           </div>
         </div>
 
-      </section>
-
-      <!-- TAB 3: BẢNG ĐIỂM & XUẤT FILE EXCEL/CSV -->
-      <section id="tab-scores" class="tab-panel">
-        <div class="card">
-          <div class="card-header">
-            <h3>🏆 Bảng xếp hạng học sinh</h3>
-            <div class="card-actions">
-              <button id="btn-export-csv" class="btn btn-success">
-                <span class="icon">📊</span> Xuất file Excel/CSV
-              </button>
-              <button id="btn-reset-scores" class="btn btn-danger btn-sm">Xóa điểm</button>
-            </div>
-          </div>
-
-          <div class="table-responsive">
-            <table class="score-table">
-              <thead>
-                <tr>
-                  <th>Hạng</th>
-                  <th>Họ và Tên Học Sinh</th>
-                  <th>Số câu đúng</th>
-                  <th>Tổng điểm</th>
-                </tr>
-              </thead>
-              <tbody id="scores-table-body">
-                <tr>
-                  <td colspan="4" class="text-center text-muted">Chưa có học sinh nào ghi điểm.</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
       </section>
 
       <!-- TAB 3: CÀI ĐẶT GAME -->
