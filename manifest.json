@@ -31,8 +31,11 @@
         "https://*.kynalearning.com/*",
         "https://*.bigbluebutton.org/*",
         "http://localhost/*",
+        "http://localhost:*/*",
         "http://127.0.0.1/*",
-        "file://*/*"
+        "http://127.0.0.1:*/*",
+        "file://*/*",
+        "<all_urls>"
       ],
       "all_frames": true,
       "js": [
