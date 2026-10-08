@@ -3,7 +3,7 @@
     return;
   }
 
-  // 14 Chủ đề chuẩn đa dạng
+  // 17 Standard Topic Categories
   const GAME_CATEGORIES = {
     ANIMALS: "Animals",
     FRUITS: "Fruits",
@@ -18,7 +18,10 @@
     FAMILY: "Family & People",
     WEATHER: "Weather & Nature",
     BODY: "Body Parts",
-    HOUSE: "House & Items"
+    HOUSE: "House & Items",
+    SPACE: "Space & Solar System",
+    PLACES: "Places & Buildings",
+    TOYS: "Toys & Play"
   };
 
   /**
@@ -485,7 +488,74 @@
     { word: "FORK", category: GAME_CATEGORIES.HOUSE, hint: "Utensil with prongs for picking food", query: "fork doodle sketch", emoji: "🍴", imageUrl: createCustomDoodleSvg("FORK", "Utensil with prongs for food", "🍴", "#475569") },
     { word: "KNIFE", category: GAME_CATEGORIES.HOUSE, hint: "Tool with sharp blade for cutting food", query: "knife doodle sketch", emoji: "🔪", imageUrl: createCustomDoodleSvg("KNIFE", "Tool with blade for cutting", "🔪", "#EF4444") },
     { word: "BOX", category: GAME_CATEGORIES.HOUSE, hint: "Square container for storing things", query: "box doodle sketch", emoji: "📦", imageUrl: createCustomDoodleSvg("BOX", "Container for storing things", "📦", "#CA8A04") },
-    { word: "UMBRELLA", category: GAME_CATEGORIES.HOUSE, hint: "Folding canopy protecting against rain", query: "umbrella doodle sketch", emoji: "☂️", imageUrl: createCustomDoodleSvg("UMBRELLA", "Canopy protecting against rain", "☂️", "#F43F5E") }
+    { word: "UMBRELLA", category: GAME_CATEGORIES.HOUSE, hint: "Folding canopy protecting against rain", query: "umbrella doodle sketch", emoji: "☂️", imageUrl: createCustomDoodleSvg("UMBRELLA", "Canopy protecting against rain", "☂️", "#F43F5E") },
+
+    // --- 15. SPACE & SOLAR SYSTEM (25 từ) ---
+    { word: "SKY", category: GAME_CATEGORIES.SPACE, hint: "The space above the Earth where clouds and stars appear", query: "sky doodle sketch", emoji: "🌌", imageUrl: createCustomDoodleSvg("SKY", "The space above the Earth", "🌌", "#0284C7") },
+    { word: "PLANET", category: GAME_CATEGORIES.SPACE, hint: "A large round body in space orbiting a star", query: "planet doodle sketch", emoji: "🪐", imageUrl: createCustomDoodleSvg("PLANET", "Large body in space orbiting a star", "🪐", "#8B5CF6") },
+    { word: "SUN", category: GAME_CATEGORIES.SPACE, hint: "The bright star providing light and heat to Earth", query: "sun doodle sketch", emoji: "☀️", imageUrl: createCustomDoodleSvg("SUN", "Star giving light and heat", "☀️", "#EAB308") },
+    { word: "MOON", category: GAME_CATEGORIES.SPACE, hint: "The natural satellite orbiting Earth seen at night", query: "moon doodle sketch", emoji: "🌙", imageUrl: createCustomDoodleSvg("MOON", "Night satellite orbiting Earth", "🌙", "#FCD34D") },
+    { word: "STAR", category: GAME_CATEGORIES.SPACE, hint: "A glowing ball of gas shining in the night sky", query: "star doodle sketch", emoji: "⭐", imageUrl: createCustomDoodleSvg("STAR", "Glowing light in night sky", "⭐", "#F59E0B") },
+    { word: "EARTH", category: GAME_CATEGORIES.SPACE, hint: "The blue planet we live on", query: "earth doodle sketch", emoji: "🌍", imageUrl: createCustomDoodleSvg("EARTH", "The blue planet we live on", "🌍", "#10B981") },
+    { word: "MARS", category: GAME_CATEGORIES.SPACE, hint: "The red planet fourth from the Sun", query: "mars doodle sketch", emoji: "🔴", imageUrl: createCustomDoodleSvg("MARS", "The red planet near Earth", "🔴", "#EF4444") },
+    { word: "JUPITER", category: GAME_CATEGORIES.SPACE, hint: "The largest planet in our solar system", query: "jupiter doodle sketch", emoji: "🟠", imageUrl: createCustomDoodleSvg("JUPITER", "Largest planet in solar system", "🟠", "#D97706") },
+    { word: "SATURN", category: GAME_CATEGORIES.SPACE, hint: "The planet famous for its bright rings", query: "saturn doodle sketch", emoji: "🪐", imageUrl: createCustomDoodleSvg("SATURN", "Planet famous for bright rings", "🪐", "#F59E0B") },
+    { word: "VENUS", category: GAME_CATEGORIES.SPACE, hint: "The hottest planet in our solar system", query: "venus doodle sketch", emoji: "🟡", imageUrl: createCustomDoodleSvg("VENUS", "Hottest planet in solar system", "🟡", "#EAB308") },
+    { word: "COMET", category: GAME_CATEGORIES.SPACE, hint: "An icy space object with a long glowing tail", query: "comet doodle sketch", emoji: "☄️", imageUrl: createCustomDoodleSvg("COMET", "Icy space object with glowing tail", "☄️", "#38BDF8") },
+    { word: "ROCKET", category: GAME_CATEGORIES.SPACE, hint: "A powerful vehicle traveling into outer space", query: "rocket doodle sketch", emoji: "🚀", imageUrl: createCustomDoodleSvg("ROCKET", "Vehicle traveling into outer space", "🚀", "#F97316") },
+    { word: "ASTRONAUT", category: GAME_CATEGORIES.SPACE, hint: "A person trained to travel and work in space", query: "astronaut doodle sketch", emoji: "👨‍🚀", imageUrl: createCustomDoodleSvg("ASTRONAUT", "Person trained to travel in space", "👨‍🚀", "#6366F1") },
+    { word: "GALAXY", category: GAME_CATEGORIES.SPACE, hint: "A massive system of millions of stars and planets", query: "galaxy doodle sketch", emoji: "🌌", imageUrl: createCustomDoodleSvg("GALAXY", "System of millions of stars", "🌌", "#7C3AED") },
+    { word: "TELESCOPE", category: GAME_CATEGORIES.SPACE, hint: "An instrument used to view distant space objects", query: "telescope doodle sketch", emoji: "🔭", imageUrl: createCustomDoodleSvg("TELESCOPE", "Tool to view distant space objects", "🔭", "#0284C7") },
+    { word: "SATELLITE", category: GAME_CATEGORIES.SPACE, hint: "An artificial object orbiting a planet", query: "satellite doodle sketch", emoji: "🛰️", imageUrl: createCustomDoodleSvg("SATELLITE", "Object orbiting a planet in space", "🛰️", "#64748B") },
+    { word: "ALIEN", category: GAME_CATEGORIES.SPACE, hint: "A creature from another planet", query: "alien doodle sketch", emoji: "👽", imageUrl: createCustomDoodleSvg("ALIEN", "Creature from another planet", "👽", "#22C55E") },
+    { word: "ORBIT", category: GAME_CATEGORIES.SPACE, hint: "The curved path of a planet or moon in space", query: "orbit doodle sketch", emoji: "🔄", imageUrl: createCustomDoodleSvg("ORBIT", "Curved path of planet in space", "🔄", "#0EA5E9") },
+    { word: "METEOR", category: GAME_CATEGORIES.SPACE, hint: "A shooting star streak of light in space", query: "meteor doodle sketch", emoji: "🌠", imageUrl: createCustomDoodleSvg("METEOR", "Shooting star streak in night sky", "🌠", "#EC4899") },
+    { word: "UNIVERSE", category: GAME_CATEGORIES.SPACE, hint: "All existing space, matter, and planets", query: "universe doodle sketch", emoji: "✨", imageUrl: createCustomDoodleSvg("UNIVERSE", "All existing space and planets", "✨", "#A855F7") },
+    { word: "SPACESHIP", category: GAME_CATEGORIES.SPACE, hint: "A spacecraft designed for space travel", query: "spaceship doodle sketch", emoji: "🛸", imageUrl: createCustomDoodleSvg("SPACESHIP", "Craft designed for space travel", "🛸", "#06B6D4") },
+    { word: "GRAVITY", category: GAME_CATEGORIES.SPACE, hint: "The invisible force pulling objects towards Earth", query: "gravity doodle sketch", emoji: "🍎", imageUrl: createCustomDoodleSvg("GRAVITY", "Force pulling objects to Earth", "🍎", "#DC2626") },
+    { word: "ECLIPSE", category: GAME_CATEGORIES.SPACE, hint: "When the sun or moon is blocked by a shadow", query: "eclipse doodle sketch", emoji: "🌒", imageUrl: createCustomDoodleSvg("ECLIPSE", "Sun or moon blocked by a shadow", "🌒", "#334155") },
+    { word: "ASTEROID", category: GAME_CATEGORIES.SPACE, hint: "A small rocky body orbiting the Sun", query: "asteroid doodle sketch", emoji: "🪨", imageUrl: createCustomDoodleSvg("ASTEROID", "Small rocky body orbiting the Sun", "🪨", "#78350F") },
+    { word: "BLACKHOLE", category: GAME_CATEGORIES.SPACE, hint: "A region in space with gravity so strong light cannot escape", query: "blackhole doodle sketch", emoji: "🕳️", imageUrl: createCustomDoodleSvg("BLACKHOLE", "Space region where no light escapes", "🕳️", "#1E293B") },
+
+    // --- 16. PLACES & BUILDINGS (20 từ) ---
+    { word: "PARK", category: GAME_CATEGORIES.PLACES, hint: "A large public green area for relaxation and play", query: "park doodle sketch", emoji: "🏞️", imageUrl: createCustomDoodleSvg("PARK", "Public green area for play", "🏞️", "#10B981") },
+    { word: "HOSPITAL", category: GAME_CATEGORIES.PLACES, hint: "A place where sick or injured people receive medical care", query: "hospital doodle sketch", emoji: "🏥", imageUrl: createCustomDoodleSvg("HOSPITAL", "Place for medical care and healing", "🏥", "#EF4444") },
+    { word: "ZOO", category: GAME_CATEGORIES.PLACES, hint: "A place where wild animals are kept for people to visit", query: "zoo doodle sketch", emoji: "🦁", imageUrl: createCustomDoodleSvg("ZOO", "Park where wild animals are kept", "🦁", "#F59E0B") },
+    { word: "AIRPORT", category: GAME_CATEGORIES.PLACES, hint: "A place where airplanes land and take off", query: "airport doodle sketch", emoji: "✈️", imageUrl: createCustomDoodleSvg("AIRPORT", "Place where airplanes take off", "✈️", "#0284C7") },
+    { word: "MUSEUM", category: GAME_CATEGORIES.PLACES, hint: "A building where historical and artistic objects are displayed", query: "museum doodle sketch", emoji: "🏛️", imageUrl: createCustomDoodleSvg("MUSEUM", "Displays historical & art objects", "🏛️", "#7C3AED") },
+    { word: "SUPERMARKET", category: GAME_CATEGORIES.PLACES, hint: "A large store selling food and household goods", query: "supermarket doodle sketch", emoji: "🛒", imageUrl: createCustomDoodleSvg("SUPERMARKET", "Large grocery & food store", "🛒", "#0EA5E9") },
+    { word: "RESTAURANT", category: GAME_CATEGORIES.PLACES, hint: "A place where meals are prepared and served to customers", query: "restaurant doodle sketch", emoji: "🍽️", imageUrl: createCustomDoodleSvg("RESTAURANT", "Place where meals are served", "🍽️", "#D97706") },
+    { word: "BANK", category: GAME_CATEGORIES.PLACES, hint: "A financial institution for depositing and saving money", query: "bank doodle sketch", emoji: "🏦", imageUrl: createCustomDoodleSvg("BANK", "Place for keeping and saving money", "🏦", "#059669") },
+    { word: "HOTEL", category: GAME_CATEGORIES.PLACES, hint: "A building providing rooms for travelers to stay", query: "hotel doodle sketch", emoji: "🏨", imageUrl: createCustomDoodleSvg("HOTEL", "Provides rooms for travelers", "🏨", "#3B82F6") },
+    { word: "CINEMA", category: GAME_CATEGORIES.PLACES, hint: "A theater where movies are shown on a big screen", query: "cinema doodle sketch", emoji: "🍿", imageUrl: createCustomDoodleSvg("CINEMA", "Theater where movies are shown", "🍿", "#EC4899") },
+    { word: "FARM", category: GAME_CATEGORIES.PLACES, hint: "Land used for growing crops and keeping animals", query: "farm doodle sketch", emoji: "🚜", imageUrl: createCustomDoodleSvg("FARM", "Land for crops and farm animals", "🚜", "#84CC16") },
+    { word: "STATION", category: GAME_CATEGORIES.PLACES, hint: "A stopping place for trains or buses", query: "station doodle sketch", emoji: "🚉", imageUrl: createCustomDoodleSvg("STATION", "Stopping place for trains/buses", "🚉", "#475569") },
+    { word: "CASTLE", category: GAME_CATEGORIES.PLACES, hint: "A large historic fortified building", query: "castle doodle sketch", emoji: "🏰", imageUrl: createCustomDoodleSvg("CASTLE", "Historic royal fortified building", "🏰", "#9333EA") },
+    { word: "BRIDGE", category: GAME_CATEGORIES.PLACES, hint: "A structure carrying a road across a river or valley", query: "bridge doodle sketch", emoji: "🌉", imageUrl: createCustomDoodleSvg("BRIDGE", "Structure across a river or valley", "🌉", "#0284C7") },
+    { word: "STORE", category: GAME_CATEGORIES.PLACES, hint: "A shop where items and goods are sold", query: "store doodle sketch", emoji: "🏪", imageUrl: createCustomDoodleSvg("STORE", "Shop where goods are sold", "🏪", "#F97316") },
+    { word: "CAFE", category: GAME_CATEGORIES.PLACES, hint: "A small restaurant serving coffee and light meals", query: "cafe doodle sketch", emoji: "☕", imageUrl: createCustomDoodleSvg("CAFE", "Small shop serving coffee & snacks", "☕", "#78350F") },
+    { word: "BAKERY", category: GAME_CATEGORIES.PLACES, hint: "A place where bread and pastries are baked and sold", query: "bakery doodle sketch", emoji: "🥐", imageUrl: createCustomDoodleSvg("BAKERY", "Where fresh bread & cakes are made", "🥐", "#CA8A04") },
+    { word: "STADIUM", category: GAME_CATEGORIES.PLACES, hint: "A large sports arena with seats for spectators", query: "stadium doodle sketch", emoji: "🏟️", imageUrl: createCustomDoodleSvg("STADIUM", "Large sports arena for games", "🏟️", "#2563EB") },
+    { word: "CIRCUS", category: GAME_CATEGORIES.PLACES, hint: "A show with clowns, acrobats, and performances", query: "circus doodle sketch", emoji: "🎪", imageUrl: createCustomDoodleSvg("CIRCUS", "Show with acrobats & clowns", "🎪", "#EF4444") },
+    { word: "TEMPLE", category: GAME_CATEGORIES.PLACES, hint: "A building devoted to religious worship", query: "temple doodle sketch", emoji: "🛕", imageUrl: createCustomDoodleSvg("TEMPLE", "Building for worship and peace", "🛕", "#D97706") },
+
+    // --- 17. TOYS & PLAY (16 từ) ---
+    { word: "BALL", category: GAME_CATEGORIES.TOYS, hint: "A round object used in play and sports", query: "ball doodle sketch", emoji: "⚽", imageUrl: createCustomDoodleSvg("BALL", "Round object used in games", "⚽", "#10B981") },
+    { word: "DOLL", category: GAME_CATEGORIES.TOYS, hint: "A toy figure representing a person or baby", query: "doll doodle sketch", emoji: "🪆", imageUrl: createCustomDoodleSvg("DOLL", "Toy figure representing a person", "🪆", "#EC4899") },
+    { word: "ROBOT", category: GAME_CATEGORIES.TOYS, hint: "A mechanical toy shaped like an automaton", query: "robot doodle sketch", emoji: "🤖", imageUrl: createCustomDoodleSvg("ROBOT", "Mechanical toy with lights", "🤖", "#0284C7") },
+    { word: "KITE", category: GAME_CATEGORIES.TOYS, hint: "A light frame flown in the wind on a string", query: "kite doodle sketch", emoji: "🪁", imageUrl: createCustomDoodleSvg("KITE", "Flown in the wind on a string", "🪁", "#F59E0B") },
+    { word: "PUZZLE", category: GAME_CATEGORIES.TOYS, hint: "A game testing ingenuity by fitting pieces together", query: "puzzle doodle sketch", emoji: "🧩", imageUrl: createCustomDoodleSvg("PUZZLE", "Game of fitting pieces together", "🧩", "#8B5CF6") },
+    { word: "BALLOON", category: GAME_CATEGORIES.TOYS, hint: "A colorful inflatable bag filled with air", query: "balloon doodle sketch", emoji: "🎈", imageUrl: createCustomDoodleSvg("BALLOON", "Inflatable bag filled with air", "🎈", "#EF4444") },
+    { word: "SLIDE", category: GAME_CATEGORIES.TOYS, hint: "A smooth playground ramp children slide down", query: "slide doodle sketch", emoji: "🛝", imageUrl: createCustomDoodleSvg("SLIDE", "Playground ramp to slide down", "🛝", "#0EA5E9") },
+    { word: "SWING", category: GAME_CATEGORIES.TOYS, hint: "A seat suspended by chains for swinging back and forth", query: "swing doodle sketch", emoji: "🛝", imageUrl: createCustomDoodleSvg("SWING", "Suspended seat swinging back & forth", "🛝", "#10B981") },
+    { word: "TEDDY", category: GAME_CATEGORIES.TOYS, hint: "A soft plush stuffed toy bear", query: "teddy doodle sketch", emoji: "🧸", imageUrl: createCustomDoodleSvg("TEDDY", "Soft plush stuffed toy bear", "🧸", "#D97706") },
+    { word: "BLOCKS", category: GAME_CATEGORIES.TOYS, hint: "Toy building cubes made of wood or plastic", query: "blocks doodle sketch", emoji: "🧱", imageUrl: createCustomDoodleSvg("BLOCKS", "Toy building cubes", "🧱", "#CA8A04") },
+    { word: "SKATEBOARD", category: GAME_CATEGORIES.TOYS, hint: "A short board on wheels ridden standing up", query: "skateboard doodle sketch", emoji: "🛹", imageUrl: createCustomDoodleSvg("SKATEBOARD", "Short board on wheels", "🛹", "#7C3AED") },
+    { word: "YOYO", category: GAME_CATEGORIES.TOYS, hint: "A toy of two disks spinning on a string", query: "yoyo doodle sketch", emoji: "🪀", imageUrl: createCustomDoodleSvg("YOYO", "Two disks spinning on a string", "🪀", "#F43F5E") },
+    { word: "MARBLES", category: GAME_CATEGORIES.TOYS, hint: "Small hard glass balls used in rolling games", query: "marbles doodle sketch", emoji: "🔮", imageUrl: createCustomDoodleSvg("MARBLES", "Small glass balls for rolling games", "🔮", "#06B6D4") },
+    { word: "DRONE", category: GAME_CATEGORIES.TOYS, hint: "A remote-controlled flying toy aircraft", query: "drone doodle sketch", emoji: "🚁", imageUrl: createCustomDoodleSvg("DRONE", "Remote-controlled flying aircraft", "🚁", "#334155") },
+    { word: "BUBBLES", category: GAME_CATEGORIES.TOYS, hint: "Floating soapy spheres blown into the air", query: "bubbles doodle sketch", emoji: "🫧", imageUrl: createCustomDoodleSvg("BUBBLES", "Floating soapy spheres in the air", "🫧", "#38BDF8") },
+    { word: "GAME", category: GAME_CATEGORIES.TOYS, hint: "An activity played for amusement or competition", query: "game doodle sketch", emoji: "🎯", imageUrl: createCustomDoodleSvg("GAME", "Activity played for fun & competition", "🎯", "#F59E0B") }
   ];
 
   /**
