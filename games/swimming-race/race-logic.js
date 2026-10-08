@@ -172,16 +172,25 @@
       createOrUpdateOverlay();
 
       if (raceState.gameState === "RACING") {
+        if (typeof window.playBgmSound === "function") {
+          window.playBgmSound("SWIMMING_RACE");
+        }
         if (raceState.raceMode === "AUTO_SPEED") {
           startRaceAnimation();
         } else {
           stopRaceAnimation();
         }
       } else {
+        if (typeof window.stopBgmSound === "function") {
+          window.stopBgmSound();
+        }
         stopRaceAnimation();
         stopRaceCountdownTimer();
       }
     } else {
+      if (typeof window.stopBgmSound === "function") {
+        window.stopBgmSound();
+      }
       stopRaceAnimation();
       stopRaceCountdownTimer();
       removeOverlay();
@@ -504,6 +513,9 @@
   function finishRaceNow() {
     stopRaceAnimation();
     stopRaceCountdownTimer();
+    if (typeof window.stopBgmSound === "function") {
+      window.stopBgmSound();
+    }
     raceState.gameState = "FINISHED";
 
     // Xếp hạng các vận động viên chưa về đích theo phần trăm quãng đường đã bơi xa nhất!

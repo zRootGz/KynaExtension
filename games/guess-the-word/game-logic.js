@@ -102,10 +102,16 @@
     gameState = { ...gameState, ...newState };
 
     if (gameState.gameState === "RUNNING") {
+      if (typeof window.playBgmSound === "function") {
+        window.playBgmSound("GUESS_THE_WORD");
+      }
       if (oldGameState !== "RUNNING" || oldWordIndex !== gameState.currentWordIndex || !overlayEl) {
         startNewRound();
       }
     } else {
+      if (typeof window.stopBgmSound === "function") {
+        window.stopBgmSound();
+      }
       stopCurrentRound();
       removeOverlay();
     }

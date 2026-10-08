@@ -145,6 +145,21 @@ Game **Đua Bơi** tạo không khí thi đấu sôi nổi kịch tính giữa c
 
 ---
 
+## 🎵 Cấu hình Nhạc Nền (Background Music - BGM)
+
+Tiện ích hỗ trợ tự động phát Nhạc Nền Lặp Lại (Looping BGM) cho cả 2 Game và tự động dừng nhạc khi ngưng chơi hoặc hết game:
+
+### 📁 Đường dẫn đặt File Âm thanh:
+Copy 2 file âm thanh nhạc nền của bạn vào thư mục `assets/sounds/` trong mã nguồn extension:
+1. **Game Đoán Chữ:** `assets/sounds/guess-bgm.mp3`
+2. **Game Đua Bơi:** `assets/sounds/swim-bgm.mp3`
+
+### 🔄 Cơ chế tự động quản lý nhạc:
+- **Tự động Lặp lại (`loop = true`):** Nhạc nền sẽ tự động phát lặp lại liên tục không bị gián đoạn trong suốt thời gian game diễn ra.
+- **Tự động Tắt nhạc:** Ngay khi Giáo viên nhấn **Dừng Game**, chuyển câu/kết thúc cuộc đua, hoặc khi game tìm được nhà vô địch, nhạc nền sẽ **tự động tắt ngay lập tức**.
+
+---
+
 ## 6. Xử lý Sự cố Thường gặp
 
 | Sự cố | Nguyên nhân | Cách khắc phục |

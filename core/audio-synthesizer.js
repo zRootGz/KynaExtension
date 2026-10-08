@@ -41,7 +41,67 @@
     }
   }
 
+  let currentBgmAudio = null;
+  let currentBgmType = null;
+
+  /**
+   * Phát Nhạc Nền BGM Lặp lại liên tục (Loop = true) cho từng Game
+   * @param {string} gameType "GUESS_THE_WORD" | "SWIMMING_RACE"
+   */
+  function playBgmSound(gameType) {
+    if (!gameType) return;
+    if (currentBgmAudio && currentBgmType === gameType && !currentBgmAudio.paused) {
+      return; // Đã và đang phát đúng nhạc nền của game này
+    }
+
+    stopBgmSound();
+
+    let audioFileName = "";
+    if (gameType === "GUESS_THE_WORD") {
+      audioFileName = "guess-bgm.mp3";
+    } else if (gameType === "SWIMMING_RACE") {
+      audioFileName = "swim-bgm.mp3";
+    }
+
+    if (!audioFileName) return;
+
+    let soundUrl = "";
+    if (typeof chrome !== "undefined" && chrome.runtime && chrome.runtime.getURL) {
+      soundUrl = chrome.runtime.getURL(`assets/sounds/${audioFileName}`);
+    } else {
+      soundUrl = `assets/sounds/${audioFileName}`;
+    }
+
+    try {
+      const bgm = new Audio(soundUrl);
+      bgm.loop = true; // Tự động lặp lại liên tục khi hết bài!
+      bgm.volume = 0.35; // Âm lượng nhạc nền 35% vừa phải nhẹ nhàng
+      bgm.play().then(() => {
+        currentBgmAudio = bgm;
+        currentBgmType = gameType;
+      }).catch(() => {
+        // Bỏ qua log nếu file MP3 chưa được tạo hoặc trình duyệt chưa tương tác
+      });
+    } catch (e) {}
+  }
+
+  /**
+   * Dừng Nhạc Nền BGM ngay lập tức khi dừng Game hoặc khi Game kết thúc
+   */
+  function stopBgmSound() {
+    if (currentBgmAudio) {
+      try {
+        currentBgmAudio.pause();
+        currentBgmAudio.currentTime = 0;
+      } catch (e) {}
+      currentBgmAudio = null;
+      currentBgmType = null;
+    }
+  }
+
   if (typeof window !== "undefined") {
     window.playVictorySound = playVictorySound;
+    window.playBgmSound = playBgmSound;
+    window.stopBgmSound = stopBgmSound;
   }
 })();
