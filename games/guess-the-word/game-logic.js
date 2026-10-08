@@ -53,7 +53,7 @@
   }
 
   /**
-   * Tải trạng thái ban đầu và lắng nghe sự thay đổi chrome.storage / localStorage
+   * Load initial state and set up message listener only (no storage.onChanged on all tabs).
    */
   function loadStateAndSync() {
     if (typeof chrome !== "undefined" && chrome.storage && chrome.storage.local) {
@@ -62,35 +62,37 @@
         try {
           chrome.storage.local.get(["kynaGameState"], (res) => {
             if (res && res.kynaGameState) {
-              updateLocalState(res.kynaGameState);
+              const saved = res.kynaGameState;
+              // Only restore the running game on the specific tab it was started on.
+              // window.kynaMyTabId is set by the SYNC_GAME_STATE message handler.
+              // If we don't have our tab ID yet (initial load), we check activeTabId via
+              // a short delay to allow the message listener to set it first.
+              if (saved.gameState === "RUNNING" && saved.activeTabId) {
+                // Request our own tab ID and compare before showing overlay
+                chrome.runtime.sendMessage({ action: "GET_MY_TAB_ID" }, (resp) => {
+                  const myId = (resp && resp.tabId) || null;
+                  if (!myId || myId === saved.activeTabId) {
+                    // Either we couldn't determine tab ID, or it matches — show overlay
+                    updateLocalState(saved);
+                  }
+                });
+              } else if (!saved.activeTabId) {
+                // Legacy state without tabId — show normally
+                updateLocalState(saved);
+              }
+              // If activeTabId is set and doesn't match our tab: do nothing (other tab's game)
             }
           });
-
-          chrome.storage.onChanged.addListener((changes, area) => {
-            if (area === "local" && changes.kynaGameState) {
-              updateLocalState(changes.kynaGameState.newValue);
-            }
-          });
+          // NOTE: We intentionally do NOT add chrome.storage.onChanged here.
+          // That event fires on ALL tabs simultaneously, causing the overlay to appear
+          // everywhere. State sync is handled exclusively via chrome.runtime.onMessage
+          // which is tab-specific (popup sends only to the focused window's active tab).
         } catch (e) {}
       }
     }
 
     if (!window.kynaGuessLocalStorageListenerSet) {
       window.kynaGuessLocalStorageListenerSet = true;
-      try {
-        const saved = localStorage.getItem("kynaGameState");
-        if (saved) {
-          updateLocalState(JSON.parse(saved));
-        }
-      } catch (e) {}
-
-      window.addEventListener("storage", (e) => {
-        if (e.key === "kynaGameState" && e.newValue) {
-          try {
-            updateLocalState(JSON.parse(e.newValue));
-          } catch (err) {}
-        }
-      });
 
       window.addEventListener("message", (e) => {
         if (e.data && e.data.action === "SYNC_GAME_STATE") {

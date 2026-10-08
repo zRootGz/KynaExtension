@@ -183,34 +183,39 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   /**
-   * Lưu trạng thái vào chrome.storage.local & gửi tin nhắn trực tiếp CHỈ CHO TAB ĐANG MỞ
+   * Save state to storage and send message ONLY to the active tab in the focused window.
    */
   function saveStateToStorage() {
-    try {
-      localStorage.setItem("kynaGameState", JSON.stringify(state));
-    } catch (e) {}
-
-    if (typeof chrome !== "undefined" && chrome.storage && chrome.storage.local) {
-      chrome.storage.local.set({ kynaGameState: state });
-    }
-
     if (typeof chrome !== "undefined" && chrome.tabs) {
-      chrome.tabs.query({ active: true }, (tabs) => {
-        if (!tabs || tabs.length === 0) return;
-        tabs.forEach(activeTab => {
-          if (activeTab && activeTab.id) {
-            ensureContentScriptInjected(activeTab.id, () => {
-              chrome.tabs.sendMessage(activeTab.id, {
-                action: "SYNC_GAME_STATE",
-                tabId: activeTab.id,
-                payload: state
-              }, () => {
-                const err = chrome.runtime.lastError;
-              });
-            });
-          }
-        });
+      // Use lastFocusedWindow:true so we only get the ONE active tab the teacher is looking at
+      chrome.tabs.query({ active: true, lastFocusedWindow: true }, (tabs) => {
+        const activeTab = tabs && tabs[0];
+        const tabId = activeTab ? activeTab.id : null;
+
+        // Embed the tabId into state so content scripts can filter
+        const stateWithTab = { ...state, activeTabId: tabId };
+
+        try {
+          localStorage.setItem("kynaGameState", JSON.stringify(stateWithTab));
+        } catch (e) {}
+
+        if (typeof chrome !== "undefined" && chrome.storage && chrome.storage.local) {
+          chrome.storage.local.set({ kynaGameState: stateWithTab });
+        }
+
+        if (tabId) {
+          ensureContentScriptInjected(tabId, () => {
+            chrome.tabs.sendMessage(tabId, {
+              action: "SYNC_GAME_STATE",
+              tabId: tabId,
+              payload: stateWithTab
+            }, () => { chrome.runtime.lastError; });
+          });
+        }
       });
+    } else {
+      // Fallback (non-extension context)
+      try { localStorage.setItem("kynaGameState", JSON.stringify(state)); } catch (e) {}
     }
   }
 
@@ -1018,31 +1023,34 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   function saveSwimStateToStorage() {
-    try {
-      localStorage.setItem("kynaSwimRaceState", JSON.stringify(swimState));
-    } catch (e) {}
-
-    if (typeof chrome !== "undefined" && chrome.storage && chrome.storage.local) {
-      chrome.storage.local.set({ kynaSwimRaceState: swimState });
-    }
-
     if (typeof chrome !== "undefined" && chrome.tabs) {
-      chrome.tabs.query({ active: true }, (tabs) => {
-        if (!tabs || tabs.length === 0) return;
-        tabs.forEach(activeTab => {
-          if (activeTab && activeTab.id) {
-            ensureContentScriptInjected(activeTab.id, () => {
-              chrome.tabs.sendMessage(activeTab.id, {
-                action: "SYNC_SWIM_RACE_STATE",
-                tabId: activeTab.id,
-                payload: swimState
-              }, () => {
-                const err = chrome.runtime.lastError;
-              });
-            });
-          }
-        });
+      // Use lastFocusedWindow:true to only target the teacher's current tab
+      chrome.tabs.query({ active: true, lastFocusedWindow: true }, (tabs) => {
+        const activeTab = tabs && tabs[0];
+        const tabId = activeTab ? activeTab.id : null;
+
+        const swimStateWithTab = { ...swimState, activeTabId: tabId };
+
+        try {
+          localStorage.setItem("kynaSwimRaceState", JSON.stringify(swimStateWithTab));
+        } catch (e) {}
+
+        if (typeof chrome !== "undefined" && chrome.storage && chrome.storage.local) {
+          chrome.storage.local.set({ kynaSwimRaceState: swimStateWithTab });
+        }
+
+        if (tabId) {
+          ensureContentScriptInjected(tabId, () => {
+            chrome.tabs.sendMessage(tabId, {
+              action: "SYNC_SWIM_RACE_STATE",
+              tabId: tabId,
+              payload: swimStateWithTab
+            }, () => { chrome.runtime.lastError; });
+          });
+        }
       });
+    } else {
+      try { localStorage.setItem("kynaSwimRaceState", JSON.stringify(swimState)); } catch (e) {}
     }
   }
 

@@ -43,7 +43,7 @@
   }
 
   /**
-   * Đồng bộ state từ Storage / LocalStorage
+   * Sync state from storage — initial load only, no storage.onChanged (would fire on all tabs).
    */
   function loadStateAndSync() {
     if (typeof chrome !== "undefined" && chrome.storage && chrome.storage.local) {
@@ -52,35 +52,30 @@
         try {
           chrome.storage.local.get(["kynaSwimRaceState"], (res) => {
             if (res && res.kynaSwimRaceState) {
-              updateLocalState(res.kynaSwimRaceState);
+              const saved = res.kynaSwimRaceState;
+              // Only restore an active race on the specific tab it was started on.
+              if (saved.activeGame === "SWIMMING_RACE" && saved.activeTabId) {
+                chrome.runtime.sendMessage({ action: "GET_MY_TAB_ID" }, (resp) => {
+                  const myId = (resp && resp.tabId) || null;
+                  if (!myId || myId === saved.activeTabId) {
+                    updateLocalState(saved);
+                  }
+                });
+              } else if (!saved.activeTabId) {
+                // Legacy state without tabId — show normally
+                updateLocalState(saved);
+              }
+              // If activeTabId is set and doesn't match: ignore (other tab's race)
             }
           });
-
-          chrome.storage.onChanged.addListener((changes, area) => {
-            if (area === "local" && changes.kynaSwimRaceState) {
-              updateLocalState(changes.kynaSwimRaceState.newValue);
-            }
-          });
+          // NOTE: We intentionally do NOT add chrome.storage.onChanged here.
+          // It fires on ALL tabs simultaneously. Use chrome.runtime.onMessage instead.
         } catch (e) {}
       }
     }
 
     if (!window.kynaSwimLocalStorageListenerSet) {
       window.kynaSwimLocalStorageListenerSet = true;
-      try {
-        const saved = localStorage.getItem("kynaSwimRaceState");
-        if (saved) {
-          updateLocalState(JSON.parse(saved));
-        }
-      } catch (e) {}
-
-      window.addEventListener("storage", (e) => {
-        if (e.key === "kynaSwimRaceState" && e.newValue) {
-          try {
-            updateLocalState(JSON.parse(e.newValue));
-          } catch (err) {}
-        }
-      });
 
       window.addEventListener("message", (e) => {
         if (e.data && e.data.action === "SYNC_SWIM_RACE_STATE") {
