@@ -246,6 +246,7 @@
           <div class="kyna-header-actions">
             <button class="kyna-icon-btn" id="kyna-btn-toggle-sound" title="Bật/Tắt Âm thanh & Nhạc nền">🔊</button>
             <button class="kyna-icon-btn" id="kyna-btn-toggle-min" title="Thu nhỏ/Mở rộng">➖</button>
+            <button class="kyna-icon-btn kyna-close-btn" id="kyna-btn-close-game" title="Dừng & Đóng Game">✖</button>
           </div>
         </div>
 
@@ -286,6 +287,21 @@
       document.getElementById("kyna-btn-toggle-min").addEventListener("click", () => {
         overlayEl.classList.toggle("minimized");
       });
+
+      const closeBtn = document.getElementById("kyna-btn-close-game");
+      if (closeBtn) {
+        closeBtn.addEventListener("click", () => {
+          if (typeof window.stopBgmSound === "function") {
+            window.stopBgmSound();
+          }
+          if (currentRound.timerId) clearInterval(currentRound.timerId);
+          if (autoNextTimeoutId) clearTimeout(autoNextTimeoutId);
+          gameState.activeGame = "NONE";
+          gameState.gameState = "IDLE";
+          saveStateToStorage();
+          removeOverlay();
+        });
+      }
 
       const soundBtn = document.getElementById("kyna-btn-toggle-sound");
       if (soundBtn) {

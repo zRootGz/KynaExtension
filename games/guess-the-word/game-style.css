@@ -73,6 +73,11 @@
   background: rgba(255, 255, 255, 0.3);
   transform: scale(1.05);
 }
+.kyna-icon-btn.kyna-close-btn:hover {
+  background: #ef4444 !important;
+  color: #ffffff !important;
+  transform: scale(1.1);
+}
 
 /* Body Content */
 .kyna-overlay-body {

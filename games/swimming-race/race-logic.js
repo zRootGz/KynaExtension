@@ -548,9 +548,10 @@
           <div class="kyna-swim-title">
             <span id="kyna-swim-mode-title">🏊 ĐUA BƠI KÝ PHÙNG ĐỊCH THỦ</span>
           </div>
-          <div style="display:flex; gap:4px;">
+          <div style="display:flex; gap:6px;">
             <button class="kyna-icon-btn" id="kyna-swim-sound-btn" title="Bật/Tắt Âm thanh & Nhạc nền">🔊</button>
             <button class="kyna-icon-btn" id="kyna-swim-min-btn" title="Thu nhỏ">➖</button>
+            <button class="kyna-icon-btn kyna-close-btn" id="kyna-swim-close-btn" title="Dừng & Đóng Game">✖</button>
           </div>
         </div>
 
@@ -585,6 +586,21 @@
       document.getElementById("kyna-swim-min-btn").addEventListener("click", () => {
         overlayEl.classList.toggle("minimized");
       });
+
+      const closeBtn = document.getElementById("kyna-swim-close-btn");
+      if (closeBtn) {
+        closeBtn.addEventListener("click", () => {
+          stopRaceAnimation();
+          stopRaceCountdownTimer();
+          if (typeof window.stopBgmSound === "function") {
+            window.stopBgmSound();
+          }
+          raceState.activeGame = "NONE";
+          raceState.gameState = "IDLE";
+          saveStateToStorage();
+          removeOverlay();
+        });
+      }
 
       const swimSoundBtn = document.getElementById("kyna-swim-sound-btn");
       if (swimSoundBtn) {
@@ -742,7 +758,7 @@
     if (!raceState.students) return;
 
     const startPx = 55;
-    const maxDistancePx = 445; // Chiều dài làn bơi đến vạch đích (~500px)
+    const maxDistancePx = 390; // Khoảng cách bơi tối đa để Avatar dẫn đầu chạm vạch đích đỏ mà không tràn ra ngoài
 
     let maxMeters = 0;
     (raceState.students || []).forEach((name) => {
@@ -802,10 +818,13 @@
       const currentPx = startPx + relPct * maxDistancePx;
       swimmerEl.style.left = `${currentPx}px`;
 
-      // Cán qua đích: Chỉ biến mất KHI ĐÃ CÁN QUA VẠCH ĐÍCH (chạm & bơi xuyên qua vạch đỏ)
-      const hasCrossedFinish = raceState.raceMode === "AUTO_SPEED" 
-        ? (currentM >= totalMeters + 4 || currentPx >= 505) 
-        : ((raceState.positions[name] || 0) >= 100 && currentPx >= 490);
+      // Cán qua đích: Tự động mờ biến mất KHI VỀ ĐÍCH để không bị tràn chữ khỏi đường bơi
+      const isFinishedStudent = raceState.finishedStudents && raceState.finishedStudents[name];
+      const hasReachedTargetMeters = raceState.raceMode === "AUTO_SPEED" 
+        ? (currentM >= totalMeters || currentPx >= 445)
+        : ((raceState.positions[name] || 0) >= 100);
+
+      const hasCrossedFinish = isFinishedStudent || hasReachedTargetMeters || raceState.gameState === "FINISHED";
 
       if (hasCrossedFinish) {
         swimmerEl.classList.add("has-crossed-finish");
