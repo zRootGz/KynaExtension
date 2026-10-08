@@ -797,6 +797,13 @@
       const currentPx = startPx + relPct * maxDistancePx;
       swimmerEl.style.left = `${currentPx}px`;
 
+      // Nếu đã bơi tới vạch đích (currentM >= totalMeters) -> Bơi tiếp qua vạch & mờ dần biến mất khỏi làn!
+      if (currentM >= totalMeters || (raceState.positions[name] || 0) >= 100) {
+        swimmerEl.classList.add("has-crossed-finish");
+      } else {
+        swimmerEl.classList.remove("has-crossed-finish");
+      }
+
       // Cập nhật hiệu ứng Bứt Tốc / Đuối Sức trực tiếp trên avatar & tên (không dùng thẻ chữ)
       const effect = swimmerEffects[name];
       if (effect && effect.state === "BOOST") {
@@ -809,22 +816,12 @@
         swimmerEl.classList.remove("is-boosting", "is-slowing");
       }
 
-      const rankIdx = raceState.rankings.indexOf(name);
+      // Giữ làn bơi sạch sẽ 100% (Không hiện huy chương hay thẻ chữ lộn xộn trên đường bơi)
+      // Danh hiệu Top 1 2 3 sẽ được công bố trang trọng tại Bảng Vinh Danh Podiums ở dưới khi cuộc đua kết thúc!
       if (rankSlotEl) {
-        let newRankHtml = "";
-        // Huy chương CHỈ hiển thị khi vận động viên đã thực sự cán đích 100% hoặc khi cuộc đua FINISHED!
-        if (currentM >= totalMeters || (raceState.positions[name] || 0) >= 100 || raceState.gameState === "FINISHED") {
-          if (rankIdx === 0) newRankHtml = `<span class="kyna-rank-badge kyna-rank-1">🥇 Hạng 1</span>`;
-          else if (rankIdx === 1) newRankHtml = `<span class="kyna-rank-badge kyna-rank-2">🥈 Hạng 2</span>`;
-          else if (rankIdx === 2) newRankHtml = `<span class="kyna-rank-badge kyna-rank-3">🥉 Hạng 3</span>`;
-          else if (rankIdx > 2) newRankHtml = `<span class="kyna-rank-badge" style="background:rgba(255,255,255,0.15);">#${rankIdx + 1}</span>`;
-          else newRankHtml = `<span class="kyna-finished-tag">🏁 Đã về đích</span>`;
-        }
-
-        // Cache DOM innerHTML để tuyệt đối không bị chớp/nhấp nháy node
-        if (rankSlotEl.dataset.currentRankHtml !== newRankHtml) {
-          rankSlotEl.innerHTML = newRankHtml;
-          rankSlotEl.dataset.currentRankHtml = newRankHtml;
+        if (rankSlotEl.dataset.currentRankHtml !== "") {
+          rankSlotEl.innerHTML = "";
+          rankSlotEl.dataset.currentRankHtml = "";
         }
       }
     });

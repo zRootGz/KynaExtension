@@ -159,8 +159,15 @@
   flex-shrink: 0 !important;
   max-width: none !important;
   overflow: visible !important;
-  transition: left 0.08s linear, transform 0.15s ease-out;
+  transition: left 0.08s linear, transform 0.15s ease-out, opacity 0.5s ease-out;
   z-index: 10;
+}
+
+/* Swimmer Swims Past Finish Line & Disappears */
+.kyna-swimmer.has-crossed-finish {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: left 0.6s linear, opacity 0.5s ease-out !important;
 }
 
 /* Swimmer Avatar Icon & Stroke Animation */

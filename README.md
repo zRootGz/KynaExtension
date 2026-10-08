@@ -124,9 +124,9 @@ Game **Đua Bơi** tạo không khí thi đấu sôi nổi kịch tính giữa c
 ### Thể thức 2: 🦆 Đua Bơi Tự Động kiểu Game Vịt (Duck Race)
 - **Thi đấu theo Độ dài Đường đua Mét (100m - 2000m)**: Tốc độ bơi được điều tiết chuẩn thực tế theo từng độ dài đường đua (100m diễn ra ~17s, 500m ~1 phút, 2000m diễn ra ~3.5 phút kịch tính).
 - **Camera Bám Chặt Người Dẫn Đầu (Leader Focus - Viewport 50m)**: Khung nhìn camera tự động khóa chặt người dẫn đầu ở vị trí 65% làn bơi; những con bơi tụt hậu hơn 35m sẽ trôi khỏi màn hình sang mép trái, tạo độ sâu và hồi hộp chuẩn Game Vịt.
-- **Tự động Dừng Game & Vinh danh khi tìm đủ Top 1, 2, 3**: Ngay khi xác định đủ 3 nhà vô địch cán đích (🥇 Hạng 1, 🥈 Hạng 2, 🥉 Hạng 3), cuộc đua tự động hoàn tất và hiển thị Bảng Vinh Danh Podiums lập tức!
-- **Hiệu ứng Hình ảnh Tinh tế (Bỏ thẻ chữ rác)**: Loại bỏ các thẻ chữ "BỨT TỐC!" và "ĐUỐI SỨC" gây rối mắt; trạng thái bứt tốc/đuối sức được thể hiện trực quan 100% qua hoạt ảnh quạt tay bơi nhanh, quầng sáng điện quang và bóng nước bao quanh nhân vật.
-- **Tối ưu Giao diện Vạch Đích**: Thẻ tên vận động viên được bảo vệ bằng quy tắc `white-space: nowrap` và điểm dừng 360px sát vạch cảm ứng, tuyệt đối không bị dồn ép hay vỡ chữ khi cán đích.
+- **Tự động Dừng Game & Vinh danh khi tìm đủ Top 1, 2, 3**: Ngay khi xác định đủ 3 nhà vô địch cán đích, cuộc đua tự động hoàn tất và hiển thị Bảng Vinh Danh Podiums lập tức!
+- **Biến mất Mượt mà Sau Vạch Đích (`has-crossed-finish`)**: Vận động viên bơi qua vạch cảm ứng sẽ bơi tiếp một đoạn ngắn và mờ dần biến mất khỏi làn bơi, giữ cho hồ bơi luôn sạch sẽ và thông thoáng cho các bạn bơi sau.
+- **Tối ưu Giao diện Đường Bơi**: Loại bỏ hoàn toàn các thẻ chữ rác hay huy chương lơ lửng trên làn bơi. Danh hiệu Top 1 2 3 sẽ được công bố trang trọng tại Bảng Vinh Danh Podiums ở dưới khi cuộc đua kết thúc.
 
 ### Ghi danh học sinh & Quyền bắt đầu:
 - **Học sinh ghi danh:** Học sinh chỉ cần nhắn `"join"` (hoặc `"ready"`, `"r"`, `"1"`) trong khung chat BBB $\rightarrow$ Tên tự động được ghi danh vào một làn bơi riêng.
