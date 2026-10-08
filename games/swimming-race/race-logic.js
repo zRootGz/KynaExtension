@@ -364,7 +364,8 @@
           currentSpeeds[name] = nextSpd;
 
           const deltaMeters = baseStepMeters * nextSpd;
-          currentMeters = Math.min(totalMeters, currentMeters + deltaMeters);
+          // Cho phép bơi tiếp tục qua vạch đích (tối đa totalMeters + 12) để cán qua đích mượt mà trước khi biến mất!
+          currentMeters = Math.min(totalMeters + 12, currentMeters + deltaMeters);
           distanceMeters[name] = currentMeters;
 
           const pct = Math.min(100, (currentMeters / totalMeters) * 100);
@@ -741,7 +742,7 @@
     if (!raceState.students) return;
 
     const startPx = 55;
-    const maxDistancePx = 360;
+    const maxDistancePx = 445; // Chiều dài làn bơi đến vạch đích (~500px)
 
     let maxMeters = 0;
     (raceState.students || []).forEach((name) => {
@@ -766,12 +767,16 @@
     // Nội suy mượt mà vị trí Camera bám đuổi tay bơi dẫn đầu
     currentCameraStartMeters += (targetCam - currentCameraStartMeters) * 0.12;
 
-    // Hiển thị vạch đích khi Camera đã quay tới chặng vạch đích!
+    // Hiển thị vạch đích khi leader tiến vào chặng cuối hoặc camera đến khu vực đích!
     const poolContainer = document.getElementById("kyna-swim-lanes-container");
     if (poolContainer) {
       const finishLineEl = poolContainer.querySelector(".kyna-finish-line");
       if (finishLineEl) {
-        if (currentCameraStartMeters >= totalMeters - viewportSpanMeters * 0.95 || raceState.gameState === "FINISHED") {
+        if (
+          maxMeters >= totalMeters - viewportSpanMeters * 0.75 ||
+          currentCameraStartMeters >= totalMeters - viewportSpanMeters * 0.85 ||
+          raceState.gameState === "FINISHED"
+        ) {
           finishLineEl.classList.add("show-finish-line");
         } else {
           finishLineEl.classList.remove("show-finish-line");
@@ -797,8 +802,12 @@
       const currentPx = startPx + relPct * maxDistancePx;
       swimmerEl.style.left = `${currentPx}px`;
 
-      // Nếu đã bơi tới vạch đích (currentM >= totalMeters) -> Bơi tiếp qua vạch & mờ dần biến mất khỏi làn!
-      if (currentM >= totalMeters || (raceState.positions[name] || 0) >= 100) {
+      // Cán qua đích: Chỉ biến mất KHI ĐÃ CÁN QUA VẠCH ĐÍCH (chạm & bơi xuyên qua vạch đỏ)
+      const hasCrossedFinish = raceState.raceMode === "AUTO_SPEED" 
+        ? (currentM >= totalMeters + 4 || currentPx >= 505) 
+        : ((raceState.positions[name] || 0) >= 100 && currentPx >= 490);
+
+      if (hasCrossedFinish) {
         swimmerEl.classList.add("has-crossed-finish");
       } else {
         swimmerEl.classList.remove("has-crossed-finish");
