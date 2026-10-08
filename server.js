@@ -6,7 +6,7 @@ const PORT = 3000;
 
 const server = http.createServer((req, res) => {
   let filePath = path.join(__dirname, req.url === '/' ? 'test_bbb_chat.html' : req.url);
-  
+
   fs.readFile(filePath, (err, content) => {
     if (err) {
       res.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8' });

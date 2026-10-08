@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Nav Tabs
     tabBtns: document.querySelectorAll(".tab-btn"),
     tabPanels: document.querySelectorAll(".tab-panel"),
-    
+
     // Header Status
     statusBadge: document.getElementById("game-status-badge"),
     statusText: document.getElementById("status-text"),
@@ -175,7 +175,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           "games/guess-the-word/game-style.css",
           "games/swimming-race/race-style.css"
         ]
-      }).catch(() => {});
+      }).catch(() => { });
       if (typeof callback === "function") callback();
     }).catch(() => {
       if (typeof callback === "function") callback();
@@ -219,7 +219,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       elements.btnNextWord.disabled = false;
       elements.btnStopGame.disabled = false;
       elements.activeWordDisplay.classList.remove("hidden");
-      
+
       const currentWordObj = state.quizWords[state.currentWordIndex];
       elements.currentWordText.textContent = currentWordObj ? currentWordObj.word : "N/A";
     } else if (swimState.gameState === "RACING" && swimState.activeGame === "SWIMMING_RACE") {
@@ -512,10 +512,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
 
       // Tạo object từ tùy chỉnh kèm ảnh vẽ tay fallback SVG
-      const newWordObj = { 
-        word, 
-        hint, 
-        category: "Custom", 
+      const newWordObj = {
+        word,
+        hint,
+        category: "Custom",
         query,
         imageUrl: window.generateFallbackDoodleSvg(word, hint)
       };
@@ -948,7 +948,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       swimState.rankings = [];
       swimState.finishedStudents = {};
       swimState.raceStartTime = Date.now();
-      
+
       swimState.students.forEach(name => {
         swimState.positions[name] = 0;
       });
@@ -1039,7 +1039,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   function escapeHtml(str) {
-    return (str || "").replace(/[&<>'"]/g, 
+    return (str || "").replace(/[&<>'"]/g,
       tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
     );
   }

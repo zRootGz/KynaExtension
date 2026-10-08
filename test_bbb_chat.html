@@ -1,11 +1,24 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
   <meta charset="UTF-8">
   <title>Giả lập Lớp học BigBlueButton (BBB) - Test Game</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background: #0c1929; color: #fff; display: flex; height: 100vh; overflow: hidden; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: #0c1929;
+      color: #fff;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
 
     /* BBB Whiteboard / Presentation Area */
     .bbb-main-area {
@@ -29,7 +42,7 @@
       align-items: center;
       justify-content: center;
       color: #333;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     }
 
     /* BBB Chat Sidebar */
@@ -62,7 +75,7 @@
 
     /* Target DOM BBB: data-test="chatMessage" */
     .chat-message-item {
-      background: rgba(255,255,255,0.05);
+      background: rgba(255, 255, 255, 0.05);
       padding: 8px 12px;
       border-radius: 8px;
       font-size: 13px;
@@ -92,7 +105,11 @@
       border-top: 1px solid #2a3e59;
     }
 
-    .sim-row { display: flex; gap: 6px; }
+    .sim-row {
+      display: flex;
+      gap: 6px;
+    }
+
     .sim-input {
       padding: 8px 10px;
       border-radius: 6px;
@@ -101,6 +118,7 @@
       color: #fff;
       font-size: 12px;
     }
+
     .sim-btn {
       padding: 8px 12px;
       background: #00b0ff;
@@ -110,9 +128,13 @@
       font-weight: bold;
       cursor: pointer;
     }
-    .sim-btn:hover { background: #0091ea; }
+
+    .sim-btn:hover {
+      background: #0091ea;
+    }
   </style>
 </head>
+
 <body>
 
   <!-- BBB Presentation Slide Area -->
@@ -133,7 +155,7 @@
   <!-- BBB Chat Sidebar -->
   <div class="chat-area">
     <div class="chat-header">💬 Chat Trực Tuyến Lớp Học (BBB)</div>
-    
+
     <!-- Container chứa danh sách tin nhắn chat chuẩn BBB -->
     <div id="chat-list" class="chat-messages-container" data-test="chatMessagesList">
       <div class="chat-message-item" data-test="chatMessage">
@@ -146,8 +168,10 @@
     <div class="chat-input-bar">
       <div style="font-size: 11px; color: #aaa;">Giả lập Học sinh gửi tin nhắn:</div>
       <div class="sim-row">
-        <input type="text" id="sim-student-name" class="sim-input" value="Bảo Nam" placeholder="Tên học sinh..." style="width: 110px;">
-        <input type="text" id="sim-chat-text" class="sim-input" placeholder="Nhập đáp án (VD: Apple)..." style="flex: 1;">
+        <input type="text" id="sim-student-name" class="sim-input" value="Bảo Nam" placeholder="Tên học sinh..."
+          style="width: 110px;">
+        <input type="text" id="sim-chat-text" class="sim-input" placeholder="Nhập đáp án (VD: Apple)..."
+          style="flex: 1;">
         <button id="btn-send-chat" class="sim-btn">Gửi Chat</button>
       </div>
     </div>
@@ -186,10 +210,11 @@
     }
 
     function escapeHtml(str) {
-      return str.replace(/[&<>'"]/g, 
+      return str.replace(/[&<>'"]/g,
         tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
       );
     }
   </script>
 </body>
+
 </html>

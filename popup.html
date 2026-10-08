@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kyna BBB - Guess The Word Control Panel</title>
   <link rel="stylesheet" href="popup.css">
 </head>
+
 <body>
   <div class="app-container">
     <!-- Header -->
@@ -32,10 +34,10 @@
 
     <!-- Main Content Panels -->
     <main class="tab-contents">
-      
+
       <!-- TAB 1: BẢNG ĐIỀU KHIỂN & QUẢN LÝ TỪ VỰNG -->
       <section id="tab-control" class="tab-panel active">
-        
+
         <!-- Controls Bar -->
         <div class="main-action-card">
           <div class="button-group">
@@ -93,9 +95,10 @@
               <button id="btn-toggle-import-excel" class="btn btn-sm btn-success">📤 Nhập Excel/CSV</button>
             </div>
           </div>
-          
+
           <div class="search-box">
-            <input type="text" id="input-search-word" class="form-control" placeholder="Gõ từ tiếng Anh (VD: Apple, Tiger)...">
+            <input type="text" id="input-search-word" class="form-control"
+              placeholder="Gõ từ tiếng Anh (VD: Apple, Tiger)...">
           </div>
 
           <!-- Quick Search Results List -->
@@ -110,7 +113,8 @@
               </div>
               <div class="form-group">
                 <label>Gợi ý Tiếng Anh (English Hint) *</label>
-                <input type="text" id="custom-hint-input" class="form-control" placeholder="VD: A beautiful insect with wings">
+                <input type="text" id="custom-hint-input" class="form-control"
+                  placeholder="VD: A beautiful insect with wings">
               </div>
             </div>
             <div class="form-group">
@@ -121,23 +125,29 @@
           </div>
 
           <!-- Excel / CSV Bulk Import Form (Accordion) -->
-          <div id="import-excel-form" class="custom-form hidden" style="background: rgba(16, 185, 129, 0.08); border-color: rgba(16, 185, 129, 0.4);">
+          <div id="import-excel-form" class="custom-form hidden"
+            style="background: rgba(16, 185, 129, 0.08); border-color: rgba(16, 185, 129, 0.4);">
             <div style="margin-bottom: 10px;">
-              <h4 style="margin:0 0 4px 0; color:#10b981; font-size:14px; font-weight:800;">📊 Nhập từ vựng hàng loạt từ File Excel (.xls / .csv)</h4>
-              <p style="margin:0; font-size:12px; color:#94a3b8;">Tải file mẫu Excel (.xls), điền Từ Tiếng Anh + Gợi ý Tiếng Anh (English Hint) + Link Ảnh (tùy chọn). File mẫu đã được định dạng rộng cột cực kỳ dễ đọc!</p>
+              <h4 style="margin:0 0 4px 0; color:#10b981; font-size:14px; font-weight:800;">📊 Nhập từ vựng hàng loạt từ
+                File Excel (.xls / .csv)</h4>
+              <p style="margin:0; font-size:12px; color:#94a3b8;">Tải file mẫu Excel (.xls), điền Từ Tiếng Anh + Gợi ý
+                Tiếng Anh (English Hint) + Link Ảnh (tùy chọn). File mẫu đã được định dạng rộng cột cực kỳ dễ đọc!</p>
             </div>
-            
+
             <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:6px;">
-              <button id="btn-download-excel-template" class="btn btn-sm btn-outline" style="border-color:#10b981; color:#10b981;">
+              <button id="btn-download-excel-template" class="btn btn-sm btn-outline"
+                style="border-color:#10b981; color:#10b981;">
                 📥 Tải File mẫu Excel (.xls)
               </button>
               <label class="btn btn-sm btn-success" style="cursor:pointer; margin:0;">
                 📁 Chọn File Excel/CSV tải lên
-                <input type="file" id="input-import-excel-file" accept=".xls,.xlsx,.csv,.tsv,.txt" style="display:none;">
+                <input type="file" id="input-import-excel-file" accept=".xls,.xlsx,.csv,.tsv,.txt"
+                  style="display:none;">
               </label>
             </div>
 
-            <div id="import-excel-status" class="hidden" style="font-size:12px; font-weight:700; color:#34d399; margin-top:6px;"></div>
+            <div id="import-excel-status" class="hidden"
+              style="font-size:12px; font-weight:700; color:#34d399; margin-top:6px;"></div>
           </div>
         </div>
 
@@ -146,8 +156,10 @@
           <div class="card-header">
             <h3>📋 Danh sách từ trong lượt chơi này (<span id="quiz-list-count">0</span>)</h3>
             <div class="card-actions" style="display: flex; gap: 4px;">
-              <button id="btn-export-quiz-excel" class="btn btn-sm btn-outline" title="Xuất bộ từ vựng hiện tại ra Excel CSV">📊 Xuất Excel</button>
-              <button id="btn-shuffle-quiz-list" class="btn btn-sm btn-outline" title="Trộn ngẫu nhiên thứ tự từ vựng">🔀 Trộn từ</button>
+              <button id="btn-export-quiz-excel" class="btn btn-sm btn-outline"
+                title="Xuất bộ từ vựng hiện tại ra Excel CSV">📊 Xuất Excel</button>
+              <button id="btn-shuffle-quiz-list" class="btn btn-sm btn-outline"
+                title="Trộn ngẫu nhiên thứ tự từ vựng">🔀 Trộn từ</button>
               <button id="btn-clear-quiz-list" class="btn btn-sm btn-ghost">Xóa hết</button>
             </div>
           </div>
@@ -160,9 +172,10 @@
 
       <!-- TAB 2: GAME ĐUA BƠI KỲ PHÙNG ĐỊCH THỦ -->
       <section id="tab-swimming" class="tab-panel">
-        
+
         <!-- Controls Bar for Swimming Race -->
-        <div class="main-action-card" style="background: linear-gradient(135deg, rgba(14, 165, 233, 0.2) 0%, rgba(2, 132, 199, 0.2) 100%); border-color: rgba(14, 165, 233, 0.4);">
+        <div class="main-action-card"
+          style="background: linear-gradient(135deg, rgba(14, 165, 233, 0.2) 0%, rgba(2, 132, 199, 0.2) 100%); border-color: rgba(14, 165, 233, 0.4);">
           <div class="button-group">
             <button id="btn-toggle-swim-overlay" class="btn btn-primary btn-lg">
               <span class="icon">🎮</span> Bật Overlay Phòng Chờ
@@ -182,7 +195,8 @@
             <h3>🏊 Chế độ Đua Bơi & Tùy chỉnh</h3>
           </div>
           <div class="form-group">
-            <label style="font-weight: 700; font-size: 13px; margin-bottom: 4px; display: block;">Chọn thể thức cuộc đua:</label>
+            <label style="font-weight: 700; font-size: 13px; margin-bottom: 4px; display: block;">Chọn thể thức cuộc
+              đua:</label>
             <select id="select-swim-mode" class="form-control">
               <option value="WORD_RELAY" selected>🔤 Đua Bơi Tiếp Sức Từ Vựng (Gõ đúng từ để bơi & đổi từ)</option>
               <option value="AUTO_SPEED">🦆 Đua Bơi Tự Động kiểu Game Vịt (Đua ngẫu nhiên theo mét đường đua)</option>
@@ -191,7 +205,8 @@
 
           <!-- Setting sub-panel for AUTO_SPEED mode: Track Distance -->
           <div id="swim-auto-distance-group" class="form-group" style="margin-top: 10px;">
-            <label style="font-weight: 700; font-size: 13px; margin-bottom: 4px; display: block;">🚩 Độ dài đường đua (Mét):</label>
+            <label style="font-weight: 700; font-size: 13px; margin-bottom: 4px; display: block;">🚩 Độ dài đường đua
+              (Mét):</label>
             <select id="select-swim-distance" class="form-control">
               <option value="100">100m (Siêu bứt tốc)</option>
               <option value="200">200m (Tiêu chuẩn)</option>
@@ -203,7 +218,8 @@
 
           <!-- Setting sub-panel for WORD_RELAY mode: Race Duration -->
           <div id="swim-auto-timer-group" class="form-group" style="margin-top: 10px;">
-            <label style="font-weight: 700; font-size: 13px; margin-bottom: 4px; display: block;">⏱️ Thời lượng tối đa bơi tiếp sức (Giây):</label>
+            <label style="font-weight: 700; font-size: 13px; margin-bottom: 4px; display: block;">⏱️ Thời lượng tối đa
+              bơi tiếp sức (Giây):</label>
             <select id="select-swim-duration" class="form-control">
               <option value="30">30 giây</option>
               <option value="45">45 giây</option>
@@ -218,7 +234,8 @@
 
           <!-- Setting sub-panel for WORD_RELAY mode -->
           <div id="swim-word-cat-group" class="form-group" style="margin-top: 10px;">
-            <label style="font-weight: 700; font-size: 13px; margin-bottom: 4px; display: block;">Bộ từ vựng bơi tiếp sức:</label>
+            <label style="font-weight: 700; font-size: 13px; margin-bottom: 4px; display: block;">Bộ từ vựng bơi tiếp
+              sức:</label>
             <select id="select-swim-word-category" class="form-control">
               <option value="ALL" selected>🌟 Ngẫu nhiên tất cả chủ đề (400+ từ)</option>
               <option value="Animals">🐶 Animals (Động vật)</option>
@@ -244,16 +261,20 @@
           <div class="card-header">
             <h3>👥 Vận động viên tham gia (<span id="swim-student-count">0</span>)</h3>
             <div style="display:flex; gap:6px;">
-              <button id="btn-clear-swim-students" class="btn btn-sm btn-ghost" style="color:#ef4444;" title="Xóa sạch danh sách học sinh hiện tại">🗑️ Xóa danh sách</button>
-              <button id="btn-fetch-bbb-students" class="btn btn-sm btn-outline" style="border-color:#38bdf8; color:#38bdf8;">📥 Lấy từ lớp BBB</button>
+              <button id="btn-clear-swim-students" class="btn btn-sm btn-ghost" style="color:#ef4444;"
+                title="Xóa sạch danh sách học sinh hiện tại">🗑️ Xóa danh sách</button>
+              <button id="btn-fetch-bbb-students" class="btn btn-sm btn-outline"
+                style="border-color:#38bdf8; color:#38bdf8;">📥 Lấy từ lớp BBB</button>
               <button id="btn-load-sample-students" class="btn btn-sm btn-outline">Nhập mẫu</button>
             </div>
           </div>
           <div class="form-group">
-            <textarea id="input-swim-students" class="form-control" rows="3" placeholder="Gõ 'join' trong chat BBB để ghi tên tự động...&#10;Hoặc nhập tên thủ công (phân cách bằng dấu phẩy): Bảo Nam, Hoàng Minh, Tuệ Nhi"></textarea>
+            <textarea id="input-swim-students" class="form-control" rows="3"
+              placeholder="Gõ 'join' trong chat BBB để ghi tên tự động...&#10;Hoặc nhập tên thủ công (phân cách bằng dấu phẩy): Bảo Nam, Hoàng Minh, Tuệ Nhi"></textarea>
           </div>
           <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
-            <span style="font-size:11px; color:#94a3b8;">💡 Học sinh nhắn <strong>"join"</strong> trong chat để tự ghi tên. Nút Bắt đầu do GV ấn!</span>
+            <span style="font-size:11px; color:#94a3b8;">💡 Học sinh nhắn <strong>"join"</strong> trong chat để tự ghi
+              tên. Nút Bắt đầu do GV ấn!</span>
             <button id="btn-save-swim-students" class="btn btn-primary btn-sm">💾 Cập nhật danh sách</button>
           </div>
         </div>
@@ -266,7 +287,7 @@
           <div class="card-header">
             <h3>⚙️ Tùy chỉnh luật chơi</h3>
           </div>
-          
+
           <div class="setting-item">
             <label for="setting-timer">Thời gian đếm ngược mỗi từ (giây):</label>
             <select id="setting-timer" class="form-control">
@@ -304,4 +325,5 @@
   <script src="games/guess-the-word/words.js"></script>
   <script src="popup.js"></script>
 </body>
+
 </html>

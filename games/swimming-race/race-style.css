@@ -25,6 +25,7 @@
 #kyna-swimming-overlay.minimized .kyna-swim-body {
   display: none !important;
 }
+
 #kyna-swimming-overlay.minimized {
   width: 290px;
 }
@@ -77,7 +78,10 @@
 .kyna-swim-pool::before {
   content: "";
   position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 10%, transparent 20%);
   background-size: 30px 30px;
   opacity: 0.6;
@@ -86,8 +90,13 @@
 }
 
 @keyframes waterRipple {
-  0% { background-position: 0 0; }
-  100% { background-position: 30px 30px; }
+  0% {
+    background-position: 0 0;
+  }
+
+  100% {
+    background-position: 30px 30px;
+  }
 }
 
 /* Swimming Lane */
@@ -122,7 +131,7 @@
   font-size: 14px;
   color: #2563EB;
   z-index: 25;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 /* Finish Line Touchpad */
@@ -132,13 +141,11 @@
   top: 0;
   bottom: 0;
   width: 44px;
-  background: repeating-linear-gradient(
-    45deg,
-    #FFFFFF,
-    #FFFFFF 8px,
-    #2563EB 8px,
-    #2563EB 16px
-  );
+  background: repeating-linear-gradient(45deg,
+      #FFFFFF,
+      #FFFFFF 8px,
+      #2563EB 8px,
+      #2563EB 16px);
   border-left: 4px solid #EF4444;
   box-shadow: -6px 0 16px rgba(239, 68, 68, 0.6);
   z-index: 4;
@@ -178,13 +185,18 @@
 .kyna-swimmer-avatar {
   font-size: 32px;
   flex-shrink: 0;
-  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.4));
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.4));
   animation: swimStroke 0.6s infinite ease-in-out alternate;
 }
 
 @keyframes swimStroke {
-  0% { transform: translateY(-2px) rotate(-5deg); }
-  100% { transform: translateY(3px) rotate(5deg); }
+  0% {
+    transform: translateY(-2px) rotate(-5deg);
+  }
+
+  100% {
+    transform: translateY(3px) rotate(5deg);
+  }
 }
 
 /* Swimmer Name Badge */
@@ -199,7 +211,7 @@
   flex-shrink: 0 !important;
   word-break: keep-all !important;
   border: 1.5px solid #2563EB;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -245,8 +257,13 @@
 }
 
 @keyframes boostSwim {
-  0% { transform: translateY(-4px) rotate(-14deg) scale(1.1); }
-  100% { transform: translateY(4px) rotate(14deg) scale(1.2); }
+  0% {
+    transform: translateY(-4px) rotate(-14deg) scale(1.1);
+  }
+
+  100% {
+    transform: translateY(4px) rotate(14deg) scale(1.2);
+  }
 }
 
 .kyna-swimmer.is-slowing {
@@ -264,7 +281,7 @@
   padding: 8px 14px;
   border-radius: 14px;
   border: 1.5px solid #DBEAFE;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 .kyna-swim-timer-text {
@@ -364,10 +381,12 @@
   justify-content: center;
   transition: all 0.2s ease;
 }
+
 .kyna-icon-btn:hover {
   background: rgba(255, 255, 255, 0.35);
   transform: scale(1.05);
 }
+
 .kyna-icon-btn.kyna-close-btn:hover {
   background: #EF4444 !important;
   border-color: #F87171 !important;
@@ -378,7 +397,10 @@
 /* 3D Victory Award Ceremony Overlay inside Pool Frame */
 .kyna-podium-ceremony-overlay {
   position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   z-index: 50;
   background: rgba(239, 246, 255, 0.96);
   backdrop-filter: blur(12px);
@@ -392,8 +414,15 @@
 }
 
 @keyframes podiumFadeIn {
-  0% { opacity: 0; transform: scale(0.92); }
-  100% { opacity: 1; transform: scale(1); }
+  0% {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .kyna-podium-ceremony-card {
@@ -453,7 +482,7 @@
 
 .kyna-podium-avatar-icon {
   font-size: 34px;
-  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
 }
 
 .kyna-podium-avatar-icon.gold-avatar {
@@ -462,8 +491,13 @@
 }
 
 @keyframes goldBounce {
-  0% { transform: translateY(0) scale(1); }
-  100% { transform: translateY(-6px) scale(1.08); }
+  0% {
+    transform: translateY(0) scale(1);
+  }
+
+  100% {
+    transform: translateY(-6px) scale(1.08);
+  }
 }
 
 .kyna-podium-top1-crown {
@@ -490,7 +524,7 @@
   max-width: 115px;
   overflow: hidden;
   text-overflow: ellipsis;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .kyna-podium-student-name.gold-name {
@@ -509,7 +543,7 @@
   justify-content: center;
   gap: 2px;
   border-radius: 14px 14px 0 0;
-  box-shadow: inset 0 2px 4px rgba(255,255,255,0.4), 0 6px 15px rgba(0,0,0,0.1);
+  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.4), 0 6px 15px rgba(0, 0, 0, 0.1);
 }
 
 .pedestal-1 {
@@ -535,14 +569,14 @@
 
 .kyna-podium-medal-icon {
   font-size: 24px;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
 }
 
 .kyna-podium-step-num {
   font-size: 20px;
   font-weight: 900;
   color: #FFFFFF;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 /* Podium Victory Action Buttons */
