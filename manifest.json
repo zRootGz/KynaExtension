@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Kyna BBB Guess The Word - Nhìn Hình Đoán Chữ",
+  "name": "Kyna BBB Class Minigames - Game Tương Tác Lớp Học",
   "version": "1.0.0",
-  "description": "Extension Game Nhìn Hình Đoán Chữ dành cho Giáo viên Kyna English trên nền tảng BigBlueButton (BBB).",
+  "description": "Extension bộ Minigame tương tác lớp học (Đoán Chữ & Đua Bơi) dành cho Giáo viên Kyna English trên nền tảng BigBlueButton (BBB).",
   "permissions": [
     "storage",
     "activeTab",

@@ -1,4 +1,5 @@
-/* GAMES/GUESS-THE-WORD/GAME-STYLE.CSS - Overlay UI Styles cho Game Nhìn Hình Đoán Chữ */
+/* GAMES/GUESS-THE-WORD/GAME-STYLE.CSS - Modern High-Contrast Style for Guess The Word Overlay */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap');
 
 /* Base Overlay Container */
 #kyna-game-overlay {
@@ -7,18 +8,19 @@
   right: 20px;
   width: 680px;
   max-width: 92vw;
-  background: rgba(15, 23, 42, 0.96);
+  background: rgba(11, 15, 25, 0.96);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 2px solid rgba(99, 102, 241, 0.55);
-  border-radius: 24px;
-  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.75), 0 0 35px rgba(99, 102, 241, 0.35);
-  color: #f8fafc;
-  font-family: 'Segoe UI', -apple-system, Roboto, sans-serif;
+  border: 1.5px solid rgba(16, 185, 129, 0.5);
+  border-radius: 20px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 30px rgba(16, 185, 129, 0.2);
+  color: #ffffff;
+  font-family: 'Outfit', 'Segoe UI', -apple-system, Roboto, sans-serif;
   z-index: 999999;
   overflow: hidden;
   transition: opacity 0.3s ease, transform 0.3s ease;
   user-select: none;
+  -webkit-font-smoothing: antialiased;
 }
 
 #kyna-game-overlay.minimized .kyna-overlay-body {
@@ -34,7 +36,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 14px 22px;
-  background: linear-gradient(90deg, #4f46e5 0%, #0284c7 100%);
+  background: linear-gradient(90deg, #059669 0%, #10b981 50%, #0d9488 100%);
   border-bottom: 1px solid rgba(255, 255, 255, 0.15);
   cursor: move;
 }
@@ -57,9 +59,9 @@
 
 .kyna-icon-btn {
   background: rgba(255, 255, 255, 0.15);
-  border: none;
+  border: 1px solid rgba(255, 255, 255, 0.25);
   color: #ffffff;
-  font-size: 16px;
+  font-size: 15px;
   width: 34px;
   height: 34px;
   border-radius: 10px;
@@ -75,8 +77,9 @@
 }
 .kyna-icon-btn.kyna-close-btn:hover {
   background: #ef4444 !important;
+  border-color: #f87171 !important;
   color: #ffffff !important;
-  transform: scale(1.1);
+  transform: scale(1.08);
 }
 
 /* Body Content */
@@ -88,130 +91,131 @@
   align-items: center;
 }
 
-/* Image Viewer Frame - PHÓNG TO ẢNH MINH HỌA */
+/* Image Viewer Frame */
 .kyna-image-frame {
   width: 100%;
-  height: 380px;
-  background: #090d1a;
-  border-radius: 18px;
+  height: 350px;
+  background: #ffffff;
+  border-radius: 16px;
   overflow: hidden;
-  border: 2px solid rgba(99, 102, 241, 0.3);
-  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.6);
+  border: 2px solid rgba(16, 185, 129, 0.6);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.kyna-image-frame img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  transition: opacity 0.3s;
+  padding: 8px;
 }
 
 .kyna-image-loading {
   position: absolute;
+  color: #059669;
   font-size: 15px;
   font-weight: 700;
-  color: #a5b4fc;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  letter-spacing: 0.5px;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 8px 16px;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  z-index: 5;
 }
 
-/* Masked Letter Slots & Word Grouping - HỖ TRỢ CỤM TỪ & TỪ DÀI */
+#kyna-doodle-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 10px;
+  transition: opacity 0.4s ease;
+}
+
+/* Word Letter Slots */
 .kyna-word-slots {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  align-items: center;
-  gap: 16px;
-  margin: 6px 0;
-  width: 100%;
+  gap: 10px;
+  margin-top: 4px;
 }
 
-.kyna-word-group {
-  display: inline-flex;
-  flex-wrap: nowrap;
-  gap: 6px;
-  align-items: center;
-}
-
-.kyna-letter-box {
+.kyna-slot {
   width: 48px;
-  height: 58px;
-  background: rgba(30, 41, 59, 0.92);
-  border: 2.5px solid #6366f1;
+  height: 56px;
+  background: rgba(17, 24, 39, 0.95);
+  border: 2px solid rgba(16, 185, 129, 0.6);
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 28px;
   font-weight: 800;
-  color: #67e8f9;
-  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
-  transition: all 0.2s ease;
+  color: #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-/* Scale kích thước ô chữ nhỏ hơn cho các từ dài */
-.kyna-letter-box.box-medium {
-  width: 40px;
-  height: 50px;
-  font-size: 24px;
-  border-width: 2px;
+.kyna-slot.revealed {
+  background: #10b981;
+  color: #ffffff;
+  border-color: #34d399;
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.5);
+  animation: slotPop 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.kyna-letter-box.box-small {
-  width: 34px;
-  height: 44px;
-  font-size: 20px;
-  border-width: 2px;
-  border-radius: 8px;
+@keyframes slotPop {
+  0% { transform: scale(0.7); }
+  80% { transform: scale(1.1); }
+  100% { transform: scale(1); }
 }
 
-.kyna-letter-box.revealed {
-  background: rgba(16, 185, 129, 0.35);
-  border-color: #10b981;
-  color: #34d399;
-  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.5);
-  animation: popIn 0.3s ease-out;
+.kyna-slot.space {
+  width: 24px;
+  background: transparent;
+  border: none;
+  box-shadow: none;
 }
 
-/* Hint & Category Badges */
+/* Hint Box */
 .kyna-hint-box {
-  font-size: 17px;
-  font-weight: 700;
-  color: #f8fafc;
-  text-align: center;
-  background: rgba(255, 255, 255, 0.08);
-  padding: 12px 20px;
-  border-radius: 24px;
-  border: 1.5px dashed rgba(56, 189, 248, 0.5);
   width: 100%;
-  box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
+  background: rgba(17, 24, 39, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 14px;
+  padding: 12px 18px;
+  font-size: 15px;
+  color: #ffffff;
+  font-weight: 700;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-/* Timer & Progress Bar */
+.kyna-hint-box #kyna-hint-text {
+  color: #38bdf8;
+}
+
+/* Progress Bar Container */
 .kyna-timer-container {
   width: 100%;
   display: flex;
   align-items: center;
   gap: 14px;
+  background: rgba(7, 10, 15, 0.8);
+  padding: 8px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(16, 185, 129, 0.3);
 }
 
 .kyna-timer-text {
-  font-size: 20px;
-  font-weight: 900;
+  font-size: 17px;
+  font-weight: 800;
   color: #f59e0b;
-  min-width: 65px;
+  min-width: 50px;
 }
 
 .kyna-progress-bar-bg {
   flex: 1;
-  height: 16px;
-  background: rgba(255, 255, 255, 0.12);
-  border-radius: 8px;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
   overflow: hidden;
 }
 
@@ -222,17 +226,16 @@
   transition: width 1s linear;
 }
 
-/* Overlay Action Buttons */
+/* Controls Buttons - Clean, Non-Clashing Colors */
 .kyna-controls-row {
   display: flex;
-  gap: 14px;
+  gap: 12px;
   width: 100%;
 }
 
 .kyna-action-btn {
   flex: 1;
-  padding: 14px 20px;
-  border: none;
+  padding: 12px 18px;
   border-radius: 14px;
   font-size: 15px;
   font-weight: 800;
@@ -241,50 +244,54 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  transition: all 0.2s;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-}
-.kyna-btn-next { background: #6366f1; color: #ffffff; }
-.kyna-btn-next:hover { background: #4f46e5; transform: translateY(-2px); }
-
-.kyna-btn-hint { background: #f59e0b; color: #0f172a; }
-.kyna-btn-hint:hover { background: #d97706; transform: translateY(-2px); }
-
-/* Toast Notifications Container */
-#kyna-toast-container {
-  position: fixed;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  z-index: 9999999;
-  pointer-events: none;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
 }
 
-.kyna-toast {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+.kyna-btn-hint {
+  background: #1e293b;
   color: #ffffff;
-  padding: 14px 28px;
-  border-radius: 30px;
-  font-weight: 800;
-  font-size: 16px;
-  box-shadow: 0 12px 30px rgba(16, 185, 129, 0.5), 0 0 0 2px rgba(255, 255, 255, 0.3);
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  animation: kynaSlideDown 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-  pointer-events: auto;
+  border-color: #475569;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 
-@keyframes kynaSlideDown {
-  from { opacity: 0; transform: translateY(-30px) scale(0.9); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+.kyna-btn-hint:hover {
+  background: #334155;
+  transform: translateY(-1px);
 }
 
-@keyframes kynaFadeOut {
-  from { opacity: 1; transform: translateY(0) scale(1); }
-  to { opacity: 0; transform: translateY(-20px) scale(0.9); }
+.kyna-btn-next {
+  background: #10b981;
+  color: #ffffff;
+  border-color: #34d399;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
 }
 
+.kyna-btn-next:hover {
+  background: #059669;
+  transform: translateY(-1px);
+}
+
+/* Toast Notification */
+.kyna-toast-notification {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: #090d14;
+  border: 2px solid #10b981;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+  border-radius: 16px;
+  padding: 14px 24px;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 700;
+  z-index: 1000000;
+  opacity: 0;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease;
+}
+
+.kyna-toast-notification.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
