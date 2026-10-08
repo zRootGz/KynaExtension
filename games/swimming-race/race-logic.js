@@ -856,28 +856,89 @@
   }
 
   /**
-   * Bảng vinh danh top 3 nhà vô địch đua bơi
+   * Bảng vinh danh Top 3 nhà vô địch dạng bục trao giải 3D ngay chính giữa bể bơi
    */
   function renderPodiumUI() {
-    const container = document.getElementById("kyna-podium-container");
-    if (!container) return;
+    const poolContainer = document.getElementById("kyna-swim-lanes-container");
+    const bottomContainer = document.getElementById("kyna-podium-container");
+    if (!poolContainer) return;
 
-    if (raceState.gameState !== "FINISHED" || raceState.rankings.length === 0) {
-      container.innerHTML = "";
+    let podiumOverlayEl = poolContainer.querySelector(".kyna-podium-ceremony-overlay");
+
+    if (raceState.gameState !== "FINISHED" || !raceState.rankings || raceState.rankings.length === 0) {
+      if (podiumOverlayEl) podiumOverlayEl.remove();
+      if (bottomContainer) bottomContainer.innerHTML = "";
       return;
     }
 
-    const r1 = raceState.rankings[0] || "N/A";
-    const r2 = raceState.rankings[1] || "N/A";
-    const r3 = raceState.rankings[2] || "N/A";
+    if (bottomContainer) bottomContainer.innerHTML = ""; // Giữ dưới gọn gàng
 
-    container.innerHTML = `
-      <div class="kyna-podium-box">
-        <div class="kyna-podium-title">🏆 VINH DANH NHÀ VÔ ĐỊCH ĐUA BƠI 🏆</div>
-        <div class="kyna-podium-ranks">
-          <div>🥇 <strong>${escapeHtml(r1)}</strong></div>
-          ${raceState.rankings.length > 1 ? `<div>🥈 <strong>${escapeHtml(r2)}</strong></div>` : ""}
-          ${raceState.rankings.length > 2 ? `<div>🥉 <strong>${escapeHtml(r3)}</strong></div>` : ""}
+    const getStudentInfo = (rankIndex) => {
+      const name = raceState.rankings[rankIndex];
+      if (!name) return null;
+      const sIdx = (raceState.students || []).indexOf(name);
+      const avatar = sIdx !== -1 ? avatars[sIdx % avatars.length] : "🏊‍♂️";
+      return { name, avatar };
+    };
+
+    const r1 = getStudentInfo(0);
+    const r2 = getStudentInfo(1);
+    const r3 = getStudentInfo(2);
+
+    if (!podiumOverlayEl) {
+      podiumOverlayEl = document.createElement("div");
+      podiumOverlayEl.className = "kyna-podium-ceremony-overlay";
+      poolContainer.appendChild(podiumOverlayEl);
+    }
+
+    podiumOverlayEl.innerHTML = `
+      <div class="kyna-podium-ceremony-card">
+        <div class="kyna-podium-header-banner">
+          <span class="kyna-podium-crown-icon">👑</span>
+          <span class="kyna-podium-header-title">BẢNG VINH DANH NHÀ VÔ ĐỊCH</span>
+          <span class="kyna-podium-crown-icon">👑</span>
+        </div>
+
+        <div class="kyna-podium-stage">
+          <!-- TOP 2 (BÊN TRÁI) -->
+          ${r2 ? `
+          <div class="kyna-podium-col col-rank-2">
+            <div class="kyna-podium-student-badge">
+              <span class="kyna-podium-avatar-icon">${r2.avatar}</span>
+              <span class="kyna-podium-student-name">${escapeHtml(r2.name)}</span>
+            </div>
+            <div class="kyna-podium-pedestal pedestal-2">
+              <span class="kyna-podium-medal-icon">🥈</span>
+              <span class="kyna-podium-step-num">2</span>
+            </div>
+          </div>` : ""}
+
+          <!-- TOP 1 (CHÍNH GIỮA - QUÁN QUÂN CAO NHẤT) -->
+          ${r1 ? `
+          <div class="kyna-podium-col col-rank-1">
+            <div class="kyna-podium-top1-crown">👑 QUÁN QUÂN</div>
+            <div class="kyna-podium-student-badge is-gold-winner">
+              <span class="kyna-podium-avatar-icon gold-avatar">${r1.avatar}</span>
+              <span class="kyna-podium-student-name gold-name">${escapeHtml(r1.name)}</span>
+            </div>
+            <div class="kyna-podium-pedestal pedestal-1">
+              <span class="kyna-podium-medal-icon">🥇</span>
+              <span class="kyna-podium-step-num">1</span>
+            </div>
+          </div>` : ""}
+
+          <!-- TOP 3 (BÊN PHẢI) -->
+          ${r3 ? `
+          <div class="kyna-podium-col col-rank-3">
+            <div class="kyna-podium-student-badge">
+              <span class="kyna-podium-avatar-icon">${r3.avatar}</span>
+              <span class="kyna-podium-student-name">${escapeHtml(r3.name)}</span>
+            </div>
+            <div class="kyna-podium-pedestal pedestal-3">
+              <span class="kyna-podium-medal-icon">🥉</span>
+              <span class="kyna-podium-step-num">3</span>
+            </div>
+          </div>` : ""}
         </div>
       </div>
     `;
