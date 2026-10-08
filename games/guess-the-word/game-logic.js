@@ -4,9 +4,6 @@
  */
 
 (function () {
-  if (typeof window !== "undefined" && window.kynaGuessTheWordLoaded) return;
-  if (typeof window !== "undefined") window.kynaGuessTheWordLoaded = true;
-
   console.log("Kyna BBB Guess The Word Game Module Loaded.");
 
   // Trạng thái cục bộ của Game
@@ -60,41 +57,47 @@
    */
   function loadStateAndSync() {
     if (typeof chrome !== "undefined" && chrome.storage && chrome.storage.local) {
-      try {
-        chrome.storage.local.get(["kynaGameState"], (res) => {
-          if (res && res.kynaGameState) {
-            updateLocalState(res.kynaGameState);
-          }
-        });
+      if (!window.kynaGuessStorageListenerSet) {
+        window.kynaGuessStorageListenerSet = true;
+        try {
+          chrome.storage.local.get(["kynaGameState"], (res) => {
+            if (res && res.kynaGameState) {
+              updateLocalState(res.kynaGameState);
+            }
+          });
 
-        chrome.storage.onChanged.addListener((changes, area) => {
-          if (area === "local" && changes.kynaGameState) {
-            updateLocalState(changes.kynaGameState.newValue);
-          }
-        });
-      } catch (e) {}
+          chrome.storage.onChanged.addListener((changes, area) => {
+            if (area === "local" && changes.kynaGameState) {
+              updateLocalState(changes.kynaGameState.newValue);
+            }
+          });
+        } catch (e) {}
+      }
     }
 
-    try {
-      const saved = localStorage.getItem("kynaGameState");
-      if (saved) {
-        updateLocalState(JSON.parse(saved));
-      }
-    } catch (e) {}
+    if (!window.kynaGuessLocalStorageListenerSet) {
+      window.kynaGuessLocalStorageListenerSet = true;
+      try {
+        const saved = localStorage.getItem("kynaGameState");
+        if (saved) {
+          updateLocalState(JSON.parse(saved));
+        }
+      } catch (e) {}
 
-    window.addEventListener("storage", (e) => {
-      if (e.key === "kynaGameState" && e.newValue) {
-        try {
-          updateLocalState(JSON.parse(e.newValue));
-        } catch (err) {}
-      }
-    });
+      window.addEventListener("storage", (e) => {
+        if (e.key === "kynaGameState" && e.newValue) {
+          try {
+            updateLocalState(JSON.parse(e.newValue));
+          } catch (err) {}
+        }
+      });
 
-    window.addEventListener("message", (e) => {
-      if (e.data && e.data.action === "SYNC_GAME_STATE") {
-        updateLocalState(e.data.payload);
-      }
-    });
+      window.addEventListener("message", (e) => {
+        if (e.data && e.data.action === "SYNC_GAME_STATE") {
+          updateLocalState(e.data.payload);
+        }
+      });
+    }
   }
 
   /**
@@ -102,14 +105,17 @@
    */
   function setupMessageListeners() {
     if (typeof chrome !== "undefined" && chrome.runtime && chrome.runtime.onMessage) {
-      try {
-        chrome.runtime.onMessage.addListener((message) => {
-          if (message && message.action === "SYNC_GAME_STATE") {
-            if (message.tabId) window.kynaMyTabId = message.tabId;
-            updateLocalState(message.payload);
-          }
-        });
-      } catch (e) {}
+      if (!window.kynaGuessMsgListenerSet) {
+        window.kynaGuessMsgListenerSet = true;
+        try {
+          chrome.runtime.onMessage.addListener((message) => {
+            if (message && message.action === "SYNC_GAME_STATE") {
+              if (message.tabId) window.kynaMyTabId = message.tabId;
+              updateLocalState(message.payload);
+            }
+          });
+        } catch (e) {}
+      }
     }
   }
 

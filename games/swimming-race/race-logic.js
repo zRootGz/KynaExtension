@@ -7,9 +7,6 @@
  */
 
 (function () {
-  if (typeof window !== "undefined" && window.kynaSwimmingRaceLoaded) return;
-  if (typeof window !== "undefined") window.kynaSwimmingRaceLoaded = true;
-
   console.log("Kyna BBB Swimming Race Game Module Loaded.");
 
   // Trạng thái cục bộ của Game Đua Bơi
@@ -50,56 +47,65 @@
    */
   function loadStateAndSync() {
     if (typeof chrome !== "undefined" && chrome.storage && chrome.storage.local) {
-      try {
-        chrome.storage.local.get(["kynaSwimRaceState"], (res) => {
-          if (res && res.kynaSwimRaceState) {
-            updateLocalState(res.kynaSwimRaceState);
-          }
-        });
+      if (!window.kynaSwimStorageListenerSet) {
+        window.kynaSwimStorageListenerSet = true;
+        try {
+          chrome.storage.local.get(["kynaSwimRaceState"], (res) => {
+            if (res && res.kynaSwimRaceState) {
+              updateLocalState(res.kynaSwimRaceState);
+            }
+          });
 
-        chrome.storage.onChanged.addListener((changes, area) => {
-          if (area === "local" && changes.kynaSwimRaceState) {
-            updateLocalState(changes.kynaSwimRaceState.newValue);
-          }
-        });
-      } catch (e) {}
+          chrome.storage.onChanged.addListener((changes, area) => {
+            if (area === "local" && changes.kynaSwimRaceState) {
+              updateLocalState(changes.kynaSwimRaceState.newValue);
+            }
+          });
+        } catch (e) {}
+      }
     }
 
-    try {
-      const saved = localStorage.getItem("kynaSwimRaceState");
-      if (saved) {
-        updateLocalState(JSON.parse(saved));
-      }
-    } catch (e) {}
+    if (!window.kynaSwimLocalStorageListenerSet) {
+      window.kynaSwimLocalStorageListenerSet = true;
+      try {
+        const saved = localStorage.getItem("kynaSwimRaceState");
+        if (saved) {
+          updateLocalState(JSON.parse(saved));
+        }
+      } catch (e) {}
 
-    window.addEventListener("storage", (e) => {
-      if (e.key === "kynaSwimRaceState" && e.newValue) {
-        try {
-          updateLocalState(JSON.parse(e.newValue));
-        } catch (err) {}
-      }
-    });
+      window.addEventListener("storage", (e) => {
+        if (e.key === "kynaSwimRaceState" && e.newValue) {
+          try {
+            updateLocalState(JSON.parse(e.newValue));
+          } catch (err) {}
+        }
+      });
 
-    window.addEventListener("message", (e) => {
-      if (e.data && e.data.action === "SYNC_SWIM_RACE_STATE") {
-        updateLocalState(e.data.payload);
-      }
-    });
+      window.addEventListener("message", (e) => {
+        if (e.data && e.data.action === "SYNC_SWIM_RACE_STATE") {
+          updateLocalState(e.data.payload);
+        }
+      });
+    }
   }
 
   function setupMessageListeners() {
     if (typeof chrome !== "undefined" && chrome.runtime && chrome.runtime.onMessage) {
-      try {
-        chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-          if (message && message.action === "SYNC_SWIM_RACE_STATE") {
-            if (message.tabId) window.kynaMyTabId = message.tabId;
-            updateLocalState(message.payload);
-          } else if (message && message.action === "FETCH_BBB_STUDENTS") {
-            const students = fetchBBBStudentsFromDOM();
-            if (typeof sendResponse === "function") sendResponse({ students: students });
-          }
-        });
-      } catch (e) {}
+      if (!window.kynaSwimMsgListenerSet) {
+        window.kynaSwimMsgListenerSet = true;
+        try {
+          chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+            if (message && message.action === "SYNC_SWIM_RACE_STATE") {
+              if (message.tabId) window.kynaMyTabId = message.tabId;
+              updateLocalState(message.payload);
+            } else if (message && message.action === "FETCH_BBB_STUDENTS") {
+              const students = fetchBBBStudentsFromDOM();
+              if (typeof sendResponse === "function") sendResponse({ students: students });
+            }
+          });
+        } catch (e) {}
+      }
     }
   }
 
