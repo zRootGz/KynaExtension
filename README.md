@@ -1,177 +1,146 @@
-# 🎨 Kyna BigBlueButton (BBB) Classroom Games Extension (v1.0)
+# 🎨 Kyna BigBlueButton (BBB) Classroom Games Extension
 
-> **Bộ tiện ích Game tương tác lớp học thông minh tích hợp trực tiếp trên BigBlueButton dành riêng cho Giáo viên Kyna English.**  
-> Hỗ trợ tạo hoạt động học tập sôi nổi, tự động quét học sinh, nhận diện câu trả lời qua Chat real-time và xuất bảng điểm Excel CSV chuyên nghiệp.
+> **Bộ tiện ích Game tương tác lớp học thông minh dành riêng cho Giáo viên Kyna English trên nền tảng BigBlueButton (BBB).**  
+> Tự động quét tên học sinh, nhận diện câu trả lời qua Chat real-time, tổ chức trò chơi sinh động và xuất báo cáo kết quả ra file Excel chuyên nghiệp.
 
 ---
 
 ## 📌 MỤC LỤC
 1. [Giới thiệu Tổng quan](#1-giới-thiệu-tổng-quan)
-2. [Hướng dẫn Cài đặt Tiện ích (Chrome / Edge / Cốc Cốc)](#2-hướng-dẫn-cài-đặt-tiện-ích)
+2. [Hướng dẫn Cài đặt Tiện ích](#2-hướng-dẫn-cài-đặt-tiện-ích)
 3. [Game 1: 🎨 Đoán Chữ (Guess The Word)](#3-game-1--đoán-chữ-guess-the-word)
-   - [Cách vận hành Game](#cách-vận-hành-game-đoán-chữ)
-   - [Chọn chủ đề từ vựng sẵn có](#chọn-chủ-đề-từ-vựng-sẵn-có-240-từ)
-   - [Thêm từ vựng thủ công](#thêm-từ-vựng-thủ-công)
-   - [Nhập hàng loạt từ vựng từ File Excel (.xls / .csv)](#nhập-hàng-loạt-từ-vựng-từ-file-excel-xls--csv)
-   - [Xuất bộ từ vựng ra File Excel](#xuất-bộ-từ-vựng-ra-file-excel)
-4. [Game 2: 🏊 Đua Bơi Kỳ Phùng Địch Thủ (Swimming Relay Race)](#4-game-2--đua-bơi-kỳ-phùng-địch-thủ-swimming-relay-race)
-   - [Thể thức 1: 🔤 Đua Bơi Tiếp Sức Từ Vựng (Word Relay)](#thể-thức-1--đua-bơi-tiếp-sức-từ-vựng-word-relay)
-   - [Thể thức 2: 🦆 Đua Bơi Tự Động kiểu Game Vịt (Duck Race)](#thể-thức-2--đua-bơi-tự-động-kiểu-game-vịt-duck-race)
-   - [Ghi danh học sinh & Quyền bắt đầu](#ghi-danh-học-sinh--quần-bắt-đầu)
-   - [Tự động nạp danh sách học sinh từ BBB](#tự-động-nạp-danh-sách-học-sinh-từ-bbb)
-5. [Bảng Điểm & Xuất File CSV Excel (Leaderboard & Export)](#5-bảng-điểm--xuất-file-csv-excel)
-6. [Xử lý Sự cố Thường gặp (Troubleshooting)](#6-xử-lý-sự-cố-thường-gặp)
+   - [Cách vận hành trò chơi](#cách-vận-hành-game-đoán-chữ)
+   - [Danh mục 17 chủ đề từ vựng (450+ từ)](#danh-mục-17-chủ-đề-từ-vựng-sẵn-có-450-từ)
+   - [Tự thêm từ mới & Nhập/Xuất File Excel (.xlsx / .csv)](#quản-lý-từ-vựng-tùy-chỉnh--nhậpxuất-excel)
+4. [Game 2: 🏊 Đua Bơi Kỳ Phùng Địch Thủ (Swimming Race)](#4-game-2--đua-bơi-kỳ-phùng-địch-thủ-swimming-race)
+   - [Thể thức 1: Đua Bơi Tiếp Sức Từ Vựng (Word Relay)](#thể-thức-1-đua-bơi-tiếp-sức-từ-vựng-word-relay)
+   - [Thể thức 2: Đua Bơi Tự Động kiểu Game Vịt (Duck Race)](#thể-thức-2-đua-bơi-tự-động-kiểu-game-vịt-duck-race)
+   - [Cách ghi danh học sinh & Bắt đầu đua](#cách-ghi-danh-học-sinh--bắt-đầu-đua)
+5. [🏆 Bảng Điểm & Xuất Báo Cáo Excel](#5-bảng-điểm--xuất-báo-cáo-excel)
+6. [❓ Xử lý Sự cố Thường gặp](#6-xử-lý-sự-cố-thường-gặp)
 
 ---
 
 ## 1. Giới thiệu Tổng quan
 
-**Kyna BBB Extension** là tiện ích mở rộng Chrome/Edge (Manifest V3) được thiết kế đặc biệt nhằm nâng cao tính tương tác trong các buổi học trực tuyến tại **Kyna English**. 
+**Kyna BBB Classroom Games Extension** là tiện ích mở rộng trên trình duyệt giúp Giáo viên Kyna biến các buổi học trực tuyến trên BigBlueButton thành những giờ học sôi nổi và cuốn hút.
 
-### 🌟 Điểm nổi bật:
-- ⚡ **Tương tác Real-time:** Tự động lắng nghe câu trả lời của học sinh từ khung chat BBB không độ trễ.
-- 🎨 **Đồ họa sống động:** Giao diện Hồ bơi và Khung vẽ chữ nổi (Overlay) mượt mà, nhiều màu sắc thu hút học sinh.
-- 📊 **Quản lý dữ liệu thông minh:** Hỗ trợ nhập/xuất bài học từ File Excel, tính điểm tự động và xuất báo cáo kết quả ra Excel CSV UTF-8.
-- 🔒 **Độc lập & An toàn:** Không làm thay đổi cấu trúc cốt lõi của BBB, chạy hoàn toàn cục bộ trên trình duyệt giáo viên.
+### 🌟 Tính năng nổi bật:
+- ⚡ **Tự động đọc Chat Real-time:** Nhận diện câu trả lời của học sinh trực tiếp từ khung chat công khai của BBB mà không gây gián đoạn buổi học.
+- 🎨 **Đồ họa minh họa Doodle sống động:** Hình vẽ đố chữ nhiều màu sắc, tự động co giãn đẹp mắt trên màn hình chia sẻ.
+- 🎯 **17 Chủ đề từ vựng chuẩn Oxford:** Hơn 450+ từ vựng sẵn có thuộc nhiều chủ đề quen thuộc và mở rộng (Động vật, Hoa quả, Vũ trụ, Địa điểm, Đồ chơi...).
+- 🏁 **2 Chế độ Đua Bơi kịch tính:** Đua bơi gõ từ vựng tiếp sức và Đua vịt tự động theo cự ly mét.
+- 📊 **Quản lý & Xuất điểm tự động:** Tự động tính điểm, công bố Top 3 Podium vinh danh và xuất báo cáo kết quả ra file Excel/CSV.
+- 🔒 **Thông minh & Chỉ hiển thị ở tab đang dạy:** Tiện ích hoạt động chính xác trên màn hình lớp học mà Giáo viên đang mở, không bị hiện chồng lấp sang các trang web khác.
 
 ---
 
 ## 2. Hướng dẫn Cài đặt Tiện ích
 
-### 🛠️ Các bước cài đặt trên Chrome / Edge / Cốc Cốc:
-1. **Tải bộ mã nguồn tiện ích** về máy tính và giải nén thư mục `KynaExtension`.
-2. Mở trình duyệt và truy cập trang quản lý Tiện ích:
-   - **Google Chrome / Cốc Cốc:** `chrome://extensions/`
-   - **Microsoft Edge:** `edge://extensions/`
-3. Bật chế độ dành cho nhà phát triển (**Developer mode**) ở góc trên bên phải màn hình.
-4. Bấm nút **Tải tiện ích đã giải nén (Load unpacked)**.
-5. Trỏ tới thư mục `KynaExtension` và bấm **Select Folder**.
-6. Ghim biểu tượng 🎨 **Kyna BBB Extension** lên thanh công cụ trình duyệt để tiện truy cập.
+Giáo viên có thể dễ dàng cài đặt tiện ích trên các trình duyệt Chrome, Microsoft Edge hoặc Cốc Cốc theo các bước sau:
 
-> 💡 **Lưu ý:** Mỗi khi có cập nhật mới, chỉ cần vào trang `chrome://extensions` và bấm nút **Tải lại (Reload 🔄)**.
+1. **Tải & Giải nén:** Tải thư mục tiện ích về máy tính và giải nén thư mục `KynaExtension`.
+2. **Mở trang quản lý Tiện ích:**
+   - Trên **Google Chrome / Cốc Cốc:** Nhập `chrome://extensions/` vào thanh địa chỉ.
+   - Trên **Microsoft Edge:** Nhập `edge://extensions/` vào thanh địa chỉ.
+3. **Bật Chế độ nhà phát triển:** Bật công tắc **Developer mode** (Chế độ dành cho nhà phát triển) ở góc trên bên phải màn hình.
+4. **Tải tiện ích:** Nhấn nút **Tải tiện ích đã giải nén (Load unpacked)**.
+5. **Chọn thư mục:** Tìm đến thư mục `KynaExtension` đã giải nén và nhấn **Select Folder**.
+6. **Ghim tiện ích:** Nhấn vào biểu tượng mảnh ghép 🧩 ở góc trên trình duyệt và chọn ghim 📌 **Kyna BBB Extension** lên thanh công cụ để dễ mở khi dạy học.
+
+> 💡 **Lưu ý:** Khi có phiên bản cập nhật mới, Giáo viên chỉ cần vào lại trang `chrome://extensions/` và bấm nút **Tải lại (Reload 🔄)** tại tiện ích.
 
 ---
 
 ## 3. Game 1: 🎨 Đoán Chữ (Guess The Word)
 
-Game **Đoán Chữ** giúp học sinh luyện phản xạ từ vựng Tiếng Anh qua hình ảnh nét vẽ tay Doodle sống động và gợi ý thông minh.
-
-### ✨ Các tính năng & Cải tiến nổi bật:
-- 🔤 **Gom nhóm theo từ & Xuống dòng thông minh (`.kyna-word-group`)**: 
-  - Hỗ trợ cả từ dài (như `BUTTERFLY`, `WATERMELON`) và cụm từ nhiều từ (như `ICE CREAM`, `BLACK CAT`). 
-  - Ô chữ của cùng 1 từ được gom trong nhóm riêng; khi hết chiều rộng dòng, nguyên từ tiếp theo mới chuyển xuống dòng mới, tuyệt đối không bị ngắt đôi giữa chừng chữ cái.
-- 📐 **Tự động co giãn kích thước ô chữ (`box-medium`, `box-small`)**:
-  - Từ ngắn ($\le 7$ ký tự): Ô chữ lớn chuẩn **48x58px**.
-  - Từ trung bình ($8 - 10$ ký tự): Ô chữ vừa **40x50px**.
-  - Từ/Cụm từ dài ($> 10$ ký tự): Ô chữ nhỏ **34x44px**.
-- 🖼️ **Giao diện tối ưu cho Chia sẻ Màn hình BBB (Screen Share Zoom)**:
-  - Khung Overlay mở rộng tới **680px** (tối đa `92vw`).
-  - Khung ảnh minh họa Doodle cao **380px** với biểu tượng nét vẽ Doodle cỡ lớn **76px** cực kỳ rõ nét từ xa.
-- ⏱️ **Tự động chuyển câu sau 60s / khi đoán đúng**:
-  - Khi hết 60s đếm ngược (hoặc khi có học sinh đoán đúng), hệ thống mở toàn bộ đáp án, hiển thị thông báo chúc mừng/hết giờ màu sắc và tự động sang câu mới sau **3.5 giây**.
-  - Nút **⏭️ Từ tiếp theo** giúp Giáo viên chuyển câu lập tức mà không bị xung đột bộ đếm.
+Game **Đoán Chữ** giúp học sinh đoán từ vựng Tiếng Anh qua hình vẽ Doodle minh họa, chữ cái ẩn và gợi ý bằng tiếng Anh.
 
 ### Cách vận hành Game Đoán Chữ:
-1. Mở tiện ích $\rightarrow$ Chọn Tab **🎨 Đoán chữ**.
-2. Chọn bộ từ vựng muốn đố.
-3. Bấm nút **🚀 Bắt đầu Game**.
-4. Khung hình ảnh đố chữ (Overlay) sẽ xuất hiện trên màn hình BBB:
-   - Học sinh gõ đáp án vào khung chat BBB.
-   - Hệ thống tự động kiểm tra đáp án (không phân biệt hoa/thường, tự bỏ qua dấu chấm/phẩy).
-   - Học sinh trả lời đúng nhanh nhất sẽ được **+10 điểm** (người trả lời đúng tiếp theo được **+5 điểm**).
-5. Giáo viên bấm **⏭️ Từ tiếp theo** để chuyển sang từ đố mới, hoặc **💡 Mở 1 chữ cái** để trợ giúp.
+1. Mở cửa sổ Tiện ích $\rightarrow$ Chọn tab **🎨 Đoán chữ**.
+2. Chọn **Chủ đề từ vựng** (hoặc chọn tất cả) và cài đặt **Thời gian đếm ngược** (30s, 45s, 60s, 90s).
+3. Nhấn nút **🚀 Bắt đầu Game**.
+4. Bảng đố chữ (Overlay) sẽ hiển thị ngay trên màn hình BigBlueButton:
+   - Học sinh gõ từ tiếng Anh vào khung Chat BBB.
+   - Hệ thống tự động chấm câu trả lời (không phân biệt chữ hoa/thường, tự loại bỏ dấu câu dư thừa).
+   - Học sinh trả lời đúng & nhanh nhất được **+10 điểm**, các bạn đúng tiếp theo được **+5 điểm**.
+5. Các nút điều khiển tiện lợi cho Giáo viên trên bảng điều khiển:
+   - **💡 Mở 1 chữ cái (Hint):** Mở gợi ý 1 chữ cái ngẫu nhiên cho học sinh khi gặp từ khó.
+   - **⏭️ Từ tiếp theo:** Chuyển sang từ đố tiếp theo ngay lập tức.
+   - **🔄 Chơi lại câu này:** Reset thời gian và chơi lại từ hiện tại.
+   - **🏆 Tổng kết Game:** Mở bảng vinh danh 3D Podium Top 3 học sinh xuất sắc nhất lượt chơi.
 
-### Chọn chủ đề từ vựng sẵn có (240+ từ):
-Có sẵn 8 chủ đề từ vựng Tiếng Anh chuẩn Oxford:
+### Danh mục 17 chủ đề từ vựng sẵn có (450+ từ):
 - 🐶 **Animals** (Động vật)
 - 🍎 **Fruits** (Hoa quả)
 - 👨‍⚕️ **Occupations** (Nghề nghiệp)
 - ✏️ **School** (Trường học)
-- 🚀 **Transport** (Giao thông)
+- 🚀 **Transport** (Phương tiện giao thông)
 - 👕 **Clothing** (Trang phục)
 - 🌈 **Colors** (Màu sắc)
 - 🏊 **Actions** (Hành động)
+- ⚽ **Sports & Hobbies** (Thể thao & Sở thích)
+- 🍔 **Food & Drinks** (Thực phẩm & Đồ uống)
+- 👨‍👩‍👧 **Family & People** (Gia đình & Con người)
+- ☀️ **Weather & Nature** (Thời tiết & Thiên nhiên)
+- 👂 **Body Parts** (Bộ phận cơ thể)
+- 🏠 **House & Items** (Nhà cửa & Đồ dùng)
+- 🪐 **Space & Solar System** (Vũ trụ & Hệ mặt trời)
+- 🏰 **Places & Buildings** (Địa điểm & Công trình)
+- 🧸 **Toys & Play** (Đồ chơi & Trò chơi)
 
-### Thêm từ vựng thủ công:
-- Bấm nút **`+ Tạo 1 từ`**.
-- Nhập **Từ Tiếng Anh** (VD: `BUTTERFLY`) và **Gợi ý Tiếng Anh** (VD: `A beautiful insect with wings`).
-- Bấm **➕ Thêm vào danh sách Game**.
-
-### Nhập hàng loạt từ vựng từ File Excel (.xls / .csv):
-1. Bấm nút **`📤 Nhập Excel/CSV`**.
-2. Bấm nút **`📥 Tải File mẫu Excel (.xls)`**. 
-   - File Excel mẫu được định dạng sẵn cột rộng rãi, chuyên nghiệp với các cột: `Word (English)`, `English Hint`, `Image URL (Optional)`.
-3. Nhập danh sách từ vựng Tiếng Anh và Gợi ý Tiếng Anh của bạn vào file Excel.
-4. Bấm **`📁 Chọn File Excel/CSV tải lên`** và chọn file của bạn.
-5. Hàng chục/hàng trăm từ vựng sẽ tự động nạp vào game trong 1 giây!
-
-### Xuất bộ từ vựng ra File Excel:
-- Bấm nút **`📊 Xuất Excel`** tại mục danh sách từ vựng để lưu bộ từ hiện tại thành file Excel CSV (.csv) sẵn sàng chia sẻ cho các giáo viên khác.
-
----
-
-## 4. Game 2: 🏊 Đua Bơi Kỳ Phùng Địch Thủ (Swimming Relay Race)
-
-Game **Đua Bơi** tạo không khí thi đấu sôi nổi kịch tính giữa các học sinh trên một hồ bơi chuyển động với hiệu ứng sóng nước, bứt tốc rượt đuổi và trao giải huy chương.
-
-### Thể thức 1: 🔤 Đua Bơi Tiếp Sức Từ Vựng (Word Relay)
-- **Thẻ Từ Vựng Mục Tiêu Nổi Bật (`kyna-swim-word-card`)**: Một Thẻ Từ Vựng Tiếng Anh (VD: `🎯 BANANA - 💡 A long yellow fruit`) với chữ phát sáng **32px** và icon nổi bật sẽ hiển thị ngay đầu đường bơi.
-- **Cách chơi:**
-  - Học sinh nhắn **ĐÚNG** từ vựng đang hiển thị trong chat BBB $\rightarrow$ Nhân vật bơi của học sinh đó quạt tay tiến lên 1 bước (+16%).
-  - **Từ vựng ngay lập tức được đổi sang một từ mới ngẫu nhiên** để cả lớp tiếp tục thi đua!
-  - Học sinh cán đích (100%) sẽ nhận huy chương (🥇 Hạng 1, 🥈 Hạng 2, 🥉 Hạng 3) và hiển thị `🏁 Đã về đích`.
-
-### Thể thức 2: 🦆 Đua Bơi Tự Động kiểu Game Vịt (Duck Race)
-- **Thi đấu theo Độ dài Đường đua Mét (100m - 2000m)**: Tốc độ bơi được điều tiết chuẩn thực tế theo từng độ dài đường đua (100m diễn ra ~17s, 500m ~1 phút, 2000m diễn ra ~3.5 phút kịch tính).
-- **Camera Bám Chặt Người Dẫn Đầu (Leader Focus - Viewport 50m)**: Khung nhìn camera tự động khóa chặt người dẫn đầu ở vị trí 65% làn bơi; những con bơi tụt hậu hơn 35m sẽ trôi khỏi màn hình sang mép trái, tạo độ sâu và hồi hộp chuẩn Game Vịt.
-- **Tự động Dừng Game & Vinh danh khi tìm đủ Top 1, 2, 3**: Ngay khi xác định đủ 3 nhà vô địch cán đích, cuộc đua tự động hoàn tất và hiển thị Bảng Vinh Danh Podiums lập tức!
-- **Biến mất Mượt mà Sau Vạch Đích (`has-crossed-finish`)**: Vận động viên bơi qua vạch cảm ứng sẽ bơi tiếp một đoạn ngắn và mờ dần biến mất khỏi làn bơi, giữ cho hồ bơi luôn sạch sẽ và thông thoáng cho các bạn bơi sau.
-- **Tối ưu Giao diện Đường Bơi**: Loại bỏ hoàn toàn các thẻ chữ rác hay huy chương lơ lửng trên làn bơi. Danh hiệu Top 1 2 3 sẽ được công bố trang trọng tại Bảng Vinh Danh Podiums ở dưới khi cuộc đua kết thúc.
-
-### Ghi danh học sinh & Quyền bắt đầu:
-- **Học sinh ghi danh:** Học sinh chỉ cần nhắn `"join"` (hoặc `"ready"`, `"r"`, `"1"`) trong khung chat BBB $\rightarrow$ Tên tự động được ghi danh vào một làn bơi riêng.
-- **Quyền xuất phát:** Cuộc đua **CHỈ BẮT ĐẦU** khi Giáo viên nhấn nút **`🚀 Bắt đầu Đua Bơi`** trên Bảng điều khiển Extension.
-- **Xóa danh sách:** Bấm nút **`🗑️ Xóa danh sách`** để reset đường đua về 0 học sinh bất kỳ lúc nào.
-
-### Tự động nạp danh sách học sinh từ BBB:
-- Bấm nút **`📥 Lấy từ lớp BBB`** để tiện ích tự động quét tất cả tên học sinh đang có mặt trong cột "Thành viên" của lớp học BigBlueButton.
+### Quản lý từ vựng tùy chỉnh & Nhập/Xuất Excel:
+- **Tìm kiếm từ:** Nhập từ cần tìm vào ô tìm kiếm để tra cứu nhanh từ vựng trong kho.
+- **Thêm từ thủ công:** Nhấn **`+ Tạo 1 từ`**, nhập Từ Tiếng Anh và Gợi ý Tiếng Anh, sau đó bấm **Thêm vào danh sách**.
+- **Nhập hàng loạt từ Excel/CSV:** 
+  1. Nhấn nút **`📤 Nhập Excel/CSV`**.
+  2. Tải **File mẫu Excel** về máy.
+  3. Điền từ vựng và gợi ý theo đúng các cột mẫu trong file Excel.
+  4. Chọn tải file Excel của bạn lên để nạp ngay hàng trăm từ mới vào game.
+- **Xuất bộ từ vựng ra Excel:** Nhấn nút **`📊 Xuất Excel`** để tải về file danh sách từ vựng hiện có.
 
 ---
 
-## 5. Bảng Điểm & Xuất File CSV Excel
+## 4. Game 2: 🏊 Đua Bơi Kỳ Phùng Địch Thủ (Swimming Race)
 
-- Tất cả điểm số của học sinh qua các lượt chơi Đoán Chữ được lưu tự động tại Tab **🏆 Bảng điểm**.
-- Bấm nút **`📊 Xuất file Excel/CSV`** để tải về báo cáo danh sách điểm học sinh dạng file CSV UTF-8 BOM (mở trực tiếp đẹp mắt trên Microsoft Excel không bị lỗi phông chữ).
+Game **Đua Bơi** biến đường đua dưới nước thành cuộc tranh tài sôi nổi giữa các học sinh trong lớp.
+
+### Thể thức 1: Đua Bơi Tiếp Sức Từ Vựng (Word Relay)
+- **Luật chơi:** Một Thẻ Từ Vựng Tiếng Anh kèm gợi ý sẽ xuất hiện nổi bật phía trên đường đua.
+- Học sinh gõ **ĐÚNG** từ vựng đang đố vào khung Chat BBB $\rightarrow$ Nhân vật bơi của học sinh đó sẽ bơi vọt tiến lên 1 bước!
+- Ngay khi có bạn gõ đúng, từ vựng sẽ tự động đổi sang một từ mới ngẫu nhiên để cả lớp tiếp tục thi đua bứt tốc về đích.
+
+### Thể thức 2: Đua Bơi Tự Động kiểu Game Vịt (Duck Race)
+- **Luật chơi:** Giáo viên chọn cự ly đường đua (từ **100m** đến **2000m**).
+- Các nhân vật sẽ tự động bơi uốn lượn kịch tính với tốc độ ngẫu nhiên.
+- Camera thông minh tự động khóa bám theo nhóm người dẫn đầu, tạo cảm giác hồi hộp như một giải đấu thực thụ.
+- Ngay khi xác định đủ Top 1, Top 2, Top 3 cán đích, cuộc đua hoàn tất và hiển thị Bảng Vinh Danh Podiums trao huy chương.
+
+### Cách ghi danh học sinh & Bắt đầu đua:
+- **Học sinh tự ghi danh:** Học sinh chỉ cần gõ chữ `"join"` (hoặc `"ready"`, `"r"`, `"1"`) vào khung chat BBB $\rightarrow$ Tên học sinh sẽ lập tức xuất hiện trên một làn bơi riêng.
+- **Lấy danh sách tự động:** Nhấn nút **`📥 Lấy từ lớp BBB`** để tiện ích tự động quét tất cả tên học sinh đang tham gia lớp học BigBlueButton.
+- **Bắt đầu đua:** Giáo viên bấm **`🚀 Bắt đầu Đua Bơi`** để khởi động đường đua.
+- **Làm mới:** Nhấn **`🗑️ Xóa danh sách`** để reset danh sách vận động viên chuẩn bị cho lượt đua mới.
 
 ---
 
-## 🎵 Cấu hình Nhạc Nền (Background Music - BGM)
+## 5. 🏆 Bảng Điểm & Xuất Báo Cáo Excel
 
-Tiện ích hỗ trợ tự động phát Nhạc Nền Lặp Lại (Looping BGM) cho cả 2 Game và tự động dừng nhạc khi ngưng chơi hoặc hết game:
-
-### 📁 Đường dẫn đặt File Âm thanh:
-Copy 2 file âm thanh nhạc nền của bạn vào thư mục `assets/sounds/` trong mã nguồn extension:
-1. **Game Đoán Chữ:** `assets/sounds/guess-bgm.mp3`
-2. **Game Đua Bơi:** `assets/sounds/swim-bgm.mp3`
-
-### 🔄 Cơ chế tự động quản lý nhạc:
-- **Tự động Lặp lại (`loop = true`):** Nhạc nền sẽ tự động phát lặp lại liên tục không bị gián đoạn trong suốt thời gian game diễn ra.
-- **Tự động Tắt nhạc:** Ngay khi Giáo viên nhấn **Dừng Game**, chuyển câu/kết thúc cuộc đua, hoặc khi game tìm được nhà vô địch, nhạc nền sẽ **tự động tắt ngay lập tức**.
+- Tất cả điểm số tích lũy của học sinh qua các lượt chơi trò chơi đều được ghi nhận tự động tại tab **🏆 Bảng điểm**.
+- Giáo viên nhấn nút **`📊 Xuất file Excel/CSV`** để tải về báo cáo danh sách điểm số của cả lớp dạng file Excel CSV (định dạng chuẩn UTF-8 BOM, mở trực tiếp trên Microsoft Excel không bị lỗi phông chữ tiếng Việt).
 
 ---
 
-## 6. Xử lý Sự cố Thường gặp
+## 6. ❓ Xử lý Sự cố Thường gặp
 
-| Sự cố | Nguyên nhân | Cách khắc phục |
+| Sự cố | Nguyên nhân có thể | Cách xử lý |
 | :--- | :--- | :--- |
-| **Không thấy Overlay xuất hiện trên BBB** | Chưa bật Overlay hoặc tab BBB bị mất kết nối script | Bấm nút `🎮 Bật Overlay` trên Extension hoặc nhấn `F5` làm mới trang BBB. |
-| **Extension không đọc được chat học sinh** | Cột Khung Chat trong BBB đang bị thu nhỏ/đóng | Đảm bảo cột Chat công khai trong BigBlueButton đang được mở và các quyền của extension đã được bật hết trong mục `Details` |
-| **File Excel nhập vào bị báo lỗi** | Cột 1 không có Từ Tiếng Anh hoặc cột 2 thiếu Gợi ý | Bấm nút `📥 Tải File mẫu Excel (.xls)` để lấy chuẩn định dạng file. |
-| **Tên học sinh không cập nhật vào Đua bơi** | Học sinh nhắn từ khác không phải `join` | Nhắc học sinh nhắn đúng từ `join` hoặc `ready` vào chat, hoặc bấm `📥 Lấy từ lớp BBB`. |
+| **Không thấy bảng Game (Overlay) trên BBB** | Trang BBB chưa bật Overlay hoặc chưa nhận tiện ích | Nhấn nút `🎮 Bật Overlay` trên menu tiện ích hoặc nhấn phím `F5` để tải lại trang BBB. |
+| **Game không tự nhận diện tin nhắn học sinh** | Khung chat công khai trên BBB đang bị đóng/thu nhỏ | Mở lại cột Chat Công Khai (Public Chat) trên giao diện BigBlueButton để tiện ích quét được tin nhắn. |
+| **Nhập file Excel từ vựng bị báo lỗi** | Tiêu đề cột hoặc định dạng file chưa đúng mẫu | Nhấn nút `📥 Tải File mẫu Excel (.xls)` trên tiện ích để lấy file chuẩn mẫu trước khi nhập dữ liệu. |
+| **Học sinh gõ mà không xuất hiện tên đua bơi** | Học sinh gõ chưa đúng từ khóa ghi danh | Nhắc học sinh gõ đúng từ `join` hoặc `ready` vào chat BBB, hoặc bấm `📥 Lấy từ lớp BBB` để nạp tên tự động. |
+| **Bảng Game xuất hiện trên tab trình duyệt khác** | Trình duyệt chưa xác định được tab active | Chuyển sang tab BBB và mở lại menu tiện ích để hệ thống tự động khóa hiển thị đúng tab lớp học. |
 
 ---
 
-## 📞 Hỗ trợ & Đóng góp
-- **Đơn vị phát triển:** ThuanDepTraiBoDoiThe (phanngocthuan293@gmail.com)
-- **Phiên bản:** v1.0 (Manifest V3)
-- **Tương thích:** BigBlueButton v2.4+, Chrome v100+, Edge v100+
+> 💡 **Lời khuyên cho Giáo viên:** Giáo viên nên ghim tiện ích lên thanh công cụ trình duyệt và mở sẵn bảng điều khiển trước khi bắt đầu buổi học để dễ dàng chọn bài đố và theo dõi điểm số của học sinh!
