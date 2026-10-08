@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kyna BBB - Guess The Word Control Panel</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="popup.css">
 </head>
 
@@ -13,7 +14,7 @@
     <!-- Header -->
     <header class="app-header">
       <div class="brand">
-        <div class="logo-icon">🎮</div>
+        <div class="logo-icon"><i class="fa-solid fa-gamepad"></i></div>
         <div class="brand-text">
           <h1>Kyna Class Minigames</h1>
           <span class="sub-title">Game Tương Tác BigBlueButton</span>
@@ -27,9 +28,9 @@
 
     <!-- Navigation Tabs -->
     <nav class="nav-tabs">
-      <button class="tab-btn active" data-tab="tab-control">🎨 Đoán Chữ</button>
-      <button class="tab-btn" data-tab="tab-swimming">🏊 Đua Bơi</button>
-      <button class="tab-btn" data-tab="tab-settings">⚙️ Cài đặt</button>
+      <button class="tab-btn active" data-tab="tab-control"><i class="fa-solid fa-puzzle-piece"></i> Đoán Chữ</button>
+      <button class="tab-btn" data-tab="tab-swimming"><i class="fa-solid fa-person-swimming"></i> Đua Bơi</button>
+      <button class="tab-btn" data-tab="tab-settings"><i class="fa-solid fa-gear"></i> Cài đặt</button>
     </nav>
 
     <!-- Main Content Panels -->
@@ -42,13 +43,13 @@
         <div class="main-action-card">
           <div class="button-group">
             <button id="btn-start-game" class="btn btn-success btn-lg">
-              <span class="icon">🚀</span> Bắt đầu Game
+              <span class="icon"><i class="fa-solid fa-rocket"></i></span> Bắt đầu Game
             </button>
             <button id="btn-next-word" class="btn btn-secondary btn-lg" disabled>
-              <span class="icon">⏭️</span> Từ tiếp theo
+              <span class="icon"><i class="fa-solid fa-forward-step"></i></span> Từ tiếp theo
             </button>
             <button id="btn-stop-game" class="btn btn-danger btn-lg" disabled>
-              <span class="icon">🛑</span> Dừng Game
+              <span class="icon"><i class="fa-solid fa-circle-stop"></i></span> Dừng Game
             </button>
           </div>
           <div id="active-word-display" class="active-word-banner hidden">
@@ -61,7 +62,7 @@
         <!-- Topic Selector -->
         <div class="card">
           <div class="card-header">
-            <h3>📚 Chọn chủ đề từ vựng</h3>
+            <h3><i class="fa-solid fa-book-open"></i> Chọn chủ đề từ vựng</h3>
             <span class="badge info" id="topic-word-count">10 từ</span>
           </div>
           <div class="topic-row">
@@ -82,17 +83,17 @@
               <option value="House & Items">🏠 House & Items (Đồ dùng gia đình)</option>
               <option value="ALL">🌟 Tất cả các chủ đề (400+ từ)</option>
             </select>
-            <button id="btn-load-topic" class="btn btn-primary">Tải bộ từ này</button>
+            <button id="btn-load-topic" class="btn btn-primary"><i class="fa-solid fa-cloud-arrow-down"></i> Tải bộ từ này</button>
           </div>
         </div>
 
         <!-- Search & Add Word Tool -->
         <div class="card">
           <div class="card-header">
-            <h3>🔍 Tìm kiếm & Thêm từ vựng</h3>
+            <h3><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm & Thêm từ vựng</h3>
             <div style="display: flex; gap: 6px;">
-              <button id="btn-toggle-custom" class="btn btn-sm btn-outline">+ Tạo 1 từ</button>
-              <button id="btn-toggle-import-excel" class="btn btn-sm btn-success">📤 Nhập Excel/CSV</button>
+              <button id="btn-toggle-custom" class="btn btn-sm btn-outline"><i class="fa-solid fa-plus"></i> Tạo 1 từ</button>
+              <button id="btn-toggle-import-excel" class="btn btn-sm btn-success"><i class="fa-solid fa-file-excel"></i> Nhập Excel/CSV</button>
             </div>
           </div>
 
@@ -121,14 +122,14 @@
               <label>Từ khóa ảnh Unsplash (Tùy chọn)</label>
               <input type="text" id="custom-query-input" class="form-control" placeholder="VD: butterfly sketch doodle">
             </div>
-            <button id="btn-save-custom" class="btn btn-success btn-block">➕ Thêm vào danh sách Game</button>
+            <button id="btn-save-custom" class="btn btn-success btn-block"><i class="fa-solid fa-plus"></i> Thêm vào danh sách Game</button>
           </div>
 
           <!-- Excel / CSV Bulk Import Form (Accordion) -->
           <div id="import-excel-form" class="custom-form hidden"
             style="background: rgba(16, 185, 129, 0.08); border-color: rgba(16, 185, 129, 0.4);">
             <div style="margin-bottom: 10px;">
-              <h4 style="margin:0 0 4px 0; color:#10b981; font-size:14px; font-weight:800;">📊 Nhập từ vựng hàng loạt từ
+              <h4 style="margin:0 0 4px 0; color:#10b981; font-size:14px; font-weight:800;"><i class="fa-solid fa-table"></i> Nhập từ vựng hàng loạt từ
                 File Excel (.xls / .csv)</h4>
               <p style="margin:0; font-size:12px; color:#94a3b8;">Tải file mẫu Excel (.xls), điền Từ Tiếng Anh + Gợi ý
                 Tiếng Anh (English Hint) + Link Ảnh (tùy chọn). File mẫu đã được định dạng rộng cột cực kỳ dễ đọc!</p>
@@ -137,10 +138,10 @@
             <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:6px;">
               <button id="btn-download-excel-template" class="btn btn-sm btn-outline"
                 style="border-color:#10b981; color:#10b981;">
-                📥 Tải File mẫu Excel (.xls)
+                <i class="fa-solid fa-file-arrow-down"></i> Tải File mẫu Excel (.xls)
               </button>
               <label class="btn btn-sm btn-success" style="cursor:pointer; margin:0;">
-                📁 Chọn File Excel/CSV tải lên
+                <i class="fa-solid fa-file-arrow-up"></i> Chọn File Excel/CSV tải lên
                 <input type="file" id="input-import-excel-file" accept=".xls,.xlsx,.csv,.tsv,.txt"
                   style="display:none;">
               </label>
@@ -154,13 +155,13 @@
         <!-- Current Quiz Word List -->
         <div class="card">
           <div class="card-header">
-            <h3>📋 Danh sách từ trong lượt chơi này (<span id="quiz-list-count">0</span>)</h3>
+            <h3><i class="fa-solid fa-list-check"></i> Danh sách từ trong lượt chơi này (<span id="quiz-list-count">0</span>)</h3>
             <div class="card-actions" style="display: flex; gap: 4px;">
               <button id="btn-export-quiz-excel" class="btn btn-sm btn-outline"
-                title="Xuất bộ từ vựng hiện tại ra Excel CSV">📊 Xuất Excel</button>
+                title="Xuất bộ từ vựng hiện tại ra Excel CSV"><i class="fa-solid fa-file-export"></i> Xuất Excel</button>
               <button id="btn-shuffle-quiz-list" class="btn btn-sm btn-outline"
-                title="Trộn ngẫu nhiên thứ tự từ vựng">🔀 Trộn từ</button>
-              <button id="btn-clear-quiz-list" class="btn btn-sm btn-ghost">Xóa hết</button>
+                title="Trộn ngẫu nhiên thứ tự từ vựng"><i class="fa-solid fa-shuffle"></i> Trộn từ</button>
+              <button id="btn-clear-quiz-list" class="btn btn-sm btn-ghost"><i class="fa-solid fa-trash-can"></i> Xóa hết</button>
             </div>
           </div>
           <div id="quiz-word-list" class="quiz-words-container">
@@ -178,13 +179,13 @@
           style="background: linear-gradient(135deg, rgba(14, 165, 233, 0.2) 0%, rgba(2, 132, 199, 0.2) 100%); border-color: rgba(14, 165, 233, 0.4);">
           <div class="button-group">
             <button id="btn-toggle-swim-overlay" class="btn btn-primary btn-lg">
-              <span class="icon">🎮</span> Bật Overlay Phòng Chờ
+              <span class="icon"><i class="fa-solid fa-display"></i></span> Bật Overlay Phòng Chờ
             </button>
             <button id="btn-start-swim-race" class="btn btn-success btn-lg">
-              <span class="icon">🚀</span> Bắt đầu Đua Bơi
+              <span class="icon"><i class="fa-solid fa-flag-checkered"></i></span> Bắt đầu Đua Bơi
             </button>
             <button id="btn-stop-swim-race" class="btn btn-danger btn-lg" disabled>
-              <span class="icon">🛑</span> Dừng Game
+              <span class="icon"><i class="fa-solid fa-circle-stop"></i></span> Dừng Game
             </button>
           </div>
         </div>
@@ -192,7 +193,7 @@
         <!-- Swimming Race Mode Setting -->
         <div class="card">
           <div class="card-header">
-            <h3>🏊 Chế độ Đua Bơi & Tùy chỉnh</h3>
+            <h3><i class="fa-solid fa-sliders"></i> Chế độ Đua Bơi & Tùy chỉnh</h3>
           </div>
           <div class="form-group">
             <label style="font-weight: 700; font-size: 13px; margin-bottom: 4px; display: block;">Chọn thể thức cuộc
@@ -259,13 +260,13 @@
         <!-- Swimmer Names List Input -->
         <div class="card">
           <div class="card-header">
-            <h3>👥 Vận động viên tham gia (<span id="swim-student-count">0</span>)</h3>
+            <h3><i class="fa-solid fa-users"></i> Vận động viên tham gia (<span id="swim-student-count">0</span>)</h3>
             <div style="display:flex; gap:6px;">
               <button id="btn-clear-swim-students" class="btn btn-sm btn-ghost" style="color:#ef4444;"
-                title="Xóa sạch danh sách học sinh hiện tại">🗑️ Xóa danh sách</button>
+                title="Xóa sạch danh sách học sinh hiện tại"><i class="fa-solid fa-trash-can"></i> Xóa danh sách</button>
               <button id="btn-fetch-bbb-students" class="btn btn-sm btn-outline"
-                style="border-color:#38bdf8; color:#38bdf8;">📥 Lấy từ lớp BBB</button>
-              <button id="btn-load-sample-students" class="btn btn-sm btn-outline">Nhập mẫu</button>
+                style="border-color:#38bdf8; color:#38bdf8;"><i class="fa-solid fa-user-plus"></i> Lấy từ lớp BBB</button>
+              <button id="btn-load-sample-students" class="btn btn-sm btn-outline"><i class="fa-solid fa-list-ol"></i> Nhập mẫu</button>
             </div>
           </div>
           <div class="form-group">
@@ -275,7 +276,7 @@
           <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
             <span style="font-size:11px; color:#94a3b8;">💡 Học sinh nhắn <strong>"join"</strong> trong chat để tự ghi
               tên. Nút Bắt đầu do GV ấn!</span>
-            <button id="btn-save-swim-students" class="btn btn-primary btn-sm">💾 Cập nhật danh sách</button>
+            <button id="btn-save-swim-students" class="btn btn-primary btn-sm"><i class="fa-solid fa-floppy-disk"></i> Cập nhật danh sách</button>
           </div>
         </div>
 
@@ -285,7 +286,7 @@
       <section id="tab-settings" class="tab-panel">
         <div class="card">
           <div class="card-header">
-            <h3>⚙️ Tùy chỉnh luật chơi</h3>
+            <h3><i class="fa-solid fa-gears"></i> Tùy chỉnh luật chơi</h3>
           </div>
 
           <div class="setting-item">
@@ -306,11 +307,11 @@
           <div class="setting-item">
             <label class="checkbox-label">
               <input type="checkbox" id="setting-sound" checked>
-              <span>🔊 Bật hiệu ứng âm thanh (Tiếng đếm ngược, tiếng trả lời đúng)</span>
+              <span><i class="fa-solid fa-volume-high"></i> Bật hiệu ứng âm thanh (Tiếng đếm ngược, tiếng trả lời đúng)</span>
             </label>
           </div>
 
-          <button id="btn-save-settings" class="btn btn-primary btn-block">💾 Lưu cài đặt</button>
+          <button id="btn-save-settings" class="btn btn-primary btn-block"><i class="fa-solid fa-floppy-disk"></i> Lưu cài đặt</button>
         </div>
       </section>
 

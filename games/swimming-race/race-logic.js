@@ -546,12 +546,12 @@
       overlayEl.innerHTML = `
         <div class="kyna-swim-header" id="kyna-swim-drag">
           <div class="kyna-swim-title">
-            <span id="kyna-swim-mode-title">🏊 ĐUA BƠI KÝ PHÙNG ĐỊCH THỦ</span>
+            <span id="kyna-swim-mode-title"><i class="fa-solid fa-person-swimming"></i> ĐUA BƠI KỲ PHÙNG ĐỊCH THỦ</span>
           </div>
           <div style="display:flex; gap:6px;">
-            <button class="kyna-icon-btn" id="kyna-swim-sound-btn" title="Bật/Tắt Âm thanh & Nhạc nền">🔊</button>
-            <button class="kyna-icon-btn" id="kyna-swim-min-btn" title="Thu nhỏ">➖</button>
-            <button class="kyna-icon-btn kyna-close-btn" id="kyna-swim-close-btn" title="Dừng & Đóng Game">✖</button>
+            <button class="kyna-icon-btn" id="kyna-swim-sound-btn" title="Bật/Tắt Âm thanh & Nhạc nền"><i class="fa-solid fa-volume-high"></i></button>
+            <button class="kyna-icon-btn" id="kyna-swim-min-btn" title="Thu nhỏ"><i class="fa-solid fa-minus"></i></button>
+            <button class="kyna-icon-btn kyna-close-btn" id="kyna-swim-close-btn" title="Dừng & Đóng Game"><i class="fa-solid fa-xmark"></i></button>
           </div>
         </div>
 
@@ -559,7 +559,7 @@
           <div id="kyna-relay-word-prompt-container"></div>
 
           <div class="kyna-swim-timer-bar">
-            <span class="kyna-swim-timer-text" id="kyna-swim-timer-val">⏳ ${raceState.timeLeftSeconds || 90}s</span>
+            <span class="kyna-swim-timer-text" id="kyna-swim-timer-val"><i class="fa-solid fa-stopwatch"></i> ${raceState.timeLeftSeconds || 90}s</span>
             <div class="kyna-swim-progress-bg">
               <div class="kyna-swim-progress-fill" id="kyna-swim-progress-fill"></div>
             </div>
@@ -606,7 +606,7 @@
       if (swimSoundBtn) {
         swimSoundBtn.addEventListener("click", () => {
           const isMuted = typeof window.toggleSoundMuted === "function" ? window.toggleSoundMuted() : false;
-          swimSoundBtn.textContent = isMuted ? "🔇" : "🔊";
+          swimSoundBtn.innerHTML = isMuted ? '<i class="fa-solid fa-volume-xmark"></i>' : '<i class="fa-solid fa-volume-high"></i>';
           if (!isMuted && raceState.gameState === "RACING") {
             if (typeof window.playBgmSound === "function") window.playBgmSound("SWIMMING_RACE");
           }
@@ -617,7 +617,7 @@
     const swimSoundBtn = document.getElementById("kyna-swim-sound-btn");
     if (swimSoundBtn) {
       const isMuted = typeof window.getSoundMuted === "function" ? window.getSoundMuted() : false;
-      swimSoundBtn.textContent = isMuted ? "🔇" : "🔊";
+      swimSoundBtn.innerHTML = isMuted ? '<i class="fa-solid fa-volume-xmark"></i>' : '<i class="fa-solid fa-volume-high"></i>';
     }
 
     // Cập nhật thẻ hiển thị Từ vựng mục tiêu (Word Relay Mode)
@@ -942,8 +942,8 @@
         </div>
 
         <div class="kyna-podium-actions">
-          <button class="kyna-podium-btn btn-restart-race" id="kyna-btn-restart-swim-race">🔄 Chơi lại cuộc đua</button>
-          <button class="kyna-podium-btn btn-close-podium" id="kyna-btn-close-podium">✖ Đóng</button>
+          <button class="kyna-podium-btn btn-restart-race" id="kyna-btn-restart-swim-race"><i class="fa-solid fa-rotate-left"></i> Chơi lại cuộc đua</button>
+          <button class="kyna-podium-btn btn-close-podium" id="kyna-btn-close-podium"><i class="fa-solid fa-xmark"></i> Đóng</button>
         </div>
       </div>
     `;

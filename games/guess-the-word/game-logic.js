@@ -241,26 +241,26 @@
       overlayEl.innerHTML = `
         <div class="kyna-overlay-header" id="kyna-header-drag">
           <div class="kyna-header-title">
-            <span>🎨 Guess The Word</span>
+            <span><i class="fa-solid fa-puzzle-piece"></i> Guess The Word</span>
             <span style="font-size:12px; opacity:0.8;" id="kyna-overlay-category">(${currentRound.wordObj.category})</span>
           </div>
           <div class="kyna-header-actions">
-            <button class="kyna-icon-btn" id="kyna-btn-toggle-sound" title="Bật/Tắt Âm thanh & Nhạc nền">🔊</button>
-            <button class="kyna-icon-btn" id="kyna-btn-toggle-min" title="Thu nhỏ/Mở rộng">➖</button>
-            <button class="kyna-icon-btn kyna-close-btn" id="kyna-btn-close-game" title="Dừng & Đóng Game">✖</button>
+            <button class="kyna-icon-btn" id="kyna-btn-toggle-sound" title="Bật/Tắt Âm thanh & Nhạc nền"><i class="fa-solid fa-volume-high"></i></button>
+            <button class="kyna-icon-btn" id="kyna-btn-toggle-min" title="Thu nhỏ/Mở rộng"><i class="fa-solid fa-minus"></i></button>
+            <button class="kyna-icon-btn kyna-close-btn" id="kyna-btn-close-game" title="Dừng & Đóng Game"><i class="fa-solid fa-xmark"></i></button>
           </div>
         </div>
 
         <div class="kyna-overlay-body">
           <div class="kyna-image-frame">
-            <div class="kyna-image-loading" id="kyna-img-loader" style="display: none;">⏳ Đang tải ảnh vẽ tay...</div>
+            <div class="kyna-image-loading" id="kyna-img-loader" style="display: none;"><i class="fa-solid fa-spinner fa-spin"></i> Đang tải ảnh...</div>
             <img id="kyna-doodle-img" src="" alt="Doodle sketch" style="opacity: 1;">
           </div>
 
           <div class="kyna-word-slots" id="kyna-slots-container"></div>
 
           <div class="kyna-hint-box">
-            💡 Gợi ý: <span id="kyna-hint-text">${currentRound.wordObj.hint}</span>
+            <i class="fa-solid fa-lightbulb" style="color:#2563EB;"></i> Gợi ý: <span id="kyna-hint-text">${currentRound.wordObj.hint}</span>
           </div>
 
           <div class="kyna-timer-container">
@@ -273,10 +273,10 @@
           <div class="kyna-winner-box hidden" id="kyna-winner-box" style="margin-top: 10px; padding: 12px; background: rgba(16, 185, 129, 0.25); border: 1.5px solid #10B981; border-radius: 12px; text-align: center; color: #34D399; font-weight: bold; font-size: 16px;"></div>
 
           <div class="kyna-controls-row">
-            <button class="kyna-action-btn kyna-btn-hint" id="kyna-action-hint">💡 Gợi ý</button>
-            <button class="kyna-action-btn kyna-btn-next" id="kyna-action-next">⏭️ Từ tiếp</button>
-            <button class="kyna-action-btn kyna-btn-restart-quiz" id="kyna-action-restart">🔄 Chơi lại</button>
-            <button class="kyna-action-btn kyna-btn-summary" id="kyna-action-summary">🏆 Tổng kết</button>
+            <button class="kyna-action-btn kyna-btn-hint" id="kyna-action-hint"><i class="fa-solid fa-lightbulb"></i> Gợi ý</button>
+            <button class="kyna-action-btn kyna-btn-next" id="kyna-action-next"><i class="fa-solid fa-forward-step"></i> Từ tiếp</button>
+            <button class="kyna-action-btn kyna-btn-restart-quiz" id="kyna-action-restart"><i class="fa-solid fa-rotate-left"></i> Chơi lại</button>
+            <button class="kyna-action-btn kyna-btn-summary" id="kyna-action-summary"><i class="fa-solid fa-trophy"></i> Tổng kết</button>
           </div>
         </div>
       `;
@@ -310,7 +310,7 @@
       if (soundBtn) {
         soundBtn.addEventListener("click", () => {
           const isMuted = typeof window.toggleSoundMuted === "function" ? window.toggleSoundMuted() : false;
-          soundBtn.textContent = isMuted ? "🔇" : "🔊";
+          soundBtn.innerHTML = isMuted ? '<i class="fa-solid fa-volume-xmark"></i>' : '<i class="fa-solid fa-volume-high"></i>';
           if (!isMuted && gameState.gameState === "RUNNING") {
             if (typeof window.playBgmSound === "function") window.playBgmSound("GUESS_THE_WORD");
           }
@@ -353,7 +353,7 @@
     const soundBtn = document.getElementById("kyna-btn-toggle-sound");
     if (soundBtn) {
       const isMuted = typeof window.getSoundMuted === "function" ? window.getSoundMuted() : false;
-      soundBtn.textContent = isMuted ? "🔇" : "🔊";
+      soundBtn.innerHTML = isMuted ? '<i class="fa-solid fa-volume-xmark"></i>' : '<i class="fa-solid fa-volume-high"></i>';
     }
 
     document.getElementById("kyna-overlay-category").textContent = `(${currentRound.wordObj.category})`;
