@@ -18,39 +18,39 @@
 /**
  * Hàm tạo ảnh SVG Doodle nét vẽ tay trực quan độc đáo cho từ vựng
  */
-function createCustomDoodleSvg(word, hint, emoji, themeColor = "#6366F1") {
+function createCustomDoodleSvg(word, hint, emoji, themeColor = "#2563EB") {
   const cleanWord = (word || "PUZZLE").toUpperCase();
   const svg = `
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" width="100%" height="100%">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 520 350" width="100%" height="100%" preserveAspectRatio="none">
     <!-- Nền giấy tập kẻ caro nét đứt -->
-    <rect width="400" height="300" fill="#FCFBF7" rx="14"/>
+    <rect width="520" height="350" fill="#FCFBF7" rx="16"/>
     <defs>
-      <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
-        <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#E5E7EB" stroke-width="0.8"/>
+      <pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse">
+        <path d="M 24 0 L 0 0 0 24" fill="none" stroke="#E2E8F0" stroke-width="1"/>
       </pattern>
     </defs>
-    <rect width="400" height="300" fill="url(#grid)" rx="14"/>
+    <rect width="520" height="350" fill="url(#grid)" rx="16"/>
 
     <!-- Trang trí nét vẽ Doodle xung quanh -->
-    <path d="M 20 30 Q 60 10 120 25 T 220 20" stroke="${themeColor}" stroke-width="3" stroke-linecap="round" fill="none" stroke-dasharray="5,4" opacity="0.5"/>
-    <circle cx="340" cy="45" r="20" stroke="#F59E0B" stroke-width="3" stroke-dasharray="4,3" fill="none"/>
-    <path d="M 330 240 Q 360 210 380 250" stroke="#EC4899" stroke-width="3" fill="none" stroke-linecap="round"/>
-    <polygon points="30,250 50,230 70,260" stroke="#10B981" stroke-width="2.5" fill="none" stroke-dasharray="3,2"/>
+    <path d="M 30 35 Q 120 15 240 30 T 480 25" stroke="${themeColor}" stroke-width="3.5" stroke-linecap="round" fill="none" stroke-dasharray="6,4" opacity="0.6"/>
+    <circle cx="460" cy="55" r="26" stroke="#F59E0B" stroke-width="3.5" stroke-dasharray="5,3" fill="none"/>
+    <path d="M 440 280 Q 480 240 500 290" stroke="#EC4899" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+    <polygon points="40,290 65,260 90,300" stroke="#10B981" stroke-width="3" fill="none" stroke-dasharray="4,3"/>
 
-    <!-- Vùng Icon nét vẽ Doodle chính -->
-    <g transform="translate(140, 45)">
-      <circle cx="60" cy="60" r="58" stroke="${themeColor}" stroke-width="4" fill="#FFFFFF" stroke-dasharray="6,3"/>
-      <text x="60" y="82" font-size="76" text-anchor="middle" font-family="'Segoe UI Emoji', sans-serif">${emoji}</text>
+    <!-- Vùng Icon nét vẽ Doodle chính - PHÓNG TO ICON RẤT TO (108px) -->
+    <g transform="translate(180, 25)">
+      <circle cx="80" cy="80" r="76" stroke="${themeColor}" stroke-width="5" fill="#FFFFFF" stroke-dasharray="8,4"/>
+      <text x="80" y="112" font-size="108" text-anchor="middle" font-family="'Segoe UI Emoji', sans-serif">${emoji}</text>
     </g>
 
     <!-- Khung Trang trí Doodle Puzzle (KHÔNG HIỆN ĐÁP ÁN) -->
-    <rect x="60" y="180" width="280" height="46" rx="23" fill="${themeColor}" fill-opacity="0.08" stroke="${themeColor}" stroke-width="2.5" stroke-dasharray="6,3"/>
-    <text x="200" y="210" font-size="20" font-weight="900" fill="${themeColor}" text-anchor="middle" font-family="'Segoe UI', Roboto, sans-serif" letter-spacing="6">
+    <rect x="110" y="210" width="300" height="52" rx="26" fill="${themeColor}" fill-opacity="0.1" stroke="${themeColor}" stroke-width="3" stroke-dasharray="6,3"/>
+    <text x="260" y="244" font-size="22" font-weight="900" fill="${themeColor}" text-anchor="middle" font-family="'Segoe UI', Roboto, sans-serif" letter-spacing="6">
       ❓ GUESS THE WORD ❓
     </text>
 
-    <!-- Gợi ý Tiếng Anh -->
-    <text x="200" y="252" font-size="14" font-weight="600" fill="#4B5563" text-anchor="middle" font-family="'Segoe UI', Roboto, sans-serif" font-style="italic">
+    <!-- Gợi ý Tiếng Anh (PHÓNG TO CỠ CHỮ GỢI Ý IN SVG) -->
+    <text x="260" y="294" font-size="17" font-weight="700" fill="#334155" text-anchor="middle" font-family="'Segoe UI', Roboto, sans-serif" font-style="italic">
       💡 Hint: ${hint}
     </text>
   </svg>`;

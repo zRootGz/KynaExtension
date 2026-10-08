@@ -1,5 +1,5 @@
-/* GAMES/SWIMMING-RACE/RACE-STYLE.CSS - Modern High-Contrast Style for Swimming Race Overlay */
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap');
+/* GAMES/SWIMMING-RACE/RACE-STYLE.CSS - Bright Path Tutoring Theme for Swimming Race Overlay */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800;900&display=swap');
 
 /* Base Swimming Overlay Container */
 #kyna-swimming-overlay {
@@ -7,14 +7,14 @@
   top: 40px;
   right: 20px;
   width: 630px;
-  background: rgba(11, 15, 25, 0.96);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1.5px solid rgba(16, 185, 129, 0.5);
+  background: #FFFFFF;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 2px solid #2563EB;
   border-radius: 20px;
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 30px rgba(16, 185, 129, 0.25);
-  color: #ffffff;
-  font-family: 'Outfit', 'Segoe UI', -apple-system, Roboto, sans-serif;
+  box-shadow: 0 25px 60px rgba(37, 99, 235, 0.18), 0 4px 15px rgba(0, 0, 0, 0.08);
+  color: #0F172A;
+  font-family: 'Nunito', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
   z-index: 999999;
   overflow: hidden;
   transition: opacity 0.3s ease, transform 0.3s ease;
@@ -29,14 +29,14 @@
   width: 290px;
 }
 
-/* Header */
+/* Header - Royal Blue */
 .kyna-swim-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 14px 20px;
-  background: linear-gradient(90deg, #0284c7 0%, #0369a1 50%, #0f766e 100%);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  background: linear-gradient(90deg, #1D4ED8 0%, #2563EB 100%);
+  border-bottom: 2px solid #3B82F6;
   cursor: move;
 }
 
@@ -46,8 +46,8 @@
   gap: 10px;
   font-size: 17px;
   font-weight: 800;
-  color: #ffffff;
-  letter-spacing: 0.5px;
+  color: #FFFFFF;
+  letter-spacing: 0.3px;
 }
 
 /* Body */
@@ -56,15 +56,16 @@
   display: flex;
   flex-direction: column;
   gap: 14px;
+  background: #F8FAFC;
 }
 
 /* Pool Container */
 .kyna-swim-pool {
   width: 100%;
-  background: linear-gradient(180deg, #0284c7 0%, #0369a1 40%, #075985 100%);
+  background: linear-gradient(180deg, #2563EB 0%, #1D4ED8 60%, #1E40AF 100%);
   border-radius: 16px;
-  border: 2px solid #38bdf8;
-  box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.4);
+  border: 2.5px solid #60A5FA;
+  box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.3);
   position: relative;
   overflow: hidden;
   display: flex;
@@ -77,7 +78,7 @@
   content: "";
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.12) 10%, transparent 20%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 10%, transparent 20%);
   background-size: 30px 30px;
   opacity: 0.6;
   animation: waterRipple 4s infinite linear;
@@ -93,7 +94,7 @@
 .kyna-swim-lane {
   position: relative;
   height: 54px;
-  border-bottom: 2px dashed rgba(254, 240, 138, 0.6);
+  border-bottom: 2px dashed rgba(255, 255, 255, 0.45);
   display: flex;
   align-items: center;
   padding-left: 55px;
@@ -111,17 +112,17 @@
   left: 8px;
   width: 36px;
   height: 36px;
-  background: rgba(15, 23, 42, 0.95);
-  border: 2px solid #38bdf8;
+  background: #FFFFFF;
+  border: 2px solid #2563EB;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 800;
   font-size: 14px;
-  color: #38bdf8;
+  color: #2563EB;
   z-index: 25;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
 
 /* Finish Line Touchpad */
@@ -133,12 +134,12 @@
   width: 44px;
   background: repeating-linear-gradient(
     45deg,
-    #ffffff,
-    #ffffff 8px,
-    #0f172a 8px,
-    #0f172a 16px
+    #FFFFFF,
+    #FFFFFF 8px,
+    #2563EB 8px,
+    #2563EB 16px
   );
-  border-left: 4px solid #ef4444;
+  border-left: 4px solid #EF4444;
   box-shadow: -6px 0 16px rgba(239, 68, 68, 0.6);
   z-index: 4;
   opacity: 0;
@@ -177,7 +178,7 @@
 .kyna-swimmer-avatar {
   font-size: 32px;
   flex-shrink: 0;
-  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5));
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.4));
   animation: swimStroke 0.6s infinite ease-in-out alternate;
 }
 
@@ -188,8 +189,8 @@
 
 /* Swimmer Name Badge */
 .kyna-swimmer-name {
-  background: rgba(15, 23, 42, 0.95);
-  color: #ffffff;
+  background: #FFFFFF;
+  color: #0F172A;
   padding: 4px 10px;
   border-radius: 12px;
   font-size: 13px;
@@ -197,8 +198,8 @@
   white-space: nowrap !important;
   flex-shrink: 0 !important;
   word-break: keep-all !important;
-  border: 1px solid rgba(56, 189, 248, 0.7);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+  border: 1.5px solid #2563EB;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -222,21 +223,21 @@
 }
 
 .kyna-ready-tag.tag-ready {
-  background: rgba(234, 179, 8, 0.25);
-  color: #fef08a;
-  border: 1px solid rgba(234, 179, 8, 0.6);
+  background: #FEF3C7;
+  color: #92400E;
+  border: 1px solid #FCD34D;
 }
 
 .kyna-ready-tag.tag-started {
-  background: rgba(34, 197, 94, 0.25);
-  color: #86efac;
-  border: 1px solid rgba(34, 197, 94, 0.6);
+  background: #D1FAE5;
+  color: #065F46;
+  border: 1px solid #34D399;
 }
 
 /* Swimmer Boost Glow & Motion Effects */
 .kyna-swimmer.is-boosting {
   transform: scale(1.18);
-  filter: drop-shadow(0 0 12px #f59e0b) drop-shadow(0 0 20px #ef4444);
+  filter: drop-shadow(0 0 12px #FCD34D) drop-shadow(0 0 20px #2563EB);
 }
 
 .kyna-swimmer.is-boosting .kyna-swimmer-avatar {
@@ -259,59 +260,55 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  background: rgba(15, 23, 42, 0.8);
+  background: #FFFFFF;
   padding: 8px 14px;
   border-radius: 14px;
-  border: 1px solid rgba(56, 189, 248, 0.35);
+  border: 1.5px solid #DBEAFE;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
 
 .kyna-swim-timer-text {
   font-size: 16px;
   font-weight: 800;
-  color: #f59e0b;
+  color: #2563EB;
   min-width: 60px;
 }
 
 .kyna-swim-progress-bg {
   flex: 1;
   height: 12px;
-  background: rgba(255, 255, 255, 0.15);
+  background: #EFF6FF;
   border-radius: 6px;
   overflow: hidden;
+  border: 1px solid #BFDBFE;
 }
 
 .kyna-swim-progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #10b981 0%, #f59e0b 50%, #ef4444 100%);
+  background: linear-gradient(90deg, #34D399 0%, #FCD34D 50%, #EF4444 100%);
   width: 100%;
   transition: width 1s linear;
 }
 
 /* Relay Word Prompt Card */
 .kyna-swim-word-card {
-  background: linear-gradient(135deg, rgba(30, 41, 59, 0.96) 0%, rgba(15, 23, 42, 0.96) 100%);
-  border: 2px solid #38bdf8;
+  background: #FFFFFF;
+  border: 2px solid #2563EB;
   border-radius: 16px;
   padding: 12px 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 6px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(56, 189, 248, 0.25);
-  animation: pulseCard 2.5s infinite ease-in-out alternate;
-}
-
-@keyframes pulseCard {
-  0% { border-color: #38bdf8; box-shadow: 0 0 15px rgba(56, 189, 248, 0.3); }
-  100% { border-color: #f59e0b; box-shadow: 0 0 25px rgba(245, 158, 11, 0.5); }
+  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.12);
 }
 
 .kyna-word-prompt-label {
   font-size: 12px;
   font-weight: 800;
-  color: #38bdf8;
+  color: #2563EB;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
 }
 
 .kyna-word-target-display {
@@ -327,14 +324,13 @@
 .kyna-target-text {
   font-size: 32px;
   font-weight: 900;
-  color: #fef08a;
+  color: #2563EB;
   letter-spacing: 3px;
-  text-shadow: 0 0 15px rgba(250, 204, 21, 0.8);
 }
 
 .kyna-target-hint {
   font-size: 14px;
-  color: #cbd5e1;
+  color: #64748B;
   font-weight: 600;
   font-style: italic;
 }
@@ -349,15 +345,15 @@
 
 .kyna-swim-status {
   font-size: 14px;
-  font-weight: 700;
-  color: #38bdf8;
+  font-weight: 800;
+  color: #2563EB;
 }
 
 /* Header Action Buttons */
 .kyna-icon-btn {
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  color: #ffffff;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  color: #FFFFFF;
   font-size: 15px;
   width: 32px;
   height: 32px;
@@ -369,13 +365,13 @@
   transition: all 0.2s ease;
 }
 .kyna-icon-btn:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.35);
   transform: scale(1.05);
 }
 .kyna-icon-btn.kyna-close-btn:hover {
-  background: #ef4444 !important;
-  border-color: #f87171 !important;
-  color: #ffffff !important;
+  background: #EF4444 !important;
+  border-color: #F87171 !important;
+  color: #FFFFFF !important;
   transform: scale(1.08);
 }
 
@@ -384,7 +380,7 @@
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
   z-index: 50;
-  background: radial-gradient(circle at center, rgba(15, 23, 42, 0.94) 0%, rgba(3, 105, 161, 0.96) 100%);
+  background: rgba(239, 246, 255, 0.96);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   display: flex;
@@ -412,11 +408,11 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  background: linear-gradient(90deg, rgba(245, 158, 11, 0.25) 0%, rgba(254, 240, 138, 0.35) 50%, rgba(245, 158, 11, 0.25) 100%);
-  border: 1.5px solid #f59e0b;
+  background: linear-gradient(90deg, #1E40AF 0%, #2563EB 100%);
+  border: 1.5px solid #3B82F6;
   border-radius: 20px;
-  padding: 5px 18px;
-  box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
+  padding: 6px 20px;
+  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.2);
 }
 
 .kyna-podium-crown-icon {
@@ -426,9 +422,8 @@
 .kyna-podium-header-title {
   font-size: 15px;
   font-weight: 900;
-  color: #fef08a;
+  color: #FCD34D;
   letter-spacing: 1px;
-  text-shadow: 0 2px 6px rgba(0,0,0,0.8);
 }
 
 /* Podium Stage Layout */
@@ -458,7 +453,7 @@
 
 .kyna-podium-avatar-icon {
   font-size: 34px;
-  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.5));
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
 }
 
 .kyna-podium-avatar-icon.gold-avatar {
@@ -474,38 +469,38 @@
 .kyna-podium-top1-crown {
   font-size: 10px;
   font-weight: 900;
-  color: #0f172a;
-  background: #f59e0b;
+  color: #0F172A;
+  background: #FCD34D;
   padding: 2px 8px;
   border-radius: 10px;
-  border: 1px solid #fef08a;
-  box-shadow: 0 0 10px rgba(245, 158, 11, 0.8);
+  border: 1px solid #FBBF24;
+  box-shadow: 0 2px 8px rgba(252, 211, 77, 0.4);
   margin-bottom: 3px;
 }
 
 .kyna-podium-student-name {
   font-size: 12px;
   font-weight: 800;
-  color: #ffffff;
-  background: rgba(15, 23, 42, 0.95);
-  padding: 3px 10px;
+  color: #0F172A;
+  background: #FFFFFF;
+  padding: 4px 10px;
   border-radius: 12px;
-  border: 1px solid rgba(56, 189, 248, 0.6);
+  border: 1.5px solid #2563EB;
   white-space: nowrap;
   max-width: 115px;
   overflow: hidden;
   text-overflow: ellipsis;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
 .kyna-podium-student-name.gold-name {
-  color: #fef08a;
-  border-color: #f59e0b;
+  color: #2563EB;
+  border-color: #2563EB;
   font-size: 13px;
-  box-shadow: 0 0 12px rgba(245, 158, 11, 0.6);
+  box-shadow: 0 0 12px rgba(37, 99, 235, 0.3);
 }
 
-/* 3D Pedestals */
+/* Pedestals - Bright Path Styling */
 .kyna-podium-pedestal {
   width: 100%;
   display: flex;
@@ -514,38 +509,38 @@
   justify-content: center;
   gap: 2px;
   border-radius: 14px 14px 0 0;
-  box-shadow: inset 0 2px 4px rgba(255,255,255,0.4), 0 10px 20px rgba(0,0,0,0.5);
+  box-shadow: inset 0 2px 4px rgba(255,255,255,0.4), 0 6px 15px rgba(0,0,0,0.1);
 }
 
 .pedestal-1 {
   height: 115px;
-  background: linear-gradient(180deg, #f59e0b 0%, #d97706 60%, #78350f 100%);
-  border: 2.5px solid #fef08a;
-  box-shadow: 0 0 25px rgba(245, 158, 11, 0.6), inset 0 2px 6px rgba(255, 255, 255, 0.6);
+  background: linear-gradient(180deg, #FCD34D 0%, #FBBF24 60%, #D97706 100%);
+  border: 2px solid #FEF08A;
+  box-shadow: 0 4px 20px rgba(252, 211, 77, 0.4);
 }
 
 .pedestal-2 {
   height: 85px;
-  background: linear-gradient(180deg, #cbd5e1 0%, #64748b 60%, #334155 100%);
-  border: 2.5px solid #f8fafc;
-  box-shadow: 0 0 18px rgba(203, 213, 225, 0.4), inset 0 2px 6px rgba(255, 255, 255, 0.6);
+  background: linear-gradient(180deg, #3B82F6 0%, #2563EB 60%, #1D4ED8 100%);
+  border: 2px solid #60A5FA;
+  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
 }
 
 .pedestal-3 {
   height: 62px;
-  background: linear-gradient(180deg, #d97706 0%, #b45309 60%, #451a03 100%);
-  border: 2.5px solid #fde68a;
-  box-shadow: 0 0 15px rgba(217, 119, 6, 0.4), inset 0 2px 6px rgba(255, 255, 255, 0.4);
+  background: linear-gradient(180deg, #34D399 0%, #10B981 60%, #059669 100%);
+  border: 2px solid #A7F3D0;
+  box-shadow: 0 4px 12px rgba(52, 211, 153, 0.3);
 }
 
 .kyna-podium-medal-icon {
   font-size: 24px;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
 }
 
 .kyna-podium-step-num {
   font-size: 20px;
   font-weight: 900;
-  color: rgba(255, 255, 255, 0.95);
-  text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+  color: #FFFFFF;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
