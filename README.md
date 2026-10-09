@@ -18,6 +18,7 @@
    - [Cách ghi danh học sinh & Bắt đầu đua](#cách-ghi-danh-học-sinh--bắt-đầu-đua)
 5. [🏆 Bảng Điểm & Xuất Báo Cáo Excel](#5-bảng-điểm--xuất-báo-cáo-excel)
 6. [❓ Xử lý Sự cố Thường gặp](#6-xử-lý-sự-cố-thường-gặp)
+7. [🛠️ Dành Cho Developer (Cấu trúc & Kiến trúc Tiện ích)](#7-Dành-Cho-Developer)
 
 ---
 
