@@ -144,3 +144,53 @@ Game **Đua Bơi** biến đường đua dưới nước thành cuộc tranh tà
 ---
 
 > 💡 **Lời khuyên cho Giáo viên:** Giáo viên nên ghim tiện ích lên thanh công cụ trình duyệt và mở sẵn bảng điều khiển trước khi bắt đầu buổi học để dễ dàng chọn bài đố và theo dõi điểm số của học sinh!
+
+---
+
+## 7. 🛠️ Dành Cho Developer (Cấu trúc & Kiến trúc Tiện ích)
+
+Dành cho các lập trình viên muốn nghiên cứu mã nguồn hoặc phát triển thêm tính năng mới cho tiện ích Kyna BBB Games.
+
+### 📁 Cấu trúc thư mục (Directory Structure)
+
+Dự án được tổ chức theo module, phân tách rõ ràng giữa Core (Lõi xử lý) và Games (Giao diện và Logic từng trò chơi):
+
+```text
+KynaExtension/
+├── manifest.json              # File cấu hình chính của Chrome Extension (Manifest V3)
+├── background.js              # Service Worker chạy ngầm, quản lý state và điều phối injection
+├── popup.html & popup.js      # Giao diện Bảng điều khiển (Control Panel) của Giáo viên
+├── popup.css                  # Style cho Bảng điều khiển
+├── core/                      # Lõi xử lý dùng chung
+│   ├── bbb-chat-observer.js   # Script quét DOM BBB để bắt tin nhắn chat realtime
+│   └── audio-synthesizer.js   # Bộ tổng hợp âm thanh (Sound effects) cho game
+├── games/                     # Chứa logic và UI của các minigame
+│   ├── guess-the-word/        # Game 1: Đoán chữ
+│   │   ├── words.js           # Database từ vựng (450+ từ, 17 chủ đề)
+│   │   ├── game-logic.js      # Script xử lý logic game, tính điểm, vẽ Doodle và UI
+│   │   └── game-style.css     # CSS cho Overlay màn hình đố chữ
+│   └── swimming-race/         # Game 2: Đua bơi
+│       ├── race-logic.js      # Cỗ máy vật lý (Physics engine), camera bám đuổi và logic đua
+│       └── race-style.css     # CSS cho đường đua dưới nước và bục nhận giải
+└── test-environment/          # Môi trường giả lập BBB để DEV/Giáo viên test extension offline
+    └── kyna_bbb_simulator.html
+```
+
+### 🧠 Kiến trúc Hoạt động (Architecture)
+
+1. **Quét Chat (DOM Mutation Observer):**
+   - File `core/bbb-chat-observer.js` đóng vai trò là "con mắt" của tiện ích. Script này sử dụng `MutationObserver` để lắng nghe những thay đổi trên DOM của BigBlueButton (cụ thể là khu vực `chatMessagesList`).
+   - Khi học sinh chat, observer sẽ bắt được tên và nội dung, chuẩn hóa chuỗi và phát ra CustomEvent `KynaBBBMessage` cho các Game lắng nghe.
+
+2. **Giao tiếp State (Popup $\leftrightarrow$ Content Scripts):**
+   - Bảng điều khiển `popup.js` và các game (như `game-logic.js`, `race-logic.js`) giao tiếp với nhau bằng `chrome.runtime.sendMessage` và `chrome.storage.local`.
+   - **State Synchronization:** Khi Giáo viên bấm "Start Game", `popup.js` gửi Action `SYNC_GAME_STATE` cho Content Scripts. Content Script (Overlay) sẽ hiển thị lên màn hình BBB của Giáo viên dựa trên state này. Điểm số từ Content Script cũng liên tục được đẩy ngược về `kynaGameState` trong `chrome.storage.local` để Bảng điều khiển cập nhật realtime.
+
+3. **Giao diện Nổi (UI Overlay Injection):**
+   - Các game không can thiệp sâu vào DOM của BBB để tránh lỗi cấu trúc web gốc. Thay vào đó, chúng tạo ra các khối `<div id="kyna-game-overlay">` nổi (Position Fixed, Z-Index cao) đè lên giao diện hiện tại.
+   - Khi Game kết thúc hoặc Giáo viên ấn "Stop", các Overlay này sẽ bị gỡ bỏ hoàn toàn khỏi DOM (DOM Cleanup).
+
+4. **Quản lý Cửa sổ (Window & Tab Targeting):**
+   - Để tránh Extension chạy nhầm trên nhiều Tab BBB cùng lúc, hệ thống sử dụng cờ `lastFocusedWindow: true` khi lưu state, đảm bảo Game Overlay chỉ xuất hiện trên lớp học mà Giáo viên đang mở và thao tác (Tab Active). Điểm lưu trữ tích lũy (All-time High Score) được quản lý qua key `kynaHighScores`.
+
+---
