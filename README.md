@@ -6,21 +6,23 @@
 ---
 
 ## 📌 MỤC LỤC
-1. [Giới thiệu Tổng quan](#1-giới-thiệu-tổng-quan)
-2. [Hướng dẫn Cài đặt Tiện ích](#2-hướng-dẫn-cài-đặt-tiện-ích)
-3. [Game 1: 🎨 Đoán Chữ (Guess The Word)](#3-game-1--đoán-chữ-guess-the-word)
-   - [Cách vận hành trò chơi](#cách-vận-hành-game-đoán-chữ)
-   - [Danh mục 17 chủ đề từ vựng (450+ từ)](#danh-mục-17-chủ-đề-từ-vựng-sẵn-có-450-từ)
-   - [Tự thêm từ mới & Nhập/Xuất File Excel (.xlsx / .csv)](#quản-lý-từ-vựng-tùy-chỉnh--nhậpxuất-excel)
-4. [Game 2: 🏊 Đua Bơi Kỳ Phùng Địch Thủ (Swimming Race)](#4-game-2--đua-bơi-kỳ-phùng-địch-thủ-swimming-race)
-   - [Thể thức 1: Đua Bơi Tiếp Sức Từ Vựng (Word Relay)](#thể-thức-1-đua-bơi-tiếp-sức-từ-vựng-word-relay)
-   - [Thể thức 2: Đua Bơi Tự Động kiểu Game Vịt (Duck Race)](#thể-thức-2-đua-bơi-tự-động-kiểu-game-vịt-duck-race)
-   - [Cách ghi danh học sinh & Bắt đầu đua](#cách-ghi-danh-học-sinh--bắt-đầu-đua)
-5. [🏆 Bảng Điểm & Xuất Báo Cáo Excel](#5-bảng-điểm--xuất-báo-cáo-excel)
-6. [❓ Xử lý Sự cố Thường gặp](#6-xử-lý-sự-cố-thường-gặp)
-7. [🛠️ Dành Cho Developer (Cấu trúc & Kiến trúc Tiện ích)](#7-Dành-Cho-Developer)
+1. [Giới thiệu Tổng quan](#gioi-thieu)
+2. [Hướng dẫn Cài đặt Tiện ích](#cai-dat)
+3. [Game 1: 🎨 Đoán Chữ (Guess The Word)](#game-doan-chu)
+   - [Cách vận hành trò chơi](#cach-van-hanh-doan-chu)
+   - [Danh mục 17 chủ đề từ vựng (450+ từ)](#danh-muc-tu-vung)
+   - [Tự thêm từ mới & Nhập/Xuất File Excel (.xlsx / .csv)](#quan-ly-tu-vung)
+4. [Game 2: 🏊 Đua Bơi Kỳ Phùng Địch Thủ (Swimming Race)](#game-dua-boi)
+   - [Thể thức 1: Đua Bơi Tiếp Sức Từ Vựng (Word Relay)](#dua-boi-tiep-suc)
+   - [Thể thức 2: Đua Bơi Tự Động kiểu Game Vịt (Duck Race)](#dua-boi-tu-dong)
+   - [Cách ghi danh học sinh & Bắt đầu đua](#ghi-danh-dua-boi)
+5. [🏆 Bảng Điểm & Xuất Báo Cáo Excel](#bang-diem)
+6. [❓ Xử lý Sự cố Thường gặp](#xu-ly-su-co)
+7. [🛠️ Dành Cho Developer (Cấu trúc & Kiến trúc Tiện ích)](#danh-cho-developer)
 
 ---
+
+<div id="gioi-thieu"></div>
 
 ## 1. Giới thiệu Tổng quan
 
@@ -35,6 +37,8 @@
 - 🔒 **Thông minh & Chỉ hiển thị ở tab đang dạy:** Tiện ích hoạt động chính xác trên màn hình lớp học mà Giáo viên đang mở, không bị hiện chồng lấp sang các trang web khác.
 
 ---
+
+<div id="cai-dat"></div>
 
 ## 2. Hướng dẫn Cài đặt Tiện ích
 
@@ -53,9 +57,13 @@ Giáo viên có thể dễ dàng cài đặt tiện ích trên các trình duy�
 
 ---
 
+<div id="game-doan-chu"></div>
+
 ## 3. Game 1: 🎨 Đoán Chữ (Guess The Word)
 
 Game **Đoán Chữ** giúp học sinh đoán từ vựng Tiếng Anh qua hình vẽ Doodle minh họa, chữ cái ẩn và gợi ý bằng tiếng Anh.
+
+<div id="cach-van-hanh-doan-chu"></div>
 
 ### Cách vận hành Game Đoán Chữ:
 1. Mở cửa sổ Tiện ích $\rightarrow$ Chọn tab **🎨 Đoán chữ**.
@@ -70,6 +78,8 @@ Game **Đoán Chữ** giúp học sinh đoán từ vựng Tiếng Anh qua hình 
    - **⏭️ Từ tiếp theo:** Chuyển sang từ đố tiếp theo ngay lập tức.
    - **🔄 Chơi lại câu này:** Reset thời gian và chơi lại từ hiện tại.
    - **🏆 Tổng kết Game:** Mở bảng vinh danh 3D Podium Top 3 học sinh xuất sắc nhất lượt chơi.
+
+<div id="danh-muc-tu-vung"></div>
 
 ### Danh mục 17 chủ đề từ vựng sẵn có (450+ từ):
 - 🐶 **Animals** (Động vật)
@@ -90,6 +100,8 @@ Game **Đoán Chữ** giúp học sinh đoán từ vựng Tiếng Anh qua hình 
 - 🏰 **Places & Buildings** (Địa điểm & Công trình)
 - 🧸 **Toys & Play** (Đồ chơi & Trò chơi)
 
+<div id="quan-ly-tu-vung"></div>
+
 ### Quản lý từ vựng tùy chỉnh & Nhập/Xuất Excel:
 - **Tìm kiếm từ:** Nhập từ cần tìm vào ô tìm kiếm để tra cứu nhanh từ vựng trong kho.
 - **Thêm từ thủ công:** Nhấn **`+ Tạo 1 từ`**, nhập Từ Tiếng Anh và Gợi ý Tiếng Anh, sau đó bấm **Thêm vào danh sách**.
@@ -102,20 +114,28 @@ Game **Đoán Chữ** giúp học sinh đoán từ vựng Tiếng Anh qua hình 
 
 ---
 
+<div id="game-dua-boi"></div>
+
 ## 4. Game 2: 🏊 Đua Bơi Kỳ Phùng Địch Thủ (Swimming Race)
 
 Game **Đua Bơi** biến đường đua dưới nước thành cuộc tranh tài sôi nổi giữa các học sinh trong lớp.
+
+<div id="dua-boi-tiep-suc"></div>
 
 ### Thể thức 1: Đua Bơi Tiếp Sức Từ Vựng (Word Relay)
 - **Luật chơi:** Một Thẻ Từ Vựng Tiếng Anh kèm gợi ý sẽ xuất hiện nổi bật phía trên đường đua.
 - Học sinh gõ **ĐÚNG** từ vựng đang đố vào khung Chat BBB $\rightarrow$ Nhân vật bơi của học sinh đó sẽ bơi vọt tiến lên 1 bước!
 - Ngay khi có bạn gõ đúng, từ vựng sẽ tự động đổi sang một từ mới ngẫu nhiên để cả lớp tiếp tục thi đua bứt tốc về đích.
 
+<div id="dua-boi-tu-dong"></div>
+
 ### Thể thức 2: Đua Bơi Tự Động kiểu Game Vịt (Duck Race)
 - **Luật chơi:** Giáo viên chọn cự ly đường đua (từ **100m** đến **2000m**).
 - Các nhân vật sẽ tự động bơi uốn lượn kịch tính với tốc độ ngẫu nhiên.
 - Camera thông minh tự động khóa bám theo nhóm người dẫn đầu, tạo cảm giác hồi hộp như một giải đấu thực thụ.
 - Ngay khi xác định đủ Top 1, Top 2, Top 3 cán đích, cuộc đua hoàn tất và hiển thị Bảng Vinh Danh Podiums trao huy chương.
+
+<div id="ghi-danh-dua-boi"></div>
 
 ### Cách ghi danh học sinh & Bắt đầu đua:
 - **Học sinh tự ghi danh:** Học sinh chỉ cần gõ chữ `"join"` (hoặc `"ready"`, `"r"`, `"1"`) vào khung chat BBB $\rightarrow$ Tên học sinh sẽ lập tức xuất hiện trên một làn bơi riêng.
@@ -125,12 +145,16 @@ Game **Đua Bơi** biến đường đua dưới nước thành cuộc tranh tà
 
 ---
 
+<div id="bang-diem"></div>
+
 ## 5. 🏆 Bảng Điểm & Xuất Báo Cáo Excel
 
 - Tất cả điểm số tích lũy của học sinh qua các lượt chơi trò chơi đều được ghi nhận tự động tại tab **🏆 Bảng điểm**.
 - Giáo viên nhấn nút **`📊 Xuất file Excel/CSV`** để tải về báo cáo danh sách điểm số của cả lớp dạng file Excel CSV (định dạng chuẩn UTF-8 BOM, mở trực tiếp trên Microsoft Excel không bị lỗi phông chữ tiếng Việt).
 
 ---
+
+<div id="xu-ly-su-co"></div>
 
 ## 6. ❓ Xử lý Sự cố Thường gặp
 
@@ -147,6 +171,8 @@ Game **Đua Bơi** biến đường đua dưới nước thành cuộc tranh tà
 > 💡 **Lời khuyên cho Giáo viên:** Giáo viên nên ghim tiện ích lên thanh công cụ trình duyệt và mở sẵn bảng điều khiển trước khi bắt đầu buổi học để dễ dàng chọn bài đố và theo dõi điểm số của học sinh!
 
 ---
+
+<div id="danh-cho-developer"></div>
 
 ## 7. 🛠️ Dành Cho Developer (Cấu trúc & Kiến trúc Tiện ích)
 
