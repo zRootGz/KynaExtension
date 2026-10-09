@@ -42,6 +42,8 @@
 
 ## 2. Hướng dẫn Cài đặt Tiện ích
 
+🎥 **Video Hướng dẫn chi tiết:** [Xem trên YouTube](https://youtu.be/Ysb3Jz4JFFM)
+
 Giáo viên có thể dễ dàng cài đặt tiện ích trên các trình duyệt Chrome, Microsoft Edge hoặc Cốc Cốc theo các bước sau:
 
 1. **Tải & Giải nén:** Tải thư mục tiện ích về máy tính và giải nén thư mục `KynaExtension`.
