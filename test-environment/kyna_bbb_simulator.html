@@ -321,10 +321,10 @@
       msgItem.className = "chat-message-item";
       msgItem.setAttribute("data-test", "chatMessage");
 
-      msgItem.innerHTML = \`
-        <div class="sender-name" data-test="chatMessageSenderName">\${escapeHtml(name)}</div>
-        <div class="message-text" data-test="chatMessageText">\${escapeHtml(msg)}</div>
-      \`;
+      msgItem.innerHTML = `
+        <div class="sender-name" data-test="chatMessageSenderName">${escapeHtml(name)}</div>
+        <div class="message-text" data-test="chatMessageText">${escapeHtml(msg)}</div>
+      `;
 
       chatList.appendChild(msgItem);
       chatList.scrollTop = chatList.scrollHeight;
