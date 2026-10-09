@@ -12,7 +12,7 @@
     quizWords: [],
     gameState: "IDLE", // "IDLE" | "RUNNING"
     currentWordIndex: 0,
-    scores: {},
+    scores: {}, // Điểm lượt chơi hiện tại (reset khi start game mới)
     settings: {
       timerSeconds: 60,
       scoreFirst: 10,
@@ -20,6 +20,9 @@
       soundEnabled: true
     }
   };
+
+  // Điểm của lượt chơi hiện tại (local, không được sáp nhập vào gameState.scores)
+  let currentSessionScores = {};
 
   // Quản lý lượt chơi hiện tại
   let currentRound = {
@@ -129,6 +132,15 @@
 
     const oldGameState = gameState.gameState;
     const oldWordIndex = gameState.currentWordIndex;
+
+    // Detect when a new game starts (IDLE -> RUNNING or fresh start with index 0)
+    const isNewGame = (oldGameState !== "RUNNING" && newState.gameState === "RUNNING") ||
+      (newState.gameState === "RUNNING" && newState.currentWordIndex === 0 && oldGameState === "IDLE");
+
+    if (isNewGame) {
+      currentSessionScores = {}; // Reset điểm phiên hiện tại khi bắt đầu game mới
+      snapshotHighScoresBase(); // Snapshot base để phiên mới tính đúng
+    }
 
     gameState = { ...gameState, ...newState };
 
@@ -626,6 +638,14 @@
       gameState.scores[senderName].totalScore += points;
       gameState.scores[senderName].words.push(currentRound.wordObj.word);
 
+      // Track in current session scores (displayed in Summary)
+      if (!currentSessionScores[senderName]) {
+        currentSessionScores[senderName] = { correctCount: 0, totalScore: 0, words: [] };
+      }
+      currentSessionScores[senderName].correctCount += 1;
+      currentSessionScores[senderName].totalScore += points;
+      currentSessionScores[senderName].words.push(currentRound.wordObj.word);
+
       currentRound.revealedLetters.fill(true);
       renderWordSlotsUI();
 
@@ -676,6 +696,41 @@
         action: "GAME_STATE_UPDATED",
         payload: gameState
       }).catch(() => {});
+    });
+
+    // Cập nhật High Scores all-time từ currentSessionScores
+    if (Object.keys(currentSessionScores).length > 0) {
+      chrome.storage.local.get(["kynaHighScores"], (res) => {
+        const highScores = res.kynaHighScores || {};
+        Object.entries(currentSessionScores).forEach(([name, data]) => {
+          if (!highScores[name]) {
+            highScores[name] = { correctCount: 0, totalScore: 0, words: [] };
+          }
+          // Đặt bằng điểm phiên hiện tại (cộng dồn sẽ xử lý khi start game mới)
+          // Thực tế: highScores = max(phiên trước, phiên hiện tại) + phần tăng thêm
+          // Đơn giản nhất: lưu toàn bộ điểm sessions theo tên học sinh
+          highScores[name].correctCount = (highScores[name]._baseCorrect || 0) + (data.correctCount || 0);
+          highScores[name].totalScore = (highScores[name]._baseScore || 0) + (data.totalScore || 0);
+          highScores[name].words = [...(highScores[name]._baseWords || []), ...(data.words || [])];
+        });
+        chrome.storage.local.set({ kynaHighScores: highScores });
+      });
+    }
+  }
+
+  /**
+   * Reset High Score base khi bắt đầu game mới (để tránh tính 2 lần)
+   */
+  function snapshotHighScoresBase() {
+    chrome.storage.local.get(["kynaHighScores"], (res) => {
+      const highScores = res.kynaHighScores || {};
+      // Đặt _base* = điểm hiện tại, để phiên mới tính thêm từ đây
+      Object.keys(highScores).forEach((name) => {
+        highScores[name]._baseCorrect = highScores[name].correctCount || 0;
+        highScores[name]._baseScore = highScores[name].totalScore || 0;
+        highScores[name]._baseWords = [...(highScores[name].words || [])];
+      });
+      chrome.storage.local.set({ kynaHighScores: highScores });
     });
   }
 
@@ -737,8 +792,37 @@
       document.body.appendChild(summaryEl);
     }
 
-    // Sắp xếp điểm số học sinh
-    const sortedScores = Object.entries(gameState.scores || {})
+    renderSummaryContent(summaryEl, currentSessionScores, false);
+  }
+
+  /**
+   * Hiển thị Modal High Record (all-time tổng hợp tất cả buổi học)
+   */
+  function showHighRecordModal() {
+    let summaryEl = document.getElementById("kyna-guess-summary-modal");
+    if (!summaryEl) {
+      summaryEl = document.createElement("div");
+      summaryEl.id = "kyna-guess-summary-modal";
+      summaryEl.className = "kyna-guess-summary-overlay";
+      document.body.appendChild(summaryEl);
+    }
+
+    // Load highScores from storage then render
+    if (typeof chrome !== "undefined" && chrome.storage && chrome.storage.local) {
+      chrome.storage.local.get(["kynaHighScores"], (res) => {
+        const highScores = res.kynaHighScores || {};
+        renderSummaryContent(summaryEl, highScores, true);
+      });
+    } else {
+      renderSummaryContent(summaryEl, {}, true);
+    }
+  }
+
+  /**
+   * Render nội dung bảng tổng kết / high record
+   */
+  function renderSummaryContent(summaryEl, scoresObj, isHighRecord) {
+    const sortedScores = Object.entries(scoresObj || {})
       .map(([name, data]) => ({ name, ...data }))
       .sort((a, b) => (b.totalScore || 0) - (a.totalScore || 0) || (b.correctCount || 0) - (a.correctCount || 0));
 
@@ -749,16 +833,23 @@
 
     const avatars = ["👨‍🎓", "👩‍🎓", "⭐", "🌟", "🏆", "🥇", "🥈", "🥉"];
 
+    const headerTitle = isHighRecord
+      ? "🏅 ALL-TIME HIGH RECORD"
+      : "🏆 Kết Quả Lượt Chơi";
+    const headerSub = isHighRecord
+      ? "Tổng hợp điểm tất cả các lượt chơi đã qua"
+      : `Hoàn thành ${gameState.currentWordIndex + 1}/${totalWordsCount} từ • Chủ đề: ${escapeHtml(gameState.category || "General")}`;
+
     summaryEl.innerHTML = `
       <div class="kyna-summary-card">
         <div class="kyna-summary-header">
-          <div class="kyna-summary-title">👑 GUESS THE WORD HALL OF FAME</div>
-          <div class="kyna-summary-subtitle">Completed ${gameState.currentWordIndex + 1}/${totalWordsCount} words • Category: ${escapeHtml(gameState.category || "General")}</div>
+          <div class="kyna-summary-title">${headerTitle}</div>
+          <div class="kyna-summary-subtitle">${headerSub}</div>
         </div>
 
         ${sortedScores.length === 0 ? `
           <div class="kyna-empty-summary">
-            📥 No student scores recorded in this game round yet!
+            ${isHighRecord ? "🏅 Chưa có kỷ lục nào được ghi lại!" : "📥 Chưa có học sinh nào ghi điểm trong lượt chơi này!"}
           </div>
         ` : `
           <!-- BỤC TRAO GIẢI PODIUM 3D TOP 3 -->
@@ -777,7 +868,7 @@
               </div>
             </div>` : ""}
 
-            <!-- TOP 1 (QUÁN QUÂN CAO NHẤT BÁN NGUYỆT) -->
+            <!-- TOP 1 -->
             ${r1 ? `
             <div class="kyna-podium-col col-rank-1">
               <div class="kyna-podium-top1-crown">👑 CHAMPION</div>
@@ -813,9 +904,9 @@
               <thead>
                 <tr>
                   <th>Rank</th>
-                  <th>Student Name</th>
-                  <th>Correct Guesses</th>
-                  <th>Total Score</th>
+                  <th>Học sinh</th>
+                  <th>Đúng</th>
+                  <th>Điểm</th>
                 </tr>
               </thead>
               <tbody>
@@ -828,7 +919,7 @@
                     <tr>
                       <td>${badge}</td>
                       <td><strong>${escapeHtml(item.name)}</strong></td>
-                      <td><span class="kyna-correct-count-pill">${item.correctCount || 0} correct</span></td>
+                      <td><span class="kyna-correct-count-pill">${item.correctCount || 0} đúng</span></td>
                       <td><strong style="color: #34D399; font-size: 16px;">+${item.totalScore || 0} pts</strong></td>
                     </tr>
                   `;
@@ -839,23 +930,48 @@
         `}
 
         <div class="kyna-summary-actions">
-          <button class="kyna-summary-btn btn-restart" id="kyna-btn-summary-restart">🔄 Restart Quiz</button>
-          <button class="kyna-summary-btn btn-close" id="kyna-btn-summary-close">✖ Close Summary</button>
+          ${isHighRecord ? `
+            <button class="kyna-summary-btn btn-close" id="kyna-btn-summary-close">✖ Đóng</button>
+            <button class="kyna-summary-btn" id="kyna-btn-clear-highscore" style="background: linear-gradient(135deg, #ef4444, #b91c1c); color:#fff;">🗑️ Xóa Kỷ Lục</button>
+          ` : `
+            <button class="kyna-summary-btn btn-restart" id="kyna-btn-summary-restart">🔄 Chơi Lại</button>
+            <button class="kyna-summary-btn" id="kyna-btn-view-highscore" style="background: linear-gradient(135deg, #f59e0b, #d97706); color:#fff; border:none;">🏅 High Record</button>
+            <button class="kyna-summary-btn btn-close" id="kyna-btn-summary-close">✖ Đóng</button>
+          `}
         </div>
       </div>
     `;
 
-    document.getElementById("kyna-btn-summary-restart").addEventListener("click", () => {
-      summaryEl.remove();
-      gameState.currentWordIndex = 0;
-      gameState.scores = {};
-      saveStateToStorage();
-      startNewRound();
-    });
+    if (!isHighRecord) {
+      document.getElementById("kyna-btn-summary-restart").addEventListener("click", () => {
+        summaryEl.remove();
+        currentSessionScores = {};
+        gameState.currentWordIndex = 0;
+        gameState.scores = {};
+        saveStateToStorage();
+        startNewRound();
+      });
+
+      document.getElementById("kyna-btn-view-highscore").addEventListener("click", () => {
+        showHighRecordModal();
+      });
+    } else {
+      const clearBtn = document.getElementById("kyna-btn-clear-highscore");
+      if (clearBtn) {
+        clearBtn.addEventListener("click", () => {
+          if (confirm("Xóa toàn bộ kỷ lục high record?")) {
+            if (typeof chrome !== "undefined" && chrome.storage && chrome.storage.local) {
+              chrome.storage.local.set({ kynaHighScores: {} });
+            }
+            summaryEl.remove();
+          }
+        });
+      }
+    }
 
     document.getElementById("kyna-btn-summary-close").addEventListener("click", () => {
       summaryEl.remove();
     });
   }
-})();
 
+})();

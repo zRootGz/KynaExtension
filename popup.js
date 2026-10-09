@@ -10,7 +10,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     quizWords: [],
     gameState: "IDLE", // "IDLE" | "RUNNING"
     currentWordIndex: 0,
-    scores: {}, // { studentName: { correctCount: 0, totalScore: 0, words: [] } }
+    scores: {}, // Điểm lượt chơi hiện tại (reset khi start game)
+    highScores: {}, // Điểm all-time (tích lũy mãi mãi)
     settings: {
       timerSeconds: 60,
       scoreFirst: 10,
@@ -133,13 +134,17 @@ document.addEventListener("DOMContentLoaded", async () => {
    */
   async function loadStateFromStorage() {
     return new Promise((resolve) => {
-      chrome.storage.local.get(["kynaGameState", "kynaSwimRaceState"], (res) => {
+      chrome.storage.local.get(["kynaGameState", "kynaSwimRaceState", "kynaHighScores"], (res) => {
         if (res.kynaGameState) {
           state = { ...state, ...res.kynaGameState };
         } else {
           // Lần đầu mở extension: nạp chủ đề Động vật (Animals) có sẵn
           state.quizWords = window.getWordsByCategory("Animals");
           saveStateToStorage();
+        }
+        // Load all-time high scores from separate storage key
+        if (res.kynaHighScores) {
+          state.highScores = res.kynaHighScores;
         }
 
         if (res.kynaSwimRaceState) {
@@ -725,6 +730,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
       state.gameState = "RUNNING";
       state.currentWordIndex = 0;
+      state.scores = {}; // Reset điểm lượt chơi hiện tại khi bắt đầu game mới
       saveStateToStorage();
       renderUI();
     });
