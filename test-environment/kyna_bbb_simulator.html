@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Kyna English BBB - Môi trường giả lập</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: #061727;
+      color: #fff;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Lề trái: Danh sách User */
+    .bbb-sidebar {
+      width: 250px;
+      background: #0f2537;
+      border-right: 1px solid #1a365d;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .bbb-sidebar-header {
+      padding: 15px;
+      font-weight: bold;
+      color: #fff;
+      border-bottom: 1px solid #1a365d;
+    }
+
+    .user-list {
+      flex: 1;
+      padding: 10px;
+      overflow-y: auto;
+    }
+
+    .user-item {
+      display: flex;
+      align-items: center;
+      padding: 8px;
+      gap: 10px;
+      font-size: 14px;
+    }
+
+    .avatar {
+      width: 32px;
+      height: 32px;
+      background: #0284c7;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+
+    /* Khu vực giữa: Bảng trắng / Camera */
+    .bbb-main-area {
+      flex: 1;
+      background: #061727;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      position: relative;
+    }
+
+    .bbb-whiteboard {
+      width: 100%;
+      height: 100%;
+      background: #ffffff;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #333;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Lề phải: Khung Chat */
+    .chat-area {
+      width: 320px;
+      background: #0f2537;
+      border-left: 1px solid #1a365d;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chat-header {
+      padding: 15px;
+      background: #15314b;
+      border-bottom: 1px solid #1a365d;
+      font-weight: bold;
+      font-size: 15px;
+      color: #38bdf8;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Target DOM BBB: data-test="chatMessagesList" */
+    .chat-messages-container {
+      flex: 1;
+      padding: 15px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* Target DOM BBB: data-test="chatMessage" */
+    .chat-message-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    /* Target DOM BBB: data-test="chatMessageSenderName" */
+    .sender-name {
+      font-weight: bold;
+      color: #94a3b8;
+      font-size: 13px;
+    }
+
+    /* Target DOM BBB: data-test="chatMessageText" */
+    .message-text {
+      color: #f1f5f9;
+      font-size: 14px;
+      line-height: 1.4;
+      word-break: break-word;
+    }
+
+    /* Trình giả lập nổi (Floating Simulator) */
+    .simulator-panel {
+      position: fixed;
+      bottom: 20px;
+      right: 340px;
+      width: 320px;
+      background: #1e293b;
+      border-radius: 10px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      border: 1px solid #334155;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sim-header {
+      background: linear-gradient(135deg, #0ea5e9, #0284c7);
+      padding: 12px;
+      font-weight: bold;
+      font-size: 14px;
+      border-radius: 9px 9px 0 0;
+      cursor: move;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .sim-body {
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .sim-input-group label {
+      font-size: 12px;
+      color: #94a3b8;
+      margin-bottom: 5px;
+      display: block;
+    }
+
+    .sim-input {
+      width: 100%;
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid #475569;
+      background: #0f172a;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .sim-input:focus {
+      border-color: #38bdf8;
+    }
+
+    .sim-btn {
+      background: #0ea5e9;
+      color: #fff;
+      border: none;
+      padding: 10px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 5px;
+      transition: background 0.2s;
+    }
+
+    .sim-btn:hover {
+      background: #0284c7;
+    }
+
+    .sim-hint {
+      font-size: 11px;
+      color: #64748b;
+      text-align: center;
+      margin-top: 5px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Sidebar: Users -->
+  <div class="bbb-sidebar">
+    <div class="bbb-sidebar-header">
+      <i class="fa-solid fa-users"></i> Người dùng (4)
+    </div>
+    <div class="user-list">
+      <div class="user-item">
+        <div class="avatar" style="background:#ef4444;">T</div>
+        <div>Teacher (Bạn)</div>
+      </div>
+      <div class="user-item">
+        <div class="avatar">A</div>
+        <div>Alex</div>
+      </div>
+      <div class="user-item">
+        <div class="avatar">B</div>
+        <div>Ben</div>
+      </div>
+      <div class="user-item">
+        <div class="avatar">C</div>
+        <div>Clara</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Area -->
+  <div class="bbb-main-area">
+    <div class="bbb-whiteboard">
+      <div style="text-align: center; padding: 40px;">
+        <h1 style="color: #0284c7; margin-bottom: 15px; font-size: 32px;"><i class="fa-solid fa-chalkboard"></i> Bảng Trắng BigBlueButton</h1>
+        <p style="color: #64748b; font-size: 18px; max-width: 600px; margin: 0 auto; line-height: 1.6;">
+          Đây là môi trường giả lập y hệt giao diện lớp học thật của Kyna. Bạn có thể dùng trang này để quay video hướng dẫn cho các giáo viên khác.
+        </p>
+        
+        <div style="margin-top: 40px; background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px dashed #cbd5e1; display: inline-block; text-align: left;">
+          <h3 style="color: #0f172a; margin-bottom: 10px;"><i class="fa-solid fa-circle-play"></i> Hướng dẫn quay video:</h3>
+          <ol style="color: #475569; margin-left: 20px; line-height: 1.8; font-size: 15px;">
+            <li>Đảm bảo đã cài Extension Kyna và <b>BẬT quyền "Allow access to file URLs"</b>.</li>
+            <li>Click icon Extension góc phải trên cùng để mở Bảng điều khiển.</li>
+            <li>Chọn Game và ấn <b>Start Game</b> (Khung game sẽ hiện đè lên bảng trắng này).</li>
+            <li>Sử dụng bảng <b>🎮 Kyna Student Simulator</b> bên dưới để giả làm học sinh chat.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chat Area -->
+  <div class="chat-area">
+    <div class="chat-header">
+      <span><i class="fa-solid fa-comments"></i> Public Chat</span>
+    </div>
+    <div id="chat-list" class="chat-messages-container" data-test="chatMessagesList">
+      <div class="chat-message-item" data-test="chatMessage">
+        <div class="sender-name" data-test="chatMessageSenderName">Hệ thống</div>
+        <div class="message-text" data-test="chatMessageText">Chào mừng bạn đến với lớp học Kyna English!</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Simulator Panel -->
+  <div class="simulator-panel" id="kyna-sim-panel">
+    <div class="sim-header" id="kyna-sim-header">
+      <span>🎮 Kyna Student Simulator</span>
+      <i class="fa-solid fa-arrows-up-down-left-right"></i>
+    </div>
+    <div class="sim-body">
+      <div class="sim-input-group">
+        <label>Tên học sinh (Student Name)</label>
+        <input type="text" id="kyna-sim-name" class="sim-input" value="Alex">
+      </div>
+      <div class="sim-input-group">
+        <label>Tin nhắn gửi vào chat</label>
+        <input type="text" id="kyna-sim-msg" class="sim-input" placeholder="Nhập đáp án (vd: apple)...">
+      </div>
+      <button class="sim-btn" id="kyna-sim-send"><i class="fa-solid fa-paper-plane"></i> Gửi Chat (Enter)</button>
+      <div class="sim-hint">Tin nhắn sẽ xuất hiện ở bảng chat bên phải và được Extension tự động chấm điểm!</div>
+    </div>
+  </div>
+
+  <script>
+    // Xử lý gửi tin nhắn giả lập
+    const sendBtn = document.getElementById("kyna-sim-send");
+    const msgInput = document.getElementById("kyna-sim-msg");
+
+    function triggerSend() {
+      const name = document.getElementById("kyna-sim-name").value.trim() || "Student";
+      const msg = msgInput.value.trim();
+      if (!msg) return;
+
+      const chatList = document.getElementById("chat-list");
+      
+      const msgItem = document.createElement("div");
+      msgItem.className = "chat-message-item";
+      msgItem.setAttribute("data-test", "chatMessage");
+
+      msgItem.innerHTML = \`
+        <div class="sender-name" data-test="chatMessageSenderName">\${escapeHtml(name)}</div>
+        <div class="message-text" data-test="chatMessageText">\${escapeHtml(msg)}</div>
+      \`;
+
+      chatList.appendChild(msgItem);
+      chatList.scrollTop = chatList.scrollHeight;
+
+      msgInput.value = "";
+    }
+
+    sendBtn.addEventListener("click", triggerSend);
+    msgInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") triggerSend();
+    });
+
+    function escapeHtml(str) {
+      return str.replace(/[&<>'"]/g,
+        tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+      );
+    }
+
+    // Xử lý kéo thả Panel
+    const panel = document.getElementById("kyna-sim-panel");
+    const header = document.getElementById("kyna-sim-header");
+    let isDragging = false;
+    let offset = { x: 0, y: 0 };
+
+    header.addEventListener("mousedown", (e) => {
+      isDragging = true;
+      offset.x = e.clientX - panel.getBoundingClientRect().left;
+      offset.y = e.clientY - panel.getBoundingClientRect().top;
+    });
+
+    document.addEventListener("mouseup", () => {
+      isDragging = false;
+    });
+
+    document.addEventListener("mousemove", (e) => {
+      if (!isDragging) return;
+      panel.style.right = 'auto';
+      panel.style.bottom = 'auto';
+      panel.style.left = (e.clientX - offset.x) + "px";
+      panel.style.top = (e.clientY - offset.y) + "px";
+    });
+  </script>
+</body>
+</html>
