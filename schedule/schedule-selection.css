@@ -1,0 +1,84 @@
+/**
+ * SCHEDULE-SELECTION.CSS - Pure in-page slot highlight and selection box
+ * Lightweight & Non-intrusive (No floating windows)
+ * Safe for React Virtual DOM (Pure CSS, zero DOM node injection)
+ */
+
+/* Drag-to-Select Selection Box Lasso */
+.kyna-drag-selection-box {
+  position: absolute;
+  border: 2px dashed #0284c7;
+  background-color: rgba(2, 132, 199, 0.18);
+  pointer-events: none;
+  z-index: 999998;
+  border-radius: 4px;
+  transition: none;
+}
+
+/* Red-dashed lasso for Deselect / Removal Mode (T045) */
+.kyna-drag-selection-box.remove-mode {
+  border-color: #ef4444 !important;
+  background-color: rgba(239, 68, 68, 0.18) !important;
+}
+
+/* Slot Selecting Preview States (During Dragging) */
+.kyna-slot-selecting {
+  outline: 2px solid #38bdf8 !important;
+  outline-offset: -2px !important;
+  background-color: rgba(56, 189, 248, 0.35) !important;
+  border-radius: 4px !important;
+  transition: all 0.05s ease-out;
+}
+
+.kyna-slot-selecting-remove {
+  outline: 2px solid #f87171 !important;
+  outline-offset: -2px !important;
+  background-color: rgba(239, 68, 68, 0.35) !important;
+  border-radius: 4px !important;
+}
+
+/* Distinct Draft Selected State (Pending Registration) */
+/* Cyan border + soft cyan tint to clearly distinguish draft from Kyna's native confirmed green checkmarks */
+.kyna-slot-selected {
+  outline: 2px solid #0284c7 !important;
+  outline-offset: -2px !important;
+  background-color: rgba(2, 132, 199, 0.25) !important;
+  border-radius: 4px !important;
+  position: relative !important;
+  transition: background-color 0.15s ease, outline-color 0.15s ease;
+}
+
+/* Subtle corner indicator dot for draft selection (Pure CSS pseudo-element, zero Virtual DOM pollution) */
+.kyna-slot-selected::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #0284c7;
+  box-shadow: 0 0 3px rgba(2, 132, 199, 0.8);
+  pointer-events: none;
+}
+
+/* Confirmed slots targeted for cancellation (T046 - User Story 4 / FR-011) */
+.kyna-slot-to-cancel {
+  outline: 2px solid #ef4444 !important;
+  outline-offset: -2px !important;
+  background-color: rgba(239, 68, 68, 0.28) !important;
+  border-radius: 4px !important;
+  position: relative !important;
+}
+
+.kyna-slot-to-cancel::after {
+  content: "✕";
+  position: absolute;
+  top: 2px;
+  right: 3px;
+  font-size: 10px;
+  font-weight: 900;
+  color: #ef4444;
+  line-height: 1;
+  pointer-events: none;
+}

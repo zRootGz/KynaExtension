@@ -30,6 +30,7 @@
     <nav class="nav-tabs">
       <button class="tab-btn active" data-tab="tab-control"><i class="fa-solid fa-puzzle-piece"></i> Guess Word</button>
       <button class="tab-btn" data-tab="tab-swimming"><i class="fa-solid fa-person-swimming"></i> Swimming Race</button>
+      <button class="tab-btn" data-tab="tab-schedule"><i class="fa-solid fa-calendar-days"></i> Lịch Dạy</button>
       <button class="tab-btn" data-tab="tab-settings"><i class="fa-solid fa-gear"></i> Settings</button>
     </nav>
 
@@ -282,6 +283,179 @@
           <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
             <span style="font-size:11px; color:#94a3b8;">💡 Students type <strong>"join"</strong> in chat to sign up. Teacher clicks Start!</span>
             <button id="btn-save-swim-students" class="btn btn-primary btn-sm"><i class="fa-solid fa-floppy-disk"></i> Save List</button>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- TAB 4: SCHEDULE ASSISTANT (LỊCH DẠY) -->
+      <section id="tab-schedule" class="tab-panel">
+        
+        <!-- In-Page Floating Window Launcher (Game Overlay Style) -->
+        <div style="margin-bottom: 10px;">
+          <button id="btn-toggle-schedule-overlay" class="btn btn-primary" style="width: 100%; font-weight: 800; font-size: 13px; padding: 10px 14px; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35); background: linear-gradient(135deg, #2563eb, #1d4ed8); border: none; cursor: pointer;">
+            <i class="fa-solid fa-gamepad" style="font-size: 15px; color: #facc15;"></i>
+            <span>Hiện Cửa Sổ Trợ Lý Lên Màn Hình</span>
+          </button>
+        </div>
+
+        <!-- Live Calendar Status & Quick Command Hub (Bright White Theme) -->
+        <div class="card schedule-sticky-card" id="schedule-live-status-card">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <span id="schedule-tab-status-dot" style="width: 9px; height: 9px; border-radius: 50%; background: #94a3b8; display: inline-block;"></span>
+              <span id="schedule-tab-status-text" style="font-weight: 700; font-size: 12px; color: #0284c7;">Đang kết nối trang lịch...</span>
+            </div>
+            <div style="display: flex; gap: 4px; align-items: center;">
+              <button id="btn-open-kyna-modal" class="btn btn-sm btn-outline" style="color: #0284c7; border-color: #38bdf8; font-size: 11px; padding: 3px 8px; font-weight: 700;" title="Tự động mở bảng lịch Set up schedule trên tab Kyna">📅 Mở Lịch</button>
+              <button id="btn-refresh-tab-status" class="btn btn-sm btn-ghost" style="color: #64748b; padding: 2px 4px; font-size: 12px;" title="Cập nhật trạng thái">🔄</button>
+            </div>
+          </div>
+
+          <!-- Selection & Target Week Quick Bar -->
+          <div style="display: flex; gap: 8px; align-items: center; margin-top: 8px;">
+            <div id="schedule-selection-info" style="flex: 1.1; padding: 6px 10px; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; font-size: 11px; display: flex; justify-content: space-between; align-items: center; color: #1e293b;">
+              <span>Đang chọn: <b id="popup-selected-count" style="color: #0284c7; font-size: 12px;">0 ca</b> (<span id="popup-selected-hours" style="font-weight: 700;">0.0h</span>)</span>
+              <button id="btn-popup-clear-selection" class="btn btn-sm btn-ghost" style="color: #ef4444; font-size: 11px; padding: 1px 4px;" title="Xóa toàn bộ ca đang chọn">🗑</button>
+            </div>
+            <div style="flex: 0.9;">
+              <select id="popup-target-week-select" class="form-control" style="background: #ffffff; color: #0f172a; border-color: #cbd5e1; font-size: 11px; padding: 4px 6px; height: 32px;" title="Chọn tuần áp dụng mẫu">
+                <option value="1" selected>📅 Tuần 1 (Tuần này)</option>
+                <option value="2">📅 Tuần 2 (Tuần sau)</option>
+                <option value="3">📅 Tuần 3 (Tuần kế tiếp)</option>
+                <option value="ALL">🌟 Cả 3 Tuần</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Cancellation Target Info (T047 - User Story 4 / FR-011) -->
+          <div id="schedule-cancel-info" style="display: none; margin-top: 6px; padding: 6px 10px; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; font-size: 11px; justify-content: space-between; align-items: center;">
+            <span style="color: #b91c1c;">Đánh dấu hủy: <b id="popup-cancel-count" style="color: #dc2626;">0 ca</b> (<span id="popup-cancel-hours">0.0h</span>)</span>
+            <button id="btn-popup-batch-unregister" class="btn btn-sm btn-danger" style="font-size: 11px; padding: 2px 8px; font-weight: 700; background: #dc2626; border-color: #b91c1c;">
+              🗑️ Hủy Đăng Ký
+            </button>
+          </div>
+
+          <!-- Batch Sync Register Button -->
+          <button id="btn-popup-batch-sync" class="btn btn-primary" style="width: 100%; margin-top: 8px; font-weight: 800; padding: 8px 12px; font-size: 13px;" disabled>
+            🚀 Đăng Ký Ca Đang Chọn Lên Kyna
+          </button>
+
+          <!-- Sync Progress Section -->
+          <div id="popup-sync-progress-section" style="display: none; margin-top: 8px; background: #eff6ff; border: 1px solid #bfdbfe; padding: 8px; border-radius: 8px;">
+            <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 4px; color: #1e293b; font-weight: 700;">
+              <span id="popup-sync-status-text">Đang lưu ca dạy...</span>
+              <span id="popup-sync-percent">0%</span>
+            </div>
+            <div style="background: #cbd5e1; height: 6px; border-radius: 3px; overflow: hidden;">
+              <div id="popup-sync-progress-fill" style="width: 0%; height: 100%; background: #10b981; transition: width 0.2s;"></div>
+            </div>
+            <button id="btn-popup-abort-sync" class="btn btn-danger btn-sm" style="width: 100%; margin-top: 6px;">
+              ⏹ Dừng lưu (Hủy)
+            </button>
+          </div>
+        </div>
+
+        <!-- Unified Saved Templates & Actions Card -->
+        <div class="card" style="margin-top: 0;">
+          <div class="card-header" style="margin-bottom: 8px; flex-wrap: wrap; gap: 6px;">
+            <h3><i class="fa-solid fa-calendar-check" style="color:#0284c7;"></i> Mẫu Lịch Tuần (<span id="schedule-template-count">0</span>)</h3>
+            <div class="card-actions" style="display: flex; gap: 4px; align-items: center;">
+              <button id="btn-save-current-from-tab" class="btn btn-sm btn-outline" style="color: #0284c7; border-color: #38bdf8; font-size: 11px; padding: 3px 8px; font-weight: 700;" title="Lưu các ca đang chọn trên tab thành mẫu mới">
+                <i class="fa-solid fa-floppy-disk"></i> Lưu ca chọn
+              </button>
+              <button id="btn-toggle-create-template" class="btn btn-sm btn-primary" style="font-size: 11px; padding: 3px 8px;" title="Tạo mẫu lịch thủ công">
+                <i class="fa-solid fa-plus"></i> + Mẫu
+              </button>
+              <button id="btn-export-templates-json" class="btn btn-sm btn-outline" style="padding: 3px 6px;" title="Xuất ra file JSON"><i class="fa-solid fa-file-export"></i></button>
+              <label class="btn btn-sm btn-outline" style="cursor:pointer; margin:0; padding: 3px 6px;" title="Nhập từ file JSON">
+                <i class="fa-solid fa-file-import"></i>
+                <input type="file" id="input-import-templates-json" accept=".json" style="display:none;">
+              </label>
+            </div>
+          </div>
+
+          <!-- Create Template Accordion Form -->
+          <div id="create-template-form" class="custom-form hidden" style="background: #ffffff; border: 1px solid #bfdbfe; border-radius: 12px; padding: 12px; margin-bottom: 12px;">
+            <h4 style="font-size: 13px; font-weight: 800; color: #0284c7; margin-bottom: 8px;">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> Tạo Mẫu Lịch Mới
+            </h4>
+            
+            <div class="form-group" style="margin-bottom: 8px;">
+              <label style="font-size: 11px; font-weight: 700; color: #334155;">Tên Mẫu Lịch *</label>
+              <input type="text" id="input-template-name" class="form-control" placeholder="ví dụ: Lịch Tối Cố Định T2 - T6">
+            </div>
+
+            <div class="form-group" style="margin-bottom: 8px;">
+              <label style="font-size: 11px; font-weight: 700; color: #334155;">Áp dụng cho các ngày trong tuần:</label>
+              <div class="day-chips-grid" style="display:flex; flex-wrap:wrap; gap:6px; margin-top:4px;">
+                <label class="day-chip"><input type="checkbox" name="tpl-day" value="1" checked> <span>T2</span></label>
+                <label class="day-chip"><input type="checkbox" name="tpl-day" value="2" checked> <span>T3</span></label>
+                <label class="day-chip"><input type="checkbox" name="tpl-day" value="3" checked> <span>T4</span></label>
+                <label class="day-chip"><input type="checkbox" name="tpl-day" value="4" checked> <span>T5</span></label>
+                <label class="day-chip"><input type="checkbox" name="tpl-day" value="5" checked> <span>T6</span></label>
+                <label class="day-chip"><input type="checkbox" name="tpl-day" value="6"> <span>T7</span></label>
+                <label class="day-chip"><input type="checkbox" name="tpl-day" value="7"> <span>CN</span></label>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;">
+              <div class="form-group">
+                <label style="font-size: 11px; font-weight: 700; color: #334155;">Từ giờ (Bắt đầu):</label>
+                <select id="select-tpl-start-time" class="form-control">
+                  <option value="07:00">07:00</option>
+                  <option value="08:00">08:00</option>
+                  <option value="09:00">09:00</option>
+                  <option value="17:00">17:00</option>
+                  <option value="18:00" selected>18:00 (Tối)</option>
+                  <option value="19:00">19:00</option>
+                  <option value="20:00">20:00</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label style="font-size: 11px; font-weight: 700; color: #334155;">Đến giờ (Kết thúc):</label>
+                <select id="select-tpl-end-time" class="form-control">
+                  <option value="11:00">11:00</option>
+                  <option value="12:00">12:00</option>
+                  <option value="20:00">20:00</option>
+                  <option value="21:00" selected>21:00</option>
+                  <option value="21:30">21:30</option>
+                  <option value="22:00">22:00</option>
+                  <option value="23:00">23:00</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="display:flex; justify-content: flex-end; gap:6px;">
+              <button id="btn-cancel-create-template" class="btn btn-sm btn-ghost">Hủy</button>
+              <button id="btn-save-template" class="btn btn-sm btn-success"><i class="fa-solid fa-floppy-disk"></i> Lưu Mẫu Này</button>
+            </div>
+          </div>
+
+          <!-- Saved Templates Container -->
+          <div id="saved-templates-container" class="templates-list-container" style="display: flex; flex-direction: column; gap: 8px;">
+            <!-- Rendered by popup.js -->
+          </div>
+        </div>
+
+        <!-- Schedule Settings Card -->
+        <div class="card">
+          <div class="card-header">
+            <h3><i class="fa-solid fa-sliders"></i> Cài Đặt Tốc Độ Lưu Lịch</h3>
+          </div>
+          <div class="form-group" style="margin-bottom: 8px;">
+            <label style="font-size: 11px; font-weight: 700; color: #334155;">Độ trễ an toàn giữa các ca khi lưu/hủy hàng loạt:</label>
+            <select id="setting-schedule-delay" class="form-control">
+              <option value="300">300ms (Nhanh / Tiêu chuẩn)</option>
+              <option value="400" selected>400ms (Khuyến nghị - An toàn & Cân bằng)</option>
+              <option value="500">500ms (An toàn cao / Mạng chậm)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="checkbox-label" style="font-size: 11px; color: #334155;">
+              <input type="checkbox" id="setting-schedule-autoskip" checked>
+              <span>Tự động bỏ qua ca trùng / đã có học sinh (Khuyến nghị)</span>
+            </label>
           </div>
         </div>
 

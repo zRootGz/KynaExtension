@@ -16,9 +16,10 @@
    - [Thể thức 1: Đua Bơi Tiếp Sức Từ Vựng (Word Relay)](#dua-boi-tiep-suc)
    - [Thể thức 2: Đua Bơi Tự Động kiểu Game Vịt (Duck Race)](#dua-boi-tu-dong)
    - [Cách ghi danh học sinh & Bắt đầu đua](#ghi-danh-dua-boi)
-5. [🏆 Bảng Điểm & Xuất Báo Cáo Excel](#bang-diem)
-6. [❓ Xử lý Sự cố Thường gặp](#xu-ly-su-co)
-7. [🛠️ Dành Cho Developer (Cấu trúc & Kiến trúc Tiện ích)](#danh-cho-developer)
+5. [Tiện ích 3: 📅 Đăng Ký Lịch Dạy Thông Minh (Schedule Assistant)](#lich-day)
+6. [🏆 Bảng Điểm & Xuất Báo Cáo Excel](#bang-diem)
+7. [❓ Xử lý Sự cố Thường gặp](#xu-ly-su-co)
+8. [🛠️ Dành Cho Developer (Cấu trúc & Kiến trúc Tiện ích)](#danh-cho-developer)
 
 ---
 
@@ -147,9 +148,24 @@ Game **Đua Bơi** biến đường đua dưới nước thành cuộc tranh tà
 
 ---
 
+<div id="lich-day"></div>
+
+## 5. 📅 Tiện ích Đăng Ký Lịch Dạy Thông Minh (Schedule Assistant)
+
+> **Giải phóng thời gian cho Giáo viên Kyna khi set lịch dạy hàng tuần!**  
+> Không còn phải nhấp chuột 30–50 lần vào từng ô 30 phút. Tiện ích mang đến trải nghiệm quét chuột kéo thả, áp dụng mẫu lịch cố định và ghi nhận an toàn chỉ trong vài giây.
+
+### 🌟 Tính năng nổi bật của Tiện ích Lịch Dạy:
+- 🖱️ **Kéo thả chọn dải ca rảnh (Drag-to-Select):** Nhấn giữ và quét chuột qua một vùng để chọn cùng lúc nhiều ca (ví dụ: quét một lượt từ 18:00 đến 21:00 từ Thứ 2 đến Thứ 6).
+- 🛡️ **Tự động lọc bỏ ca xung đột:** Khi quét qua các ô đã có học sinh đặt lịch hoặc ca bị khóa, tiện ích tự động bỏ qua các ô này, bảo vệ 100% lịch đã có.
+- 📋 **Lưu & Áp dụng Mẫu Lịch Cố Định (Weekly Templates):** Lưu sẵn lịch quen thuộc (ví dụ "Lịch Tối T2-T6", "Lịch Cuối Tuần") trong Popup tiện ích và áp dụng 1-click vào bất kỳ tuần mới nào.
+- 🔍 **Xem trước (Dry-Run Review) & Đồng bộ An toàn:** Trước khi ghi nhận, bảng tóm tắt chi tiết hiện ra để giáo viên duyệt lại số ca, sau đó hệ thống tự động lưu tuần tự với khoảng trễ an toàn (~200ms/ca) kèm thanh tiến trình trực quan. Hỗ trợ nút **Hủy** tức thì nếu cần dừng giữa chừng.
+
+---
+
 <div id="bang-diem"></div>
 
-## 5. 🏆 Bảng Điểm & Xuất Báo Cáo Excel
+## 6. 🏆 Bảng Điểm & Xuất Báo Cáo Excel
 
 - Tất cả điểm số tích lũy của học sinh qua các lượt chơi trò chơi đều được ghi nhận tự động tại tab **🏆 Bảng điểm**.
 - Giáo viên nhấn nút **`📊 Xuất file Excel/CSV`** để tải về báo cáo danh sách điểm số của cả lớp dạng file Excel CSV (định dạng chuẩn UTF-8 BOM, mở trực tiếp trên Microsoft Excel không bị lỗi phông chữ tiếng Việt).

@@ -500,3 +500,122 @@ body {
 .empty-state { text-align: center; padding: 16px; font-size: 12px; color: var(--text-muted); }
 .text-center { text-align: center; }
 .text-muted { color: var(--text-muted); }
+
+/* Schedule Assistant Tab Styles */
+.day-chips-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.day-chip {
+  cursor: pointer;
+}
+
+.day-chip input[type="checkbox"] {
+  display: none;
+}
+
+.day-chip span {
+  display: inline-block;
+  padding: 4px 10px;
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  transition: all 0.15s;
+}
+
+.day-chip input[type="checkbox"]:checked + span {
+  background: #0284c7;
+  color: #ffffff;
+  border-color: #0369a1;
+}
+
+.template-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: all 0.2s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.template-card:hover {
+  border-color: #38bdf8;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.1);
+}
+
+.template-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.template-card-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.template-card-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(16, 185, 129, 0.12);
+  color: #059669;
+}
+
+.template-card-desc {
+  font-size: 11px;
+  color: #64748b;
+}
+
+.template-card-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+
+/* Sticky Schedule Live Status Card - Bright Path Theme */
+.schedule-sticky-card {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: #FFFFFF !important;
+  color: #0F172A !important;
+  border: 2px solid #38BDF8 !important;
+  border-radius: 14px;
+  margin-bottom: 12px;
+  padding: 12px 14px;
+  box-shadow: 0 4px 16px rgba(2, 132, 199, 0.12) !important;
+}
+
+/* 1-Click Apply & Register Direct Button on Template Card */
+.btn-apply-sync-tpl {
+  background: linear-gradient(135deg, #0284c7, #2563eb) !important;
+  color: #ffffff !important;
+  border: none !important;
+  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.35);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.btn-apply-sync-tpl:hover {
+  background: linear-gradient(135deg, #0369a1, #1d4ed8) !important;
+  box-shadow: 0 4px 10px rgba(2, 132, 199, 0.5);
+  transform: translateY(-1px);
+}
+
+
+
+
+

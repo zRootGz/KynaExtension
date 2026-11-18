@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kyna Teacher Portal - Giả lập Đăng Ký Lịch Chuẩn (21 Ngày Rolling)</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --color-white: #ffffff;
+      --color-mercury: #e5e7eb;
+      --color-silver: #f3f4f6;
+      --color-gray: #6b7280;
+      --color-light-gray: #9ca3af;
+      --color-dark-gray: #1f2937;
+      --color-primary: #0284c7;
+      --color-green: #10b981;
+      --color-accepted: #3b82f6;
+      --color-waiting: #f59e0b;
+      --width-schedule-input: 44px;
+      --height-schedule-time-input: 60px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background: #0f172a;
+      color: #1e293b;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+
+    /* Top info banner */
+    .top-info {
+      width: 100%;
+      max-width: 1100px;
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #f8fafc;
+      padding: 12px 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .top-info h2 {
+      font-size: 16px;
+      color: #38bdf8;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .top-info p {
+      font-size: 12px;
+      color: #94a3b8;
+    }
+
+    /* Modal Center container simulating Kyna Portal modal-center */
+    .modal-center {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+    }
+
+    /* Real Kyna .setup-schedule container */
+    .setup-schedule {
+      background-color: #f8fafc;
+      border-radius: 16px;
+      width: 1060px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+      overflow: hidden;
+      border: 1px solid #cbd5e1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .setup-schedule__header {
+      height: 60px;
+      padding: 0 24px;
+      background: #ffffff;
+      border-bottom: 1px solid var(--color-mercury);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--color-dark-gray);
+    }
+
+    .setup-schedule__content {
+      background-color: var(--color-white);
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Date header row: 21 days */
+    .setup-schedule__content__date-wrapper {
+      display: flex;
+      border-bottom: 2px solid #e2e8f0;
+      background: #f8fafc;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .setup-schedule__content__date-empty {
+      width: 80px;
+      min-width: 80px;
+      border-right: 1px solid var(--color-mercury);
+      background: #f1f5f9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--color-gray);
+    }
+
+    .setup-schedule__content__date-item {
+      width: var(--width-schedule-input);
+      min-width: var(--width-schedule-input);
+      height: 58px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border-right: 1px solid #f1f5f9;
+      user-select: none;
+    }
+
+    .setup-schedule__content__date-item.week-divider {
+      border-right: 2px solid #94a3b8;
+    }
+
+    .setup-schedule__content__date-item__text {
+      font-size: 11px;
+      color: var(--color-gray);
+      font-weight: 600;
+    }
+
+    .setup-schedule__content__date-item__number {
+      font-size: 14px;
+      color: var(--color-dark-gray);
+      font-weight: 800;
+      margin-top: 3px;
+    }
+
+    /* Time wrapper: scrollable container with 34 rows */
+    .setup-schedule__content__time-wrapper {
+      max-height: 480px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .setup-schedule__content__time-item {
+      display: flex;
+      height: 40px;
+      min-height: 40px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .setup-schedule__content__time-name {
+      width: 80px;
+      min-width: 80px;
+      border-right: 1px solid var(--color-mercury);
+      background: #f8fafc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: #475569;
+    }
+
+    /* Slot cell: .setup-schedule__content__time-item__date-row */
+    .setup-schedule__content__time-item__date-row {
+      width: var(--width-schedule-input);
+      min-width: var(--width-schedule-input);
+      height: 100%;
+      border-right: 1px solid #f1f5f9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      background: #ffffff;
+      transition: background-color 0.1s;
+      position: relative;
+    }
+
+    .setup-schedule__content__time-item__date-row.week-divider {
+      border-right: 2px solid #cbd5e1;
+    }
+
+    .setup-schedule__content__time-item__date-row:hover:not(:has(.accepted)):not(:has(.waiting)) {
+      background-color: #f0f9ff;
+    }
+
+    /* Real Kyna status indicators inside cell */
+    .setup-schedule__content__time-item__status {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    /* Selected / Available by teacher (Green) */
+    .setup-schedule__content__time-item__status.available,
+    .setup-schedule__content__time-item__status.selected {
+      background-color: #10b981;
+      color: #ffffff;
+      box-shadow: 0 2px 6px rgba(16, 185, 129, 0.4);
+    }
+
+    /* Accepted / Confirmed Class with student (Blue) */
+    .setup-schedule__content__time-item__status.accepted,
+    .setup-schedule__content__time-item__status.approved {
+      background-color: #3b82f6;
+      color: #ffffff;
+      box-shadow: 0 2px 6px rgba(59, 130, 246, 0.4);
+      cursor: not-allowed;
+    }
+
+    /* Waiting / Pending review (Orange) */
+    .setup-schedule__content__time-item__status.waiting {
+      background-color: #f59e0b;
+      color: #ffffff;
+      box-shadow: 0 2px 6px rgba(245, 158, 11, 0.4);
+      cursor: not-allowed;
+    }
+
+    /* Footer with legend */
+    .setup-schedule__footer {
+      padding: 14px 24px;
+      background: #ffffff;
+      border-top: 1px solid var(--color-mercury);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+    }
+
+    .setup-schedule__footer__legend {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .setup-schedule__footer__legend .row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .setup-schedule__footer__status {
+      width: 20px;
+      height: 20px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+    }
+
+    .setup-schedule__footer__status.empty { border: 1px solid #cbd5e1; background: #fff; }
+    .setup-schedule__footer__status.selected { background: #10b981; color: #fff; }
+    .setup-schedule__footer__status.accepted { background: #3b82f6; color: #fff; }
+    .setup-schedule__footer__status.waiting { background: #f59e0b; color: #fff; }
+  </style>
+</head>
+
+<body>
+
+  <div class="top-info">
+    <div>
+      <h2><i class="fa-solid fa-calendar-check"></i> Cổng Giáo Viên Kyna - Môi Trường Giả Lập</h2>
+      <p>Mô phỏng 100% cấu trúc <code>.setup-schedule</code> thực tế từ file <b>Kyna Teacher.html</b> (21 ngày rolling: Tuần 1, Tuần 2, Tuần 3).</p>
+    </div>
+    <div style="display: flex; gap: 8px; align-items: center;">
+      <button id="btn-mock-toggle-overlay" style="padding:8px 14px; background:linear-gradient(135deg, #2563eb, #1d4ed8); border:none; color:#fff; border-radius:6px; font-weight:700; cursor:pointer;" title="Bật/Tắt Cửa Sổ Trợ Lý Lên Màn Hình">
+        <i class="fa-solid fa-gamepad"></i> Bật Cửa Sổ Trợ Lý
+      </button>
+      <div class="check-now" id="btn-mock-check-now" style="display:inline-block; padding:8px 14px; background:#0284c7; border:none; color:#fff; border-radius:6px; font-weight:700; cursor:pointer;" title="Mô phỏng nút Set Your Schedule trên cổng Kyna Teacher">
+        <i class="fa-solid fa-calendar-plus"></i> Set Your Schedule
+      </div>
+      <button id="btn-reset-simulator" style="padding:8px 14px; background:#ef4444; border:none; color:#fff; border-radius:6px; font-weight:700; cursor:pointer;">
+        <i class="fa-solid fa-rotate-left"></i> Khôi phục lịch mặc định
+      </button>
+    </div>
+  </div>
+
+  <div class="modal-center">
+    <div class="setup-schedule" tabindex="-1">
+      
+      <!-- Modal Header -->
+      <div class="header-app__secondary setup-schedule__header">
+        <span><i class="fa-solid fa-calendar-days" style="color:#0284c7; margin-right:8px;"></i> Set up schedule</span>
+        <div style="display:flex; align-items:center; gap:12px;">
+          <span style="font-size:12px; color:#64748b; font-weight:normal;">3 Tuần: 16/11/2026 - 06/12/2026</span>
+          <i class="icon icon-deny fa-solid fa-xmark" id="btn-close-modal" style="cursor:pointer; font-size:18px; color:#ef4444;" title="Đóng bảng lịch (Giả lập)"></i>
+        </div>
+      </div>
+
+      <!-- Main Schedule Content -->
+      <div class="setup-schedule__content">
+        
+        <!-- Date Header: 21 days -->
+        <div class="setup-schedule__content__date-wrapper" id="date-wrapper">
+          <div class="setup-schedule__content__date-empty">Giờ / Ngày</div>
+          <!-- 21 date items rendered by JS -->
+        </div>
+
+        <!-- Time rows: 06:00 to 22:30 (34 rows) -->
+        <div class="setup-schedule__content__time-wrapper" id="time-wrapper">
+          <!-- 34 time-item rows rendered by JS -->
+        </div>
+
+      </div>
+
+      <!-- Footer with Legend -->
+      <div class="setup-schedule__footer">
+        <div class="setup-schedule__footer__legend">
+          <div class="row">
+            <div class="setup-schedule__footer__status empty"></div>
+            <span>Ô Trống (Chưa chọn)</span>
+          </div>
+          <div class="row">
+            <div class="setup-schedule__footer__status selected"><i class="fa-solid fa-check"></i></div>
+            <span>Selected (Rảnh)</span>
+          </div>
+          <div class="row">
+            <div class="setup-schedule__footer__status accepted"><i class="fa-solid fa-user-check"></i></div>
+            <span>Accepted (Đã có lớp)</span>
+          </div>
+          <div class="row">
+            <div class="setup-schedule__footer__status waiting"><i class="fa-solid fa-clock"></i></div>
+            <span>Waiting (Chờ duyệt)</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    const DATES_21 = [
+      { text: "Mon", num: "16", week: 1 },
+      { text: "Tue", num: "17", week: 1 },
+      { text: "Wed", num: "18", week: 1 },
+      { text: "Thu", num: "19", week: 1 },
+      { text: "Fri", num: "20", week: 1 },
+      { text: "Sat", num: "21", week: 1 },
+      { text: "Sun", num: "22", week: 1 },
+      { text: "Mon", num: "23", week: 2 },
+      { text: "Tue", num: "24", week: 2 },
+      { text: "Wed", num: "25", week: 2 },
+      { text: "Thu", num: "26", week: 2 },
+      { text: "Fri", num: "27", week: 2 },
+      { text: "Sat", num: "28", week: 2 },
+      { text: "Sun", num: "29", week: 2 },
+      { text: "Mon", num: "30", week: 3 },
+      { text: "Tue", num: "1",  week: 3 },
+      { text: "Wed", num: "2",  week: 3 },
+      { text: "Thu", num: "3",  week: 3 },
+      { text: "Fri", num: "4",  week: 3 },
+      { text: "Sat", num: "5",  week: 3 },
+      { text: "Sun", num: "6",  week: 3 }
+    ];
+
+    const PRESET_MOCK_CELLS = {
+      // colIdx-time
+      "2-19:00": "accepted", // Wed 18, 19:00 (Class with student)
+      "2-19:30": "accepted", // Wed 18, 19:30
+      "4-20:00": "waiting",  // Fri 20, 20:00 (Pending)
+      "9-18:00": "accepted", // Tue 24 (Week 2), 18:00
+      "10-18:30": "waiting"  // Wed 25 (Week 2), 18:30
+    };
+
+    function renderSimulatorDOM() {
+      // 1. Render Date Headers
+      const dateWrapper = document.getElementById("date-wrapper");
+      dateWrapper.innerHTML = `<div class="setup-schedule__content__date-empty">Giờ / Ngày</div>`;
+
+      DATES_21.forEach((d, idx) => {
+        const item = document.createElement("div");
+        const isEndOfWeek = (idx + 1) % 7 === 0;
+        item.className = `setup-schedule__content__date-item ${isEndOfWeek ? 'week-divider' : ''}`;
+        item.innerHTML = `
+          <p class="setup-schedule__content__date-item__text">${d.text}</p>
+          <p class="setup-schedule__content__date-item__number">${d.num}</p>
+        `;
+        dateWrapper.appendChild(item);
+      });
+
+      // 2. Render Time Rows (06:00 to 22:30 = 34 intervals)
+      const timeWrapper = document.getElementById("time-wrapper");
+      timeWrapper.innerHTML = "";
+
+      let hour = 6;
+      let minute = 0;
+
+      for (let r = 0; r < 34; r++) {
+        const timeStr = `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
+
+        const row = document.createElement("div");
+        row.className = "setup-schedule__content__time-item";
+
+        const timeName = document.createElement("div");
+        timeName.className = "setup-schedule__content__time-name";
+        timeName.innerHTML = `<p>${timeStr}</p>`;
+        row.appendChild(timeName);
+
+        // 21 date-row cells per time row
+        for (let col = 0; col < 21; col++) {
+          const cell = document.createElement("div");
+          const isEndOfWeek = (col + 1) % 7 === 0;
+          cell.className = `setup-schedule__content__time-item__date-row ${isEndOfWeek ? 'week-divider' : ''}`;
+
+          const cellKey = `${col}-${timeStr}`;
+          if (PRESET_MOCK_CELLS[cellKey] === "accepted") {
+            cell.innerHTML = `<div class="setup-schedule__content__time-item__status accepted"><i class="fa-solid fa-user-check"></i></div>`;
+          } else if (PRESET_MOCK_CELLS[cellKey] === "waiting") {
+            cell.innerHTML = `<div class="setup-schedule__content__time-item__status waiting"><i class="fa-solid fa-clock"></i></div>`;
+          }
+
+          // Native click handling simulation
+          cell.addEventListener("click", function() {
+            if (this.querySelector(".accepted") || this.querySelector(".waiting")) {
+              alert("Ca này đã có lớp học hoặc đang chờ duyệt, không thể thay đổi!");
+              return;
+            }
+
+            const availDiv = this.querySelector(".available, .selected");
+            if (availDiv) {
+              this.innerHTML = "";
+            } else {
+              this.innerHTML = `<div class="setup-schedule__content__time-item__status available"><i class="fa-solid fa-check"></i></div>`;
+            }
+          });
+
+          row.appendChild(cell);
+        }
+
+        timeWrapper.appendChild(row);
+
+        minute += 30;
+        if (minute >= 60) {
+          minute = 0;
+          hour++;
+        }
+      }
+    }
+
+    document.getElementById("btn-reset-simulator").addEventListener("click", () => {
+      renderSimulatorDOM();
+      if (window.KynaScheduleGridSelector) {
+        window.KynaScheduleGridSelector.detectAndBindGrid();
+      }
+    });
+
+    const scheduleModal = document.querySelector(".setup-schedule");
+    const btnMockCheckNow = document.getElementById("btn-mock-check-now");
+    const btnCloseModal = document.getElementById("btn-close-modal");
+    const btnMockToggleOverlay = document.getElementById("btn-mock-toggle-overlay");
+
+    if (btnMockToggleOverlay) {
+      btnMockToggleOverlay.addEventListener("click", () => {
+        if (window.KynaScheduleOverlay) {
+          window.KynaScheduleOverlay.toggle();
+        }
+      });
+    }
+
+    if (btnMockCheckNow && scheduleModal) {
+      btnMockCheckNow.addEventListener("click", () => {
+        scheduleModal.style.display = "flex";
+        if (window.KynaScheduleGridSelector) {
+          window.KynaScheduleGridSelector.detectAndBindGrid();
+        }
+      });
+    }
+
+    if (btnCloseModal && scheduleModal) {
+      btnCloseModal.addEventListener("click", () => {
+        scheduleModal.style.display = "none";
+      });
+    }
+
+    renderSimulatorDOM();
+  </script>
+
+  <!-- Load Extension Content Scripts for Standalone Offline Simulation -->
+  <link rel="stylesheet" href="../schedule/schedule-toolbar.css">
+  <script src="../schedule/schedule-grid-selector.js"></script>
+  <script src="../schedule/schedule-sync-engine.js"></script>
+  <script src="../schedule/schedule-toolbar.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,380 @@
+/**
+ * SCHEDULE-TOOLBAR.CSS - In-Page Floating Window (Overlay) for Kyna Schedule Assistant
+ * Styled after Kyna BBB Minigames (Guess The Word / Swimming Race)
+ */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@500;600;700;800;900&display=swap');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css');
+
+/* Floating Overlay Container */
+#kyna-schedule-overlay {
+  position: fixed;
+  top: 45px;
+  right: 25px;
+  width: 440px;
+  max-width: 95vw;
+  max-height: 88vh;
+  background: #FFFFFF;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 2px solid #2563EB;
+  border-radius: 18px;
+  box-shadow: 0 20px 50px rgba(37, 99, 235, 0.22), 0 4px 15px rgba(0, 0, 0, 0.12);
+  color: #0F172A;
+  font-family: 'Nunito', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+  font-size: 13px;
+  z-index: 999999;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+  transition: width 0.25s ease, opacity 0.2s ease, transform 0.2s ease;
+}
+
+#kyna-schedule-overlay.minimized {
+  width: 290px;
+  max-height: none;
+}
+
+#kyna-schedule-overlay.minimized .kyna-overlay-body {
+  display: none !important;
+}
+
+/* Header */
+.kyna-schedule-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 18px;
+  background: linear-gradient(90deg, #1E40AF 0%, #2563EB 100%);
+  border-bottom: 2px solid #3B82F6;
+  cursor: move;
+  flex-shrink: 0;
+}
+
+.kyna-schedule-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 800;
+  color: #FFFFFF;
+  letter-spacing: 0.3px;
+}
+
+.kyna-schedule-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.kyna-overlay-icon-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  color: #FFFFFF;
+  font-size: 14px;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.kyna-overlay-icon-btn:hover {
+  background: rgba(255, 255, 255, 0.35);
+  transform: scale(1.05);
+}
+
+.kyna-overlay-icon-btn.close-btn:hover {
+  background: #EF4444 !important;
+  border-color: #F87171 !important;
+  color: #FFFFFF !important;
+  transform: scale(1.08);
+}
+
+/* Overlay Body */
+.kyna-overlay-body {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #F8FAFC;
+  overflow-y: auto;
+  flex: 1;
+  max-height: calc(88vh - 54px);
+}
+
+/* Card Section */
+.kyna-overlay-card {
+  background: #FFFFFF;
+  border: 1px solid #DBEAFE;
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.05);
+}
+
+.kyna-overlay-card.hero-hub {
+  background: #FFFFFF;
+  color: #0F172A;
+  border: 2px solid #38BDF8;
+  box-shadow: 0 4px 16px rgba(2, 132, 199, 0.12);
+}
+
+/* Form Controls */
+.kyna-overlay-select,
+.kyna-overlay-input {
+  width: 100%;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-family: inherit;
+  border: 1px solid #CBD5E1;
+  border-radius: 8px;
+  background: #FFFFFF;
+  color: #0F172A;
+  outline: none;
+}
+
+/* Solid Buttons */
+.kyna-btn-solid {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-family: inherit;
+  font-weight: 700;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  padding: 8px 12px;
+}
+
+.kyna-btn-solid.primary {
+  background: linear-gradient(135deg, #0284C7, #2563EB);
+  color: #FFFFFF;
+  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.35);
+}
+
+.kyna-btn-solid.primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #0369A1, #1D4ED8);
+  box-shadow: 0 4px 10px rgba(2, 132, 199, 0.5);
+  transform: translateY(-1px);
+}
+
+.kyna-btn-solid.primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.kyna-btn-solid.danger {
+  background: #DC2626;
+  color: #FFFFFF;
+}
+
+.kyna-btn-solid.danger:hover {
+  background: #B91C1C;
+}
+
+/* Outline Buttons */
+.kyna-btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-family: inherit;
+  font-weight: 700;
+  background: transparent;
+  border: 1px solid #38BDF8;
+  color: #0284C7;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  padding: 3px 8px;
+  font-size: 11px;
+}
+
+.kyna-btn-outline:hover {
+  background: #EFF6FF;
+}
+
+.kyna-btn-outline.danger {
+  border-color: #FCA5A5;
+  color: #EF4444;
+}
+
+.kyna-btn-outline.danger:hover {
+  background: #FEF2F2;
+}
+
+/* Template Cards */
+.kyna-overlay-tpl-card {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 10px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+.kyna-overlay-tpl-card:hover {
+  border-color: #38BDF8;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.1);
+}
+
+.kyna-overlay-tpl-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.kyna-overlay-tpl-title {
+  font-weight: 800;
+  font-size: 13px;
+  color: #0F172A;
+}
+
+.kyna-overlay-tpl-badge {
+  background: #EFF6FF;
+  color: #0284C7;
+  border: 1px solid #BFDBFE;
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.kyna-overlay-tpl-desc {
+  font-size: 11px;
+  color: #64748B;
+}
+
+.kyna-overlay-tpl-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+/* Day chip checkboxes */
+.kyna-overlay-day-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #334155;
+  background: #EFF6FF;
+  border: 1px solid #BFDBFE;
+  padding: 2px 6px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* Toast Notifications (Non-blocking) */
+.kyna-overlay-toast {
+  position: absolute;
+  top: 52px;
+  left: 14px;
+  right: 14px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 11.5px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  animation: kynaSlideDown 0.22s ease-out;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+@keyframes kynaSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.kyna-overlay-toast.info {
+  background: #EFF6FF;
+  border: 1px solid #60A5FA;
+  color: #1E40AF;
+}
+
+.kyna-overlay-toast.success {
+  background: #ECFDF5;
+  border: 1px solid #34D399;
+  color: #065F46;
+}
+
+.kyna-overlay-toast.error,
+.kyna-overlay-toast.danger {
+  background: #FEF2F2;
+  border: 1px solid #F87171;
+  color: #991B1B;
+}
+
+.kyna-overlay-toast.warning {
+  background: #FFFBEB;
+  border: 1px solid #FCD34D;
+  color: #92400E;
+}
+
+/* Inline Dialog Box (Prompt / Confirm - Non-blocking) */
+.kyna-overlay-dialog-box {
+  background: #FFFFFF;
+  border: 2px solid #3B82F6;
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 12px;
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.15);
+  animation: kynaFadeIn 0.2s ease-out;
+}
+
+@keyframes kynaFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.kyna-overlay-dialog-title {
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #1E40AF;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.kyna-overlay-dialog-content {
+  font-size: 11.5px;
+  color: #334155;
+  line-height: 1.5;
+  margin-bottom: 10px;
+  white-space: pre-line;
+}
+
+.kyna-overlay-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+}

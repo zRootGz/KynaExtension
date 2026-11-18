@@ -319,16 +319,38 @@ document.addEventListener("DOMContentLoaded", async () => {
   /**
    * Chuyển tab giao diện
    */
+  function switchTab(tabId) {
+    if (!tabId) return;
+    elements.tabBtns.forEach(b => {
+      if (b.getAttribute("data-tab") === tabId) {
+        b.classList.add("active");
+      } else {
+        b.classList.remove("active");
+      }
+    });
+    elements.tabPanels.forEach(p => {
+      if (p.id === tabId) {
+        p.classList.add("active");
+      } else {
+        p.classList.remove("active");
+      }
+    });
+  }
+
   function initTabNavigation() {
     elements.tabBtns.forEach(btn => {
       btn.addEventListener("click", () => {
         const tabId = btn.getAttribute("data-tab");
-        elements.tabBtns.forEach(b => b.classList.remove("active"));
-        elements.tabPanels.forEach(p => p.classList.remove("active"));
-        btn.classList.add("active");
-        document.getElementById(tabId).classList.add("active");
+        switchTab(tabId);
       });
     });
+
+    // Check URL parameters for target tab
+    const urlParams = new URLSearchParams(window.location.search);
+    const initialTab = urlParams.get("tab");
+    if (initialTab) {
+      switchTab(initialTab);
+    }
   }
 
   /**
@@ -1071,4 +1093,798 @@ document.addEventListener("DOMContentLoaded", async () => {
       tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
     );
   }
+
+  // ==========================================
+  // SCHEDULE ASSISTANT MODULE (LỊCH DẠY)
+  // ==========================================
+  function initScheduleAssistant() {
+    let scheduleTemplates = [];
+    let scheduleSettings = {
+      syncDelayMs: 400,
+      autoSkipConflicts: true
+    };
+
+    const scheduleElements = {
+      templateCount: document.getElementById("schedule-template-count"),
+      btnToggleCreate: document.getElementById("btn-toggle-create-template"),
+      createForm: document.getElementById("create-template-form"),
+      inputName: document.getElementById("input-template-name"),
+      selectStartTime: document.getElementById("select-tpl-start-time"),
+      selectEndTime: document.getElementById("select-tpl-end-time"),
+      btnCancelCreate: document.getElementById("btn-cancel-create-template"),
+      btnSaveTemplate: document.getElementById("btn-save-template"),
+      templatesContainer: document.getElementById("saved-templates-container"),
+      btnExportJson: document.getElementById("btn-export-templates-json"),
+      inputImportJson: document.getElementById("input-import-templates-json"),
+      settingDelay: document.getElementById("setting-schedule-delay"),
+      settingAutoskip: document.getElementById("setting-schedule-autoskip")
+    };
+
+    if (!scheduleElements.templatesContainer) return;
+
+    // Load templates & settings from chrome.storage.local
+    function loadTemplatesFromStorage() {
+      if (typeof chrome !== "undefined" && chrome.storage && chrome.storage.local) {
+        chrome.storage.local.get(["kynaScheduleTemplates", "kynaScheduleSettings"], (res) => {
+          if (res.kynaScheduleTemplates && Array.isArray(res.kynaScheduleTemplates)) {
+            scheduleTemplates = res.kynaScheduleTemplates;
+          } else {
+            // Pre-populate sensible defaults
+            scheduleTemplates = getDefaultSampleTemplates();
+            chrome.storage.local.set({ kynaScheduleTemplates: scheduleTemplates });
+          }
+
+          if (res.kynaScheduleSettings) {
+            scheduleSettings = { ...scheduleSettings, ...res.kynaScheduleSettings };
+          }
+
+          if (scheduleElements.settingDelay) {
+            scheduleElements.settingDelay.value = String(scheduleSettings.syncDelayMs || 400);
+          }
+          if (scheduleElements.settingAutoskip) {
+            scheduleElements.settingAutoskip.checked = scheduleSettings.autoSkipConflicts !== false;
+          }
+
+          renderTemplates();
+        });
+      } else {
+        scheduleTemplates = getDefaultSampleTemplates();
+        renderTemplates();
+      }
+    }
+
+    // Initial load of templates & settings
+    loadTemplatesFromStorage();
+
+    // Toggle Create Form
+    if (scheduleElements.btnToggleCreate) {
+      scheduleElements.btnToggleCreate.addEventListener("click", () => {
+        scheduleElements.createForm.classList.toggle("hidden");
+        if (!scheduleElements.createForm.classList.contains("hidden")) {
+          scheduleElements.inputName.focus();
+        }
+      });
+    }
+
+    if (scheduleElements.btnCancelCreate) {
+      scheduleElements.btnCancelCreate.addEventListener("click", () => {
+        scheduleElements.createForm.classList.add("hidden");
+      });
+    }
+
+    // Save New Template
+    if (scheduleElements.btnSaveTemplate) {
+      scheduleElements.btnSaveTemplate.addEventListener("click", () => {
+        const name = (scheduleElements.inputName.value || "").trim();
+        if (!name) {
+          alert("Vui lòng nhập tên gợi nhớ cho mẫu lịch!");
+          return;
+        }
+        if (name.length > 60) {
+          alert("Tên mẫu lịch không được vượt quá 60 ký tự!");
+          return;
+        }
+
+        const checkedDays = Array.from(
+          scheduleElements.createForm.querySelectorAll("input[name='tpl-day']:checked")
+        ).map(el => parseInt(el.value, 10));
+
+        if (checkedDays.length === 0) {
+          alert("Vui lòng chọn ít nhất một ngày trong tuần!");
+          return;
+        }
+
+        const start = scheduleElements.selectStartTime.value;
+        const end = scheduleElements.selectEndTime.value;
+
+        const startMinutes = timeToMins(start);
+        const endMinutes = timeToMins(end);
+
+        if (endMinutes <= startMinutes) {
+          alert("Giờ kết thúc phải lớn hơn giờ bắt đầu!");
+          return;
+        }
+
+        // Generate 30-min slots
+        const slots = [];
+        checkedDays.forEach(day => {
+          let curr = startMinutes;
+          while (curr < endMinutes) {
+            const slotStart = minsToTime(curr);
+            const slotEnd = minsToTime(curr + 30);
+            slots.push({
+              dayOfWeek: day,
+              timeStart: slotStart,
+              timeEnd: slotEnd
+            });
+            curr += 30;
+          }
+        });
+
+        const newTemplate = {
+          id: "tpl_" + Date.now(),
+          name: name,
+          description: `Áp dụng ${checkedDays.length} ngày (${start} - ${end})`,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          slots: slots,
+          totalSlots: slots.length,
+          totalHours: slots.length * 0.5
+        };
+
+        scheduleTemplates.unshift(newTemplate);
+        saveTemplatesToStorage();
+        renderTemplates();
+
+        // Reset form
+        scheduleElements.inputName.value = "";
+        scheduleElements.createForm.classList.add("hidden");
+      });
+    }
+
+    // Export JSON
+    if (scheduleElements.btnExportJson) {
+      scheduleElements.btnExportJson.addEventListener("click", () => {
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(scheduleTemplates, null, 2));
+        const downloadAnchor = document.createElement("a");
+        downloadAnchor.setAttribute("href", dataStr);
+        downloadAnchor.setAttribute("download", `kyna_schedule_templates_${Date.now()}.json`);
+        document.body.appendChild(downloadAnchor);
+        downloadAnchor.click();
+        downloadAnchor.remove();
+      });
+    }
+
+    // Import JSON
+    if (scheduleElements.inputImportJson) {
+      scheduleElements.inputImportJson.addEventListener("change", (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          try {
+            const imported = JSON.parse(event.target.result);
+            if (Array.isArray(imported)) {
+              let addedCount = 0;
+              imported.forEach(item => {
+                if (item.name && Array.isArray(item.slots)) {
+                  item.id = "tpl_" + Date.now() + "_" + Math.floor(Math.random() * 1000);
+                  scheduleTemplates.push(item);
+                  addedCount++;
+                }
+              });
+              saveTemplatesToStorage();
+              renderTemplates();
+              alert(`Nhập thành công ${addedCount} mẫu lịch!`);
+            } else {
+              alert("File JSON không hợp lệ!");
+            }
+          } catch (err) {
+            alert("Lỗi khi đọc file JSON: " + err.message);
+          }
+          scheduleElements.inputImportJson.value = "";
+        };
+        reader.readAsText(file);
+      });
+    }
+
+    // Settings changes
+    if (scheduleElements.settingDelay) {
+      scheduleElements.settingDelay.addEventListener("change", (e) => {
+        scheduleSettings.syncDelayMs = parseInt(e.target.value, 10);
+        saveSettingsToStorage();
+      });
+    }
+    if (scheduleElements.settingAutoskip) {
+      scheduleElements.settingAutoskip.addEventListener("change", (e) => {
+        scheduleSettings.autoSkipConflicts = !!e.target.checked;
+        saveSettingsToStorage();
+      });
+    }
+
+    function saveTemplatesToStorage() {
+      if (typeof chrome !== "undefined" && chrome.storage && chrome.storage.local) {
+        chrome.storage.local.set({ kynaScheduleTemplates: scheduleTemplates });
+      }
+    }
+
+    function saveSettingsToStorage() {
+      if (typeof chrome !== "undefined" && chrome.storage && chrome.storage.local) {
+        chrome.storage.local.set({ kynaScheduleSettings: scheduleSettings });
+      }
+    }
+
+    function renderTemplates() {
+      if (scheduleElements.templateCount) {
+        scheduleElements.templateCount.textContent = scheduleTemplates.length;
+      }
+      const container = scheduleElements.templatesContainer;
+      container.innerHTML = "";
+
+      if (scheduleTemplates.length === 0) {
+        container.innerHTML = `<div class="empty-state">Chưa có mẫu lịch nào. Bấm <b>+ Mẫu mới</b> để tạo mẫu đầu tiên!</div>`;
+        return;
+      }
+
+      scheduleTemplates.forEach((tpl) => {
+        const card = document.createElement("div");
+        card.className = "template-card";
+
+        card.innerHTML = `
+          <div class="template-card-header">
+            <span class="template-card-title"><i class="fa-solid fa-calendar-check" style="color:#0284c7;"></i> ${escapeHtml(tpl.name)}</span>
+            <span class="template-card-badge">${tpl.totalSlots} ca (${tpl.totalHours}h)</span>
+          </div>
+          <div class="template-card-desc">${escapeHtml(tpl.description || "")}</div>
+          <div class="template-card-actions">
+            <button class="btn btn-sm btn-outline btn-delete-tpl" style="color:#ef4444; border-color:#fca5a5; font-size:11px; padding:3px 8px;" data-id="${tpl.id}" title="Xóa mẫu">
+              <i class="fa-solid fa-trash-can"></i> Xóa
+            </button>
+            <button class="btn btn-sm btn-outline btn-apply-tpl" style="color:#0284c7; border-color:#38bdf8; font-size:11px; padding:3px 8px;" data-id="${tpl.id}" title="Chỉ chọn nháp trên bảng lịch để xem lại hoặc điều chỉnh">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> Áp dụng
+            </button>
+            <button class="btn btn-sm btn-primary btn-apply-sync-tpl" style="font-size:11px; padding:3px 10px; font-weight:700;" data-id="${tpl.id}" title="Áp dụng mẫu và đăng ký trực tiếp lên Kyna chỉ với 1 click">
+              <i class="fa-solid fa-paper-plane"></i> Áp dụng & Đăng ký
+            </button>
+          </div>
+        `;
+
+        // Apply Template to Active Tab (Draft only)
+        card.querySelector(".btn-apply-tpl").addEventListener("click", () => {
+          applyTemplateToActiveTab(tpl, { autoSync: false });
+        });
+
+        // 1-Click Apply & Register directly onto Kyna (UX1)
+        card.querySelector(".btn-apply-sync-tpl").addEventListener("click", () => {
+          applyTemplateToActiveTab(tpl, { autoSync: true });
+        });
+
+        // Delete Template
+        card.querySelector(".btn-delete-tpl").addEventListener("click", () => {
+          if (confirm(`Bạn có chắc chắn muốn xóa mẫu "${tpl.name}"?`)) {
+            scheduleTemplates = scheduleTemplates.filter(t => t.id !== tpl.id);
+            saveTemplatesToStorage();
+            renderTemplates();
+          }
+        });
+
+        container.appendChild(card);
+      });
+    }
+
+    // Cross-window active Kyna tab resolver (FR-012, T058)
+    function isKynaTab(tab) {
+      if (!tab || !tab.url) return false;
+      const url = tab.url.toLowerCase();
+      return (
+        url.includes("kynaenglish.com") ||
+        url.includes("kynalearning.com") ||
+        url.includes("kyna.vn") ||
+        url.includes("localhost") ||
+        url.includes("127.0.0.1") ||
+        (url.startsWith("file:") && (url.includes("kyna") || url.includes("simulator") || url.includes("teacher")))
+      );
+    }
+
+    function getActiveKynaTab(callback) {
+      if (typeof chrome === "undefined" || !chrome.tabs || !chrome.tabs.query) {
+        if (callback) callback(null);
+        return;
+      }
+
+      // 1. Try active tab in lastFocusedWindow (teacher's focused browser window)
+      chrome.tabs.query({ active: true, lastFocusedWindow: true }, (tabs) => {
+        const activeTab = tabs && tabs[0];
+        if (activeTab && isKynaTab(activeTab)) {
+          callback(activeTab);
+          return;
+        }
+
+        // 2. Try active tab in currentWindow
+        chrome.tabs.query({ active: true, currentWindow: true }, (currTabs) => {
+          const currTab = currTabs && currTabs[0];
+          if (currTab && isKynaTab(currTab)) {
+            callback(currTab);
+            return;
+          }
+
+          // 3. Fallback: Search all open tabs across all windows for any matching Kyna tab
+          chrome.tabs.query({}, (allTabs) => {
+            if (!allTabs || allTabs.length === 0) {
+              callback(null);
+              return;
+            }
+            const activeKyna = allTabs.find(t => t.active && isKynaTab(t));
+            if (activeKyna) {
+              callback(activeKyna);
+              return;
+            }
+            const anyKyna = allTabs.find(t => isKynaTab(t));
+            callback(anyKyna || null);
+          });
+        });
+      });
+    }
+
+    function checkTabScheduleStatus() {
+      if (typeof chrome === "undefined" || !chrome.tabs || !chrome.tabs.query) return;
+
+      const dot = document.getElementById("schedule-tab-status-dot");
+      const text = document.getElementById("schedule-tab-status-text");
+      const countEl = document.getElementById("popup-selected-count");
+      const hoursEl = document.getElementById("popup-selected-hours");
+      const cancelInfo = document.getElementById("schedule-cancel-info");
+      const cancelCountEl = document.getElementById("popup-cancel-count");
+      const cancelHoursEl = document.getElementById("popup-cancel-hours");
+      const unregisterBtn = document.getElementById("btn-popup-batch-unregister");
+      const syncBtn = document.getElementById("btn-popup-batch-sync");
+      const weekSelect = document.getElementById("popup-target-week-select");
+
+      getActiveKynaTab((tab) => {
+        if (!tab) {
+          if (dot) dot.style.background = "#94a3b8";
+          if (text) text.textContent = "Không tìm thấy tab Kyna Teacher";
+          if (countEl) countEl.textContent = "0 ca";
+          if (hoursEl) hoursEl.textContent = "0.0h";
+          if (cancelInfo) cancelInfo.style.display = "none";
+          if (syncBtn) syncBtn.disabled = true;
+          return;
+        }
+        const tabId = tab.id;
+
+        chrome.tabs.sendMessage(tabId, { action: "GET_SCHEDULE_STATUS" }, (response) => {
+          if (chrome.runtime.lastError || !response) {
+            if (dot) dot.style.background = "#94a3b8";
+            if (text) text.textContent = "Không thể kết nối lịch (F5 lại tab Kyna)";
+            if (countEl) countEl.textContent = "0 ca";
+            if (hoursEl) hoursEl.textContent = "0.0h";
+            if (cancelInfo) cancelInfo.style.display = "none";
+            if (syncBtn) syncBtn.disabled = true;
+            return;
+          }
+
+          if (response.isModalOpen && response.hasGrid) {
+            if (dot) dot.style.background = "#10b981";
+            if (text) text.textContent = "Đã kết nối bảng lịch Kyna";
+          } else if (response.isModalOpen && !response.hasGrid) {
+            if (dot) dot.style.background = "#f59e0b";
+            if (text) text.textContent = "Bảng lịch Kyna đang tải dữ liệu...";
+          } else {
+            if (dot) dot.style.background = "#94a3b8";
+            if (text) text.textContent = "Chưa mở bảng lịch (Bấm 📅 Mở Lịch)";
+          }
+
+          const count = response.selectedCount || 0;
+          const hours = response.totalHours || 0;
+          if (countEl) countEl.textContent = `${count} ca`;
+          if (hoursEl) hoursEl.textContent = `${hours.toFixed(1)}h`;
+          if (syncBtn) syncBtn.disabled = (count === 0);
+
+          // Update Cancellation Targets (T047 / User Story 4)
+          const cancelCount = response.cancelCount || 0;
+          const cancelHours = response.cancelHours || 0;
+          if (cancelInfo) {
+            if (cancelCount > 0) {
+              cancelInfo.style.display = "flex";
+              if (cancelCountEl) cancelCountEl.textContent = `${cancelCount} ca`;
+              if (cancelHoursEl) cancelHoursEl.textContent = `${cancelHours.toFixed(1)}h`;
+              if (unregisterBtn) unregisterBtn.disabled = false;
+            } else {
+              cancelInfo.style.display = "none";
+            }
+          }
+
+          // Update week select options if columns available
+          if (weekSelect && response.dateColumns && response.dateColumns.length >= 21) {
+            const cols = response.dateColumns;
+            weekSelect.innerHTML = `
+              <option value="1" selected>📅 Tuần 1 (${cols[0].dateLabel} - ${cols[6].dateLabel})</option>
+              <option value="2">📅 Tuần 2 (${cols[7].dateLabel} - ${cols[13].dateLabel})</option>
+              <option value="3">📅 Tuần 3 (${cols[14].dateLabel} - ${cols[20].dateLabel})</option>
+              <option value="ALL">🌟 Cả 3 Tuần (${cols[0].dateLabel} - ${cols[20].dateLabel})</option>
+            `;
+          }
+        });
+      });
+    }
+
+    // Refresh status button
+    const btnRefreshStatus = document.getElementById("btn-refresh-tab-status");
+    if (btnRefreshStatus) {
+      btnRefreshStatus.addEventListener("click", () => {
+        checkTabScheduleStatus();
+      });
+    }
+
+    // Clear selection button
+    const btnClearSelection = document.getElementById("btn-popup-clear-selection");
+    if (btnClearSelection) {
+      btnClearSelection.addEventListener("click", () => {
+        getActiveKynaTab((tab) => {
+          if (!tab) return;
+          chrome.tabs.sendMessage(tab.id, { action: "CLEAR_ALL_SELECTION" }, () => {
+            checkTabScheduleStatus();
+          });
+        });
+      });
+    }
+
+    // Common helper to trigger Batch Registration confirmation & execution (UX1)
+    function triggerBatchSync(tabId, contextTitle = "") {
+      const progressSection = document.getElementById("popup-sync-progress-section");
+      const btnBatchSync = document.getElementById("btn-popup-batch-sync");
+
+      chrome.tabs.sendMessage(tabId, { action: "GET_DRY_RUN_SUMMARY" }, (res) => {
+        if (chrome.runtime.lastError || !res || !res.success) {
+          alert("Không thể lấy tóm tắt ca dạy từ tab Kyna!");
+          return;
+        }
+
+        const summary = res.summary;
+        if (!summary || summary.totalSelected === 0) {
+          alert("Không tìm thấy ca nào đang chọn để đăng ký!");
+          return;
+        }
+
+        const headerMsg = contextTitle ? `XÁC NHẬN: ${contextTitle}\n\n` : `XÁC NHẬN ĐĂNG KÝ HÀNG LOẠT LÊN KYNA:\n\n`;
+        const conflictNote = summary.conflicts && summary.conflicts.length > 0
+          ? `• Tự động bỏ qua an toàn: ${summary.conflicts.length} ca (đã có học sinh hoặc bị khóa)\n`
+          : "";
+
+        const confirmMsg =
+          headerMsg +
+          `• Tổng số ca đăng ký: ${summary.totalSelected} ca (${summary.totalHours.toFixed(1)} giờ)\n` +
+          conflictNote +
+          `\nBấm OK để tiến hành đăng ký tuần tự an toàn lên Kyna!`;
+
+        if (confirm(confirmMsg)) {
+          if (progressSection) progressSection.style.display = "block";
+          if (btnBatchSync) btnBatchSync.disabled = true;
+
+          chrome.tabs.sendMessage(tabId, { action: "EXECUTE_BATCH_SYNC" });
+        }
+      });
+    }
+
+    function applyTemplateToActiveTab(template, options = {}) {
+      if (typeof chrome === "undefined" || !chrome.tabs || !chrome.tabs.query) return;
+
+      const weekSelect = document.getElementById("popup-target-week-select");
+      const targetWeek = weekSelect ? weekSelect.value : "1";
+
+      getActiveKynaTab((tab) => {
+        if (!tab) {
+          alert("Không tìm thấy tab Kyna Teacher đang mở! Vui lòng mở trang Kyna Teacher trên trình duyệt.");
+          return;
+        }
+        const tabId = tab.id;
+
+        chrome.tabs.sendMessage(tabId, {
+          action: "APPLY_TEMPLATE_TO_GRID",
+          template: template,
+          targetWeek: targetWeek
+        }, (response) => {
+          if (chrome.runtime.lastError) {
+            alert("Không thể kết nối đến trang lịch Kyna trên tab hiện tại!\nNếu bạn vừa cài đặt hoặc cập nhật tiện ích, vui lòng F5 (tải lại trang) trên tab Kyna Teacher rồi bấm Áp dụng lại.");
+            return;
+          }
+          if (response && response.success) {
+            const weekStr = targetWeek === "ALL" ? "Cả 3 tuần" : `Tuần ${targetWeek}`;
+            checkTabScheduleStatus();
+
+            if (options.autoSync) {
+              // 1-Click: Prompt confirmation & register immediately!
+              triggerBatchSync(tabId, `Áp dụng mẫu "${template.name}" cho ${weekStr}`);
+            } else {
+              alert(`Áp dụng mẫu "${template.name}" cho ${weekStr} thành công!\n- ${response.matchedCount} ca đã được chọn.\n- ${response.conflictsSkipped || 0} ca đã có lịch/bị khóa được tự động bỏ qua an toàn.`);
+            }
+          } else if (response && !response.success) {
+            alert(response.message || "Không thể áp dụng mẫu lịch!");
+          }
+        });
+      });
+    }
+
+    // Batch sync trigger
+    const btnBatchSync = document.getElementById("btn-popup-batch-sync");
+    const progressSection = document.getElementById("popup-sync-progress-section");
+    const progressText = document.getElementById("popup-sync-status-text");
+    const progressPercent = document.getElementById("popup-sync-percent");
+    const progressFill = document.getElementById("popup-sync-progress-fill");
+    const btnAbortSync = document.getElementById("btn-popup-abort-sync");
+
+    if (btnBatchSync) {
+      btnBatchSync.addEventListener("click", () => {
+        getActiveKynaTab((tab) => {
+          if (!tab) {
+            alert("Không tìm thấy tab Kyna Teacher đang mở!");
+            return;
+          }
+          triggerBatchSync(tab.id);
+        });
+      });
+    }
+
+    // Batch Unregister trigger (T048 / User Story 4)
+    const btnBatchUnregister = document.getElementById("btn-popup-batch-unregister");
+    if (btnBatchUnregister) {
+      btnBatchUnregister.addEventListener("click", () => {
+        getActiveKynaTab((tab) => {
+          if (!tab) {
+            alert("Không tìm thấy tab Kyna Teacher đang mở!");
+            return;
+          }
+          const tabId = tab.id;
+
+          chrome.tabs.sendMessage(tabId, { action: "GET_UNREGISTER_SUMMARY" }, (res) => {
+            if (chrome.runtime.lastError || !res || !res.success) {
+              alert("Không thể lấy thông tin ca cần hủy!");
+              return;
+            }
+
+            const summary = res.summary;
+            const confirmMsg =
+              `⚠️ CẢNH BÁO HỦY ĐĂNG KÝ HÀNG LOẠT:\n` +
+              `• Tổng số ca sẽ HỦY: ${summary.totalSelected} ca (${summary.totalHours.toFixed(1)} giờ)\n` +
+              `\nCác ca này sẽ bị xóa khỏi lịch dạy chính thức của bạn trên Kyna.\nBạn có chắc chắn muốn tiến hành hủy không?`;
+
+            if (confirm(confirmMsg)) {
+              if (progressSection) progressSection.style.display = "block";
+              if (btnBatchSync) btnBatchSync.disabled = true;
+              if (btnBatchUnregister) btnBatchUnregister.disabled = true;
+
+              chrome.tabs.sendMessage(tabId, { action: "EXECUTE_BATCH_UNREGISTER" });
+            }
+          });
+        });
+      });
+    }
+
+    if (btnAbortSync) {
+      btnAbortSync.addEventListener("click", () => {
+        getActiveKynaTab((tab) => {
+          if (!tab) return;
+          chrome.tabs.sendMessage(tab.id, { action: "ABORT_BATCH_SYNC" });
+        });
+      });
+    }
+
+    // Ensure schedule content scripts & styles are injected on target tab
+    function ensureScheduleContentScriptInjected(tabId, callback) {
+      if (!chrome.scripting) {
+        if (typeof callback === "function") callback();
+        return;
+      }
+      chrome.scripting.executeScript({
+        target: { tabId: tabId, allFrames: false },
+        files: [
+          "schedule/schedule-grid-selector.js",
+          "schedule/schedule-sync-engine.js",
+          "schedule/schedule-toolbar.js"
+        ]
+      }).then(() => {
+        chrome.scripting.insertCSS({
+          target: { tabId: tabId, allFrames: false },
+          files: [
+            "schedule/schedule-selection.css",
+            "schedule/schedule-toolbar.css"
+          ]
+        }).catch(() => {});
+        if (typeof callback === "function") callback();
+      }).catch((err) => {
+        console.warn("Scripting inject fallback:", err);
+        if (typeof callback === "function") callback();
+      });
+    }
+
+    // In-Page Assistant Window Launcher (Game Overlay Style)
+    const btnToggleScheduleOverlay = document.getElementById("btn-toggle-schedule-overlay");
+    if (btnToggleScheduleOverlay) {
+      btnToggleScheduleOverlay.addEventListener("click", () => {
+        getActiveKynaTab((tab) => {
+          if (!tab) {
+            alert("Không tìm thấy tab Kyna Teacher đang mở! Vui lòng mở trang Kyna Teacher trên trình duyệt.");
+            return;
+          }
+          ensureScheduleContentScriptInjected(tab.id, () => {
+            chrome.tabs.sendMessage(tab.id, { action: "SHOW_SCHEDULE_OVERLAY" }, (response) => {
+              if (chrome.runtime.lastError) {
+                alert("Không thể kết nối đến trang Kyna trên tab này!\nVui lòng F5 (tải lại trang) trên tab Kyna Teacher rồi bấm lại.");
+                return;
+              }
+              // Auto close transient popup so teacher interacts with in-page floating assistant directly
+              window.close();
+            });
+          });
+        });
+      });
+    }
+
+    // Auto-open Kyna Schedule Modal (FR-013, T059)
+    const btnOpenKynaModal = document.getElementById("btn-open-kyna-modal");
+    if (btnOpenKynaModal) {
+      btnOpenKynaModal.addEventListener("click", () => {
+        getActiveKynaTab((tab) => {
+          if (!tab) {
+            alert("Không tìm thấy tab Kyna Teacher đang mở! Vui lòng mở trang Kyna Teacher trên trình duyệt.");
+            return;
+          }
+          chrome.tabs.sendMessage(tab.id, { action: "OPEN_KYNA_SCHEDULE_MODAL" }, (response) => {
+            if (chrome.runtime.lastError) {
+              alert("Không thể gửi lệnh đến tab Kyna!\nNếu bạn vừa cài đặt hoặc cập nhật tiện ích, vui lòng F5 (tải lại trang) trên tab Kyna rồi thử lại.");
+              return;
+            }
+            if (response && response.success) {
+              setTimeout(() => checkTabScheduleStatus(), 600);
+            } else {
+              alert(response ? response.message : "Không thể mở bảng lịch Kyna!");
+            }
+          });
+        });
+      });
+    }
+
+    // Listen for sync progress updates from content script
+    if (typeof chrome !== "undefined" && chrome.runtime && chrome.runtime.onMessage) {
+      chrome.runtime.onMessage.addListener((message) => {
+        if (!message) return;
+
+        if (message.action === "SYNC_PROGRESS" && message.data) {
+          const p = message.data;
+          if (progressText) progressText.textContent = `Đang xử lý ca ${p.currentIndex}/${p.totalCount}...`;
+          if (progressPercent) progressPercent.textContent = `${p.progressPercent}%`;
+          if (progressFill) progressFill.style.width = `${p.progressPercent}%`;
+        }
+
+        if (message.action === "SYNC_COMPLETE" && message.data) {
+          if (progressSection) progressSection.style.display = "none";
+          if (btnBatchSync) btnBatchSync.disabled = false;
+          if (btnBatchUnregister) btnBatchUnregister.disabled = false;
+          alert(`Đăng ký thành công ${message.data.successCount} ca lên Kyna!`);
+          checkTabScheduleStatus();
+        }
+
+        if (message.action === "UNREGISTER_COMPLETE" && message.data) {
+          if (progressSection) progressSection.style.display = "none";
+          if (btnBatchSync) btnBatchSync.disabled = false;
+          if (btnBatchUnregister) btnBatchUnregister.disabled = false;
+          alert(`Đã hủy đăng ký thành công ${message.data.successCount} ca trên Kyna!`);
+          checkTabScheduleStatus();
+        }
+
+        if (message.action === "SYNC_ABORTED" && message.data) {
+          if (progressSection) progressSection.style.display = "none";
+          if (btnBatchSync) btnBatchSync.disabled = false;
+          if (btnBatchUnregister) btnBatchUnregister.disabled = false;
+          alert(`Đã dừng an toàn tại ca ${message.data.processedCount}/${message.data.totalCount}.`);
+          checkTabScheduleStatus();
+        }
+
+        if (message.action === "SYNC_ERROR") {
+          if (progressSection) progressSection.style.display = "none";
+          if (btnBatchSync) btnBatchSync.disabled = false;
+          if (btnBatchUnregister) btnBatchUnregister.disabled = false;
+          alert("Lỗi khi xử lý: " + message.error);
+          checkTabScheduleStatus();
+        }
+      });
+    }
+
+    // Save current selection from active tab as new template (T029)
+    const btnSaveCurrentFromTab = document.getElementById("btn-save-current-from-tab");
+    if (btnSaveCurrentFromTab) {
+      btnSaveCurrentFromTab.addEventListener("click", () => {
+        if (typeof chrome === "undefined" || !chrome.tabs || !chrome.tabs.query) return;
+
+        getActiveKynaTab((tab) => {
+          if (!tab) {
+            alert("Không tìm thấy tab Kyna Teacher đang mở! Vui lòng mở trang Kyna Teacher trên trình duyệt.");
+            return;
+          }
+          const tabId = tab.id;
+
+          const tplName = prompt("Nhập tên gợi nhớ cho mẫu lịch mới lưu từ tab hiện tại:", "Lịch Dạy Chuẩn");
+          if (tplName === null) return;
+
+          chrome.tabs.sendMessage(tabId, {
+            action: "SAVE_CURRENT_SELECTION_AS_TEMPLATE",
+            name: tplName
+          }, (response) => {
+            if (chrome.runtime.lastError) {
+              alert("Không thể kết nối đến trang lịch Kyna trên tab hiện tại!\nNếu bạn vừa cài đặt hoặc cập nhật tiện ích, vui lòng F5 (tải lại trang) trên tab Kyna rồi thử lại.");
+              return;
+            }
+            if (response && response.success) {
+              alert(response.message);
+              loadTemplatesFromStorage();
+              checkTabScheduleStatus();
+            } else {
+              alert(response ? response.message : "Không thể lưu mẫu lịch!");
+            }
+          });
+        });
+      });
+    }
+
+    // Check status on load
+    checkTabScheduleStatus();
+
+    function timeToMins(t) {
+      const parts = t.split(":");
+      return parseInt(parts[0], 10) * 60 + parseInt(parts[1], 10);
+    }
+
+    function minsToTime(m) {
+      const h = Math.floor(m / 60);
+      const min = m % 60;
+      return `${String(h).padStart(2, "0")}:${String(min).padStart(2, "0")}`;
+    }
+
+    function getDefaultSampleTemplates() {
+      // Sample 1: Weekday Evenings 18:00 - 21:00 (T2-T6)
+      const slots1 = [];
+      [1, 2, 3, 4, 5].forEach(day => {
+        ["18:00", "18:30", "19:00", "19:30", "20:00", "20:30"].forEach((start, idx) => {
+          const ends = ["18:30", "19:00", "19:30", "20:00", "20:30", "21:00"];
+          slots1.push({ dayOfWeek: day, timeStart: start, timeEnd: ends[idx] });
+        });
+      });
+
+      // Sample 2: Weekend Daytime (T7 & CN)
+      const slots2 = [];
+      [6, 7].forEach(day => {
+        ["08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30"].forEach((start, idx) => {
+          const ends = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00"];
+          slots2.push({ dayOfWeek: day, timeStart: start, timeEnd: ends[idx] });
+        });
+      });
+
+      return [
+        {
+          id: "tpl_sample_evening",
+          name: "Lịch Tối Cố Định (T2 - T6)",
+          description: "Ca 18:00 - 21:00 các ngày trong tuần",
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          slots: slots1,
+          totalSlots: slots1.length,
+          totalHours: slots1.length * 0.5
+        },
+        {
+          id: "tpl_sample_weekend",
+          name: "Lịch Cuối Tuần Sáng & Chiều (T7 & CN)",
+          description: "Ca sáng 08:30-11:30 & chiều 14:00-17:00",
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          slots: slots2,
+          totalSlots: slots2.length,
+          totalHours: slots2.length * 0.5
+        }
+      ];
+    }
+  }
+
+  // Initialize schedule assistant
+  initScheduleAssistant();
 });
